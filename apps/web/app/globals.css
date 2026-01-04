@@ -46,10 +46,8 @@ body {
     print-color-adjust: exact !important;
   }
 
-  .no-print,
-  header,
-  nav,
-  .preview-toolbar {
+  /* Force only the preview to show */
+  body > *:not(main) {
     display: none !important;
   }
 
@@ -60,17 +58,29 @@ body {
     width: 210mm !important;
   }
 
+  .no-print,
+  .editor-side,
+  header,
+  nav,
+  .preview-toolbar,
+  button {
+    display: none !important;
+  }
+
   #resume-preview {
+    display: block !important;
     transform: none !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
     width: 210mm !important;
+    height: 297mm !important;
     background: white !important;
-    position: absolute !important;
+    position: fixed !important;
     top: 0 !important;
     left: 0 !important;
+    z-index: 9999 !important;
   }
 
   .resume-container {
