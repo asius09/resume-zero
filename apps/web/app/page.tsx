@@ -158,9 +158,10 @@ export default function ResumeCleanerPage() {
       filename: `${fullName.replace(/\s+/g, "_")}_Resume.pdf`,
       image: { type: "jpeg" as const, quality: 0.98 },
       html2canvas: {
-        scale: 2,
+        scale: 4,
         useCORS: true,
-        letterRendering: true,
+        logging: false,
+        windowWidth: 1200, // Fixed width for consistent rendering
       },
       jsPDF: {
         unit: "mm" as const,
@@ -169,7 +170,10 @@ export default function ResumeCleanerPage() {
       },
     };
 
-    await html2pdf().set(opt).from(element).save();
+    // Wait slightly for fonts to stabilize
+    setTimeout(async () => {
+      await html2pdf().set(opt).from(element).save();
+    }, 500);
   };
 
   const updateBlock = (index: number, newData: ResumeBlock["data"]) => {

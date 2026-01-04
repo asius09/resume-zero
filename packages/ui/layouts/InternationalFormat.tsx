@@ -19,11 +19,13 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                 {block.data.fullName}
               </h1>
               {/* 2. CONTACT INFORMATION - TEXT_TYPE: META_TEXT */}
-              <div className="text-[13px] flex flex-col gap-1 font-medium text-[#1e293b]">
-                {block.data.location && <span>{block.data.location}</span>}
+              <div className="text-[13px] flex flex-col font-medium text-[#1e293b]">
+                {block.data.location && (
+                  <span className="mb-1">{block.data.location}</span>
+                )}
                 {block.data.contacts.map((contact: Contact, cIdx: number) => (
-                  <span key={cIdx} className="flex items-center gap-2">
-                    <span className="font-bold opacity-60">
+                  <span key={cIdx} className="flex items-center mb-1">
+                    <span className="font-bold opacity-60 mr-2">
                       {contact.label || contact.type}:
                     </span>{" "}
                     {contact.value}
@@ -62,11 +64,8 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                   </h2>
                   <div className="space-y-3">
                     {block.data.map((item, iIdx) => (
-                      <div
-                        key={iIdx}
-                        className="text-[13px] grid grid-cols-[160px_1fr] gap-4"
-                      >
-                        <span className="font-bold text-black uppercase text-[11px] tracking-wide pt-0.5">
+                      <div key={iIdx} className="text-[13px] flex items-start">
+                        <span className="font-bold text-black uppercase text-[11px] tracking-wide pt-0.5 w-[160px] shrink-0">
                           {item.category}
                         </span>
                         <span className="text-[#0f172a] font-medium leading-relaxed">

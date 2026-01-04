@@ -16,11 +16,13 @@ export const ModernProfessional = ({ data }: { data: ResumeData }) => {
                 {block.data.fullName}
               </h1>
               {/* 2. CONTACT BLOCK - TEXT_TYPE: META_TEXT */}
-              <div className="text-[12px] flex flex-wrap gap-x-5 gap-y-2 font-normal text-[#334155]">
-                {block.data.location && <span>{block.data.location}</span>}
+              <div className="text-[12px] flex flex-wrap font-normal text-[#334155]">
+                {block.data.location && (
+                  <span className="mr-5 mb-2">{block.data.location}</span>
+                )}
                 {block.data.contacts.map((contact: Contact, cIdx: number) => (
-                  <span key={cIdx} className="flex items-center gap-2">
-                    {cIdx > 0 && <span className="text-[#cbd5e1]">•</span>}
+                  <span key={cIdx} className="flex items-center mr-5 mb-2">
+                    {cIdx > 0 && <span className="text-[#cbd5e1] mr-2">•</span>}
                     {contact.value}
                   </span>
                 ))}

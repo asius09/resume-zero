@@ -16,18 +16,20 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
                 {block.data.fullName}
               </h1>
               {/* 2. CONTACT LINE - TEXT_TYPE: META_TEXT */}
-              <div className="text-[11px] font-normal flex flex-wrap gap-x-3 gap-y-1 text-left">
+              <div className="text-[11px] font-normal flex flex-wrap text-left">
                 {block.data.location && (
-                  <span className="text-[#334155]">{block.data.location}</span>
+                  <span className="text-[#334155] mr-3 mb-1">
+                    {block.data.location}
+                  </span>
                 )}
                 {block.data.location && (
-                  <span className="text-[#cbd5e1]">|</span>
+                  <span className="text-[#cbd5e1] mr-3 mb-1">|</span>
                 )}
                 {block.data.contacts.map((contact: Contact, cIdx: number) => (
                   <React.Fragment key={cIdx}>
-                    <span className="text-[#334155]">{contact.value}</span>
+                    <span className="text-[#334155] mb-1">{contact.value}</span>
                     {cIdx < block.data.contacts.length - 1 && (
-                      <span className="text-[#cbd5e1]">|</span>
+                      <span className="text-[#cbd5e1] mx-3 mb-1">|</span>
                     )}
                   </React.Fragment>
                 ))}
