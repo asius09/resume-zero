@@ -105,20 +105,23 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               <div key={idx}>
                 <div className="flex justify-between items-baseline mb-1">
                   <div className="text-[14px] font-bold">
-                    <span className="uppercase">{item.jobTitle}</span> —{" "}
-                    {item.companyName}
+                    {item.jobTitle} — {item.companyName}
                   </div>
                   <div className="text-[13px] font-bold text-[#444] whitespace-nowrap ml-4">
                     {item.startDate} – {item.endDate || "Present"}
                   </div>
                 </div>
-                <ul className="list-disc list-outside ml-5 text-[14px] space-y-1 text-[#111]">
+                <div className="space-y-1 text-[#111] pl-2">
                   {item.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="pl-1 leading-normal">
-                      {bullet}
-                    </li>
+                    <div
+                      key={bIdx}
+                      className="flex items-start gap-2 text-[14px] leading-normal"
+                    >
+                      <span className="shrink-0 text-black mr-2">•</span>
+                      <span>{bullet}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
@@ -135,11 +138,17 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
             {(skillsBlock.data as SkillGroup[]).map((item, idx) => (
               <div key={idx} className="text-[14px] leading-normal">
                 <span className="font-bold">{item.category}:</span>
-                <ul className="list-disc list-outside ml-5 mt-1">
+                <div className="mt-1 space-y-1 pl-2">
                   {item.skills.map((skill, sIdx) => (
-                    <li key={sIdx}>{skill}</li>
+                    <div
+                      key={sIdx}
+                      className="flex items-start gap-2 text-[14px] leading-normal"
+                    >
+                      <span className="shrink-0 text-black mr-2">•</span>
+                      <span>{skill}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
@@ -178,14 +187,17 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
           <h2 className="text-[15px] font-bold uppercase border-b border-[#ddd] mb-3 pb-1 tracking-widest">
             LANGUAGES
           </h2>
-          <ul className="list-disc list-outside ml-5 text-[14px] space-y-1 leading-normal">
+          <div className="space-y-1 text-[14px] leading-normal pl-2">
             {(languagesBlock.data as LanguageItem[]).map((item, idx) => (
-              <li key={idx}>
-                <span className="font-bold">{item.language}</span>
-                {item.proficiency && ` — ${item.proficiency}`}
-              </li>
+              <div key={idx} className="flex items-start gap-2">
+                <span className="shrink-0 text-black mr-2">•</span>
+                <span>
+                  <span className="font-bold">{item.language}</span>
+                  {item.proficiency && ` (${item.proficiency})`}
+                </span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
@@ -222,13 +234,17 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
                     {item.description}
                   </p>
                 )}
-                <ul className="list-disc list-outside ml-5 text-[14px] space-y-1 text-[#111]">
+                <div className="space-y-1 text-[#111] pl-2">
                   {item.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="pl-1 leading-normal">
-                      {bullet}
-                    </li>
+                    <div
+                      key={bIdx}
+                      className="flex items-start gap-2 text-[14px] leading-normal"
+                    >
+                      <span className="shrink-0 text-black mr-2">•</span>
+                      <span>{bullet}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
@@ -241,14 +257,17 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
           <h2 className="text-[15px] font-bold uppercase border-b border-[#ddd] mb-3 pb-1 tracking-widest">
             CERTIFICATIONS
           </h2>
-          <ul className="list-disc list-outside ml-5 text-[14px] leading-normal space-y-1">
+          <div className="space-y-1 text-[14px] leading-normal pl-2">
             {(certsBlock.data as CertificationItem[]).map((item, idx) => (
-              <li key={idx}>
-                <span className="font-bold">{item.name}</span> — {item.issuer} (
-                {item.year})
-              </li>
+              <div key={idx} className="flex items-start gap-2">
+                <span className="shrink-0 text-black mr-2">•</span>
+                <span>
+                  <span className="font-bold">{item.name}</span> — {item.issuer}{" "}
+                  ({item.year})
+                </span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
