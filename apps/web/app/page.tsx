@@ -58,11 +58,11 @@ const INITIAL_DATA: ResumeData = {
           },
         ],
       },
-    } as any,
+    },
     {
       type: "summary",
       data: "Patient-focused Front Office Executive with over a year of experience in high-volume medical environments at BLK-Max Super Speciality Hospital. Expert in managing patient billing, insurance verification, and coordinating complex clinical flow. Dedicated to providing calm, professional, and efficient front-desk assistance while ensuring accurate records management and exceptional patient care.",
-    } as any,
+    },
     {
       type: "experience",
       data: [
@@ -83,7 +83,7 @@ const INITIAL_DATA: ResumeData = {
           ],
         },
       ],
-    } as any,
+    },
     {
       type: "skills",
       data: [
@@ -104,7 +104,7 @@ const INITIAL_DATA: ResumeData = {
           skills: ["Microsoft Excel", "Microsoft Word", "Tally Software"],
         },
       ],
-    } as any,
+    },
     {
       type: "education",
       data: [
@@ -124,14 +124,14 @@ const INITIAL_DATA: ResumeData = {
           graduationYear: "2018",
         },
       ],
-    } as any,
+    },
     {
       type: "languages",
       data: [
         { language: "Hindi", proficiency: "Native" },
         { language: "English", proficiency: "Intermediate" },
       ],
-    } as any,
+    },
     {
       type: "personal",
       data: {
@@ -142,7 +142,7 @@ const INITIAL_DATA: ResumeData = {
         maritalStatus: "Unmarried",
         nationality: "Indian",
       },
-    } as any,
+    },
   ],
 };
 
@@ -319,7 +319,7 @@ export default function ResumeCleanerPage() {
           (item) =>
             `${item.jobTitle} | ${item.companyName}\n${
               item.startDate
-            } - ${item.endDate || "Present"}\n${item.bullets.map((b: string) => `• ${b}`).join("\n")}`
+            } - ${item.endDate || "Present"}\n${item.bullets.map((b: string) => `• ${b}`).join("\n")}`,
         )
         .join("\n\n");
     } else if (block.type === "projects") {
@@ -328,7 +328,7 @@ export default function ResumeCleanerPage() {
           (item) =>
             `${item.name} | ${item.description}\n${
               item.dates
-            }\n${item.bullets.map((b: string) => `• ${b}`).join("\n")}`
+            }\n${item.bullets.map((b: string) => `• ${b}`).join("\n")}`,
         )
         .join("\n\n");
     } else if (block.type === "skills") {
@@ -361,7 +361,7 @@ export default function ResumeCleanerPage() {
               (item) =>
                 `${item.jobTitle.toUpperCase()}\n${item.companyName} | ${item.startDate} - ${
                   item.endDate
-                }\n${item.bullets.map((b) => `- ${b}`).join("\n")}`
+                }\n${item.bullets.map((b) => `- ${b}`).join("\n")}`,
             )
             .join("\n\n")}\n\n`;
         }
@@ -371,7 +371,7 @@ export default function ResumeCleanerPage() {
               (item) =>
                 `${item.name.toUpperCase()}\n${item.description}\n${item.bullets
                   .map((b) => `- ${b}`)
-                  .join("\n")}`
+                  .join("\n")}`,
             )
             .join("\n\n")}\n\n`;
         }
@@ -400,7 +400,7 @@ export default function ResumeCleanerPage() {
           return `${b.title.toUpperCase()}\n${b.content}\n\n`;
         }
         if (block.type === "personal") {
-          const p = block.data as any;
+          const p = block.data;
           return `PERSONAL DETAILS\nDOB: ${p.dateOfBirth}\n${p.gender}\n${p.nationality}\n\n`;
         }
         return "";
@@ -411,49 +411,10 @@ export default function ResumeCleanerPage() {
   if (!isMounted) return null;
 
   return (
-    <div
-      className={clsx(
-        "min-h-screen",
-        "bg-slate-50",
-        "text-slate-900",
-        "font-sans",
-        "selection:bg-blue-100",
-        "selection:text-blue-900"
-      )}
-    >
-      <header
-        className={clsx(
-          "no-print",
-          "sticky",
-          "top-0",
-          "z-50",
-          "bg-white/80",
-          "backdrop-blur-xl",
-          "border-b",
-          "border-zinc-200",
-          "px-6",
-          "py-4",
-          "flex",
-          "items-center",
-          "justify-between"
-        )}
-      >
-        <div className={clsx("flex", "items-center", "gap-4")}>
-          <div
-            className={clsx(
-              "w-10",
-              "h-10",
-              "bg-slate-900",
-              "rounded-xl",
-              "flex",
-              "items-center",
-              "justify-center",
-              "text-white",
-              "font-black",
-              "shadow-lg",
-              "shadow-slate-200"
-            )}
-          >
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+      <header className="no-print sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-200 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black shadow-lg shadow-slate-200 ring-1 ring-white/20">
             R
           </div>
           <div>
@@ -462,7 +423,7 @@ export default function ResumeCleanerPage() {
                 "text-base",
                 "font-bold",
                 "tracking-tight",
-                "text-slate-900"
+                "text-slate-900",
               )}
             >
               Resume Creator
@@ -473,7 +434,7 @@ export default function ResumeCleanerPage() {
                 "text-slate-500",
                 "font-bold",
                 "uppercase",
-                "tracking-[0.2em]"
+                "tracking-[0.2em]",
               )}
             >
               Beginner First • Version 1.0.0
@@ -490,7 +451,7 @@ export default function ResumeCleanerPage() {
               "p-1",
               "rounded-xl",
               "border",
-              "border-slate-200"
+              "border-slate-200",
             )}
           >
             {(["minimalist", "professional", "international"] as const).map(
@@ -512,7 +473,7 @@ export default function ResumeCleanerPage() {
                 >
                   {t}
                 </button>
-              )
+              ),
             )}
           </div>
 
@@ -538,7 +499,7 @@ export default function ResumeCleanerPage() {
               "transition-all",
               "shadow-md",
               "shadow-slate-100",
-              "cursor-pointer"
+              "cursor-pointer",
             )}
           >
             Clean All
@@ -563,7 +524,7 @@ export default function ResumeCleanerPage() {
               "active:scale-95",
               "transition-all",
               "shadow-sm",
-              "cursor-pointer"
+              "cursor-pointer",
             )}
           >
             <Download size={14} />
@@ -580,7 +541,7 @@ export default function ResumeCleanerPage() {
           "grid-cols-1",
           "lg:grid-cols-2",
           "gap-0",
-          "min-h-[calc(100vh-80px)]"
+          "min-h-[calc(100vh-80px)]",
         )}
       >
         {/* Editor Side */}
@@ -595,7 +556,7 @@ export default function ResumeCleanerPage() {
             "border-zinc-200",
             "overflow-y-auto",
             "max-h-[calc(100vh-80px)]",
-            "custom-scrollbar"
+            "custom-scrollbar",
           )}
         >
           <div
@@ -609,7 +570,7 @@ export default function ResumeCleanerPage() {
                 "border-b",
                 "border-zinc-200",
                 "pb-4",
-                "mb-2"
+                "mb-2",
               )}
             >
               <div>
@@ -619,7 +580,7 @@ export default function ResumeCleanerPage() {
                     "font-black",
                     "tracking-tight",
                     "text-slate-900",
-                    "mb-1"
+                    "mb-1",
                   )}
                 >
                   Editor
@@ -650,7 +611,7 @@ export default function ResumeCleanerPage() {
                       "items-center",
                       "gap-1.5",
                       "transition-all",
-                      "active:scale-95"
+                      "active:scale-95",
                     )}
                   >
                     <Plus size={12} />{" "}
@@ -683,7 +644,7 @@ export default function ResumeCleanerPage() {
                     "group",
                     "relative",
                     "hover:border-slate-300",
-                    "transition-all"
+                    "transition-all",
                   )}
                 >
                   <div
@@ -691,7 +652,7 @@ export default function ResumeCleanerPage() {
                       "flex",
                       "items-center",
                       "justify-between",
-                      "mb-6"
+                      "mb-6",
                     )}
                   >
                     <div
@@ -699,7 +660,7 @@ export default function ResumeCleanerPage() {
                         "flex",
                         "items-center",
                         "gap-2",
-                        "text-slate-400"
+                        "text-slate-400",
                       )}
                     >
                       <span
@@ -707,7 +668,7 @@ export default function ResumeCleanerPage() {
                           "text-[10px]",
                           "font-black",
                           "uppercase",
-                          "tracking-[0.2em]"
+                          "tracking-[0.2em]",
                         )}
                       >
                         {block.type}
@@ -721,7 +682,7 @@ export default function ResumeCleanerPage() {
                             "px-2",
                             "py-0.5",
                             "rounded-full",
-                            "font-bold"
+                            "font-bold",
                           )}
                         >
                           REQUIRED
@@ -740,7 +701,7 @@ export default function ResumeCleanerPage() {
                           "hover:bg-slate-100",
                           "rounded-full",
                           "transition-all",
-                          "cursor-pointer"
+                          "cursor-pointer",
                         )}
                         title="Copy Section Text"
                       >
@@ -758,7 +719,7 @@ export default function ResumeCleanerPage() {
                             "hover:bg-red-50",
                             "rounded-full",
                             "transition-all",
-                            "cursor-pointer"
+                            "cursor-pointer",
                           )}
                         >
                           <Trash2 size={16} />
@@ -778,7 +739,7 @@ export default function ResumeCleanerPage() {
                           "p-0",
                           "focus:ring-0",
                           "placeholder-slate-200",
-                          "text-slate-900"
+                          "text-slate-900",
                         )}
                         value={block.data.fullName}
                         onChange={(e) =>
@@ -794,7 +755,7 @@ export default function ResumeCleanerPage() {
                           "grid",
                           "grid-cols-1",
                           "md:grid-cols-2",
-                          "gap-6"
+                          "gap-6",
                         )}
                       >
                         <div
@@ -804,7 +765,7 @@ export default function ResumeCleanerPage() {
                             "gap-3",
                             "text-slate-500",
                             "focus-within:text-slate-900",
-                            "transition-colors"
+                            "transition-colors",
                           )}
                         >
                           <Mail size={16} />
@@ -815,17 +776,17 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200"
+                              "placeholder-slate-200",
                             )}
                             value={
                               block.data.contacts.find(
-                                (c: Contact) => c.type === "email"
+                                (c: Contact) => c.type === "email",
                               )?.value || ""
                             }
                             onChange={(e) => {
                               const newContacts = [...block.data.contacts];
                               const idx = newContacts.findIndex(
-                                (c: Contact) => c.type === "email"
+                                (c: Contact) => c.type === "email",
                               );
                               if (idx > -1)
                                 newContacts[idx].value = e.target.value;
@@ -849,7 +810,7 @@ export default function ResumeCleanerPage() {
                             "gap-3",
                             "text-slate-500",
                             "focus-within:text-slate-900",
-                            "transition-colors"
+                            "transition-colors",
                           )}
                         >
                           <Phone size={16} />
@@ -860,17 +821,17 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200"
+                              "placeholder-slate-200",
                             )}
                             value={
                               block.data.contacts.find(
-                                (c: Contact) => c.type === "phone"
+                                (c: Contact) => c.type === "phone",
                               )?.value || ""
                             }
                             onChange={(e) => {
                               const newContacts = [...block.data.contacts];
                               const idx = newContacts.findIndex(
-                                (c: Contact) => c.type === "phone"
+                                (c: Contact) => c.type === "phone",
                               );
                               if (idx > -1)
                                 newContacts[idx].value = e.target.value;
@@ -894,7 +855,7 @@ export default function ResumeCleanerPage() {
                             "gap-3",
                             "text-slate-500",
                             "focus-within:text-slate-900",
-                            "transition-colors"
+                            "transition-colors",
                           )}
                         >
                           <MapPin size={16} />
@@ -905,7 +866,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200"
+                              "placeholder-slate-200",
                             )}
                             value={block.data.location || ""}
                             onChange={(e) =>
@@ -924,7 +885,7 @@ export default function ResumeCleanerPage() {
                             "gap-3",
                             "text-slate-500",
                             "focus-within:text-slate-900",
-                            "transition-colors"
+                            "transition-colors",
                           )}
                         >
                           <ExternalLink size={16} />
@@ -935,7 +896,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200"
+                              "placeholder-slate-200",
                             )}
                             value={
                               block.data.contacts.find((c: Contact) =>
@@ -944,7 +905,7 @@ export default function ResumeCleanerPage() {
                                   "github",
                                   "website",
                                   "other",
-                                ].includes(c.type)
+                                ].includes(c.type),
                               )?.value || ""
                             }
                             onChange={(e) => {
@@ -955,7 +916,7 @@ export default function ResumeCleanerPage() {
                                   "github",
                                   "website",
                                   "other",
-                                ].includes(c.type)
+                                ].includes(c.type),
                               );
                               if (idx > -1)
                                 newContacts[idx].value = e.target.value;
@@ -989,7 +950,7 @@ export default function ResumeCleanerPage() {
                           "focus:ring-0",
                           "resize-none",
                           "placeholder-slate-200",
-                          "text-slate-700"
+                          "text-slate-700",
                         )}
                         value={block.data}
                         onChange={(e) => updateBlock(bIdx, e.target.value)}
@@ -1007,7 +968,7 @@ export default function ResumeCleanerPage() {
                           "text-blue-600",
                           "font-bold",
                           "border",
-                          "border-blue-100"
+                          "border-blue-100",
                         )}
                       >
                         <Info size={14} /> Note: Briefly touch on your role and
@@ -1024,7 +985,7 @@ export default function ResumeCleanerPage() {
                           className={clsx(
                             "space-y-6",
                             "relative",
-                            "group/item"
+                            "group/item",
                           )}
                         >
                           <div
@@ -1032,7 +993,7 @@ export default function ResumeCleanerPage() {
                               "grid",
                               "grid-cols-1",
                               "md:grid-cols-2",
-                              "gap-4"
+                              "gap-4",
                             )}
                           >
                             <input
@@ -1043,7 +1004,7 @@ export default function ResumeCleanerPage() {
                                 "p-0",
                                 "focus:ring-0",
                                 "placeholder-slate-200",
-                                "text-slate-900"
+                                "text-slate-900",
                               )}
                               value={item.jobTitle}
                               onChange={(e) => {
@@ -1065,7 +1026,7 @@ export default function ResumeCleanerPage() {
                                   "p-0",
                                   "focus:ring-0",
                                   "placeholder-slate-200",
-                                  "text-slate-500"
+                                  "text-slate-500",
                                 )}
                                 value={item.startDate}
                                 onChange={(e) => {
@@ -1089,7 +1050,7 @@ export default function ResumeCleanerPage() {
                                   "p-0",
                                   "focus:ring-0",
                                   "placeholder-slate-200",
-                                  "text-slate-500"
+                                  "text-slate-500",
                                 )}
                                 value={item.endDate || ""}
                                 onChange={(e) => {
@@ -1115,7 +1076,7 @@ export default function ResumeCleanerPage() {
                               "text-slate-400",
                               "border-none",
                               "p-0",
-                              "focus:ring-0"
+                              "focus:ring-0",
                             )}
                             value={item.companyName}
                             onChange={(e) => {
@@ -1139,7 +1100,7 @@ export default function ResumeCleanerPage() {
                                       "flex",
                                       "gap-3",
                                       "items-start",
-                                      "group/bullet"
+                                      "group/bullet",
                                     )}
                                   >
                                     <div
@@ -1148,7 +1109,7 @@ export default function ResumeCleanerPage() {
                                         "text-blue-500",
                                         "text-lg",
                                         "leading-none",
-                                        "mt-0.5"
+                                        "mt-0.5",
                                       )}
                                     >
                                       •
@@ -1163,7 +1124,7 @@ export default function ResumeCleanerPage() {
                                         "resize-none",
                                         "min-h-6",
                                         "bg-transparent",
-                                        "text-slate-700"
+                                        "text-slate-700",
                                       )}
                                       value={bullet}
                                       onChange={(e) => {
@@ -1178,7 +1139,7 @@ export default function ResumeCleanerPage() {
                                         const newData = [...block.data];
                                         newData[iIdx].bullets =
                                           item.bullets.filter(
-                                            (_, k) => k !== bulIdx
+                                            (_, k) => k !== bulIdx,
                                           );
                                         updateBlock(bIdx, newData);
                                       }}
@@ -1188,7 +1149,7 @@ export default function ResumeCleanerPage() {
                                         "p-1",
                                         "text-slate-300",
                                         "hover:text-red-500",
-                                        "transition-all"
+                                        "transition-all",
                                       )}
                                     >
                                       <Trash2 size={12} />
@@ -1215,7 +1176,7 @@ export default function ResumeCleanerPage() {
                                 "transition-colors",
                                 "flex",
                                 "items-center",
-                                "gap-1.5"
+                                "gap-1.5",
                               )}
                             >
                               <Plus size={10} /> Add Bullet
@@ -1225,7 +1186,7 @@ export default function ResumeCleanerPage() {
                           <button
                             onClick={() => {
                               const newData = block.data.filter(
-                                (_, i) => i !== iIdx
+                                (_, i) => i !== iIdx,
                               );
                               updateBlock(bIdx, newData);
                             }}
@@ -1238,7 +1199,7 @@ export default function ResumeCleanerPage() {
                               "p-2",
                               "text-slate-300",
                               "hover:text-red-400",
-                              "transition-all"
+                              "transition-all",
                             )}
                           >
                             <Trash2 size={14} />
@@ -1271,7 +1232,7 @@ export default function ResumeCleanerPage() {
                           "hover:text-slate-600",
                           "hover:border-slate-200",
                           "hover:bg-slate-50",
-                          "transition-all"
+                          "transition-all",
                         )}
                       >
                         + New Experience Item
@@ -1287,7 +1248,7 @@ export default function ResumeCleanerPage() {
                           className={clsx(
                             "space-y-6",
                             "relative",
-                            "group/item"
+                            "group/item",
                           )}
                         >
                           <div
@@ -1295,7 +1256,7 @@ export default function ResumeCleanerPage() {
                               "grid",
                               "grid-cols-1",
                               "md:grid-cols-2",
-                              "gap-4"
+                              "gap-4",
                             )}
                           >
                             <input
@@ -1306,7 +1267,7 @@ export default function ResumeCleanerPage() {
                                 "p-0",
                                 "focus:ring-0",
                                 "placeholder-slate-200",
-                                "text-slate-900"
+                                "text-slate-900",
                               )}
                               value={item.name}
                               onChange={(e) => {
@@ -1328,7 +1289,7 @@ export default function ResumeCleanerPage() {
                                   "p-0",
                                   "focus:ring-0",
                                   "placeholder-slate-200",
-                                  "text-slate-500"
+                                  "text-slate-500",
                                 )}
                                 value={item.dates || ""}
                                 onChange={(e) => {
@@ -1352,7 +1313,7 @@ export default function ResumeCleanerPage() {
                               "text-slate-400",
                               "border-none",
                               "p-0",
-                              "focus:ring-0"
+                              "focus:ring-0",
                             )}
                             value={item.description || ""}
                             onChange={(e) => {
@@ -1376,7 +1337,7 @@ export default function ResumeCleanerPage() {
                                       "flex",
                                       "gap-3",
                                       "items-start",
-                                      "group/bullet"
+                                      "group/bullet",
                                     )}
                                   >
                                     <div
@@ -1385,7 +1346,7 @@ export default function ResumeCleanerPage() {
                                         "text-blue-500",
                                         "text-lg",
                                         "leading-none",
-                                        "mt-0.5"
+                                        "mt-0.5",
                                       )}
                                     >
                                       •
@@ -1400,7 +1361,7 @@ export default function ResumeCleanerPage() {
                                         "resize-none",
                                         "min-h-6",
                                         "bg-transparent",
-                                        "text-slate-700"
+                                        "text-slate-700",
                                       )}
                                       value={bullet}
                                       onChange={(e) => {
@@ -1415,7 +1376,7 @@ export default function ResumeCleanerPage() {
                                         const newData = [...block.data];
                                         newData[iIdx].bullets =
                                           item.bullets.filter(
-                                            (_, k) => k !== bulIdx
+                                            (_, k) => k !== bulIdx,
                                           );
                                         updateBlock(bIdx, newData);
                                       }}
@@ -1425,7 +1386,7 @@ export default function ResumeCleanerPage() {
                                         "p-1",
                                         "text-slate-300",
                                         "hover:text-red-500",
-                                        "transition-all"
+                                        "transition-all",
                                       )}
                                     >
                                       <Trash2 size={12} />
@@ -1452,7 +1413,7 @@ export default function ResumeCleanerPage() {
                                 "transition-colors",
                                 "flex",
                                 "items-center",
-                                "gap-1.5"
+                                "gap-1.5",
                               )}
                             >
                               <Plus size={10} /> Add Bullet
@@ -1462,7 +1423,7 @@ export default function ResumeCleanerPage() {
                           <button
                             onClick={() => {
                               const newData = block.data.filter(
-                                (_, i) => i !== iIdx
+                                (_, i) => i !== iIdx,
                               );
                               updateBlock(bIdx, newData);
                             }}
@@ -1475,7 +1436,7 @@ export default function ResumeCleanerPage() {
                               "p-2",
                               "text-slate-300",
                               "hover:text-red-400",
-                              "transition-all"
+                              "transition-all",
                             )}
                           >
                             <Trash2 size={14} />
@@ -1506,7 +1467,7 @@ export default function ResumeCleanerPage() {
                           "hover:text-slate-600",
                           "hover:border-slate-200",
                           "hover:bg-slate-50",
-                          "transition-all"
+                          "transition-all",
                         )}
                       >
                         + New Project Item
@@ -1525,7 +1486,7 @@ export default function ResumeCleanerPage() {
                             className={clsx(
                               "flex",
                               "items-center",
-                              "justify-between"
+                              "justify-between",
                             )}
                           >
                             <input
@@ -1537,7 +1498,7 @@ export default function ResumeCleanerPage() {
                                 "border-none",
                                 "p-0",
                                 "focus:ring-0",
-                                "w-full"
+                                "w-full",
                               )}
                               value={group.category}
                               onChange={(e) => {
@@ -1552,7 +1513,7 @@ export default function ResumeCleanerPage() {
                             <button
                               onClick={() => {
                                 const newData = block.data.filter(
-                                  (_, i) => i !== iIdx
+                                  (_, i) => i !== iIdx,
                                 );
                                 updateBlock(bIdx, newData);
                               }}
@@ -1562,7 +1523,7 @@ export default function ResumeCleanerPage() {
                                 "p-1",
                                 "text-slate-300",
                                 "hover:text-red-400",
-                                "transition-all"
+                                "transition-all",
                               )}
                             >
                               <Trash2 size={12} />
@@ -1580,7 +1541,7 @@ export default function ResumeCleanerPage() {
                               "bg-transparent",
                               "resize-none",
                               "overflow-hidden",
-                              "h-6"
+                              "h-6",
                             )}
                             value={group.skills.join(", ")}
                             onChange={(e) => {
@@ -1617,7 +1578,7 @@ export default function ResumeCleanerPage() {
                           "tracking-widest",
                           "text-slate-400",
                           "hover:text-slate-600",
-                          "transition-all"
+                          "transition-all",
                         )}
                       >
                         + New Skills Group
@@ -1633,7 +1594,7 @@ export default function ResumeCleanerPage() {
                           className={clsx(
                             "space-y-4",
                             "group/item",
-                            "relative"
+                            "relative",
                           )}
                         >
                           <div
@@ -1641,7 +1602,7 @@ export default function ResumeCleanerPage() {
                               "grid",
                               "grid-cols-1",
                               "md:grid-cols-[1fr_100px]",
-                              "gap-4"
+                              "gap-4",
                             )}
                           >
                             <input
@@ -1652,7 +1613,7 @@ export default function ResumeCleanerPage() {
                                 "p-0",
                                 "focus:ring-0",
                                 "placeholder-slate-200",
-                                "text-slate-900"
+                                "text-slate-900",
                               )}
                               value={item.institution}
                               onChange={(e) => {
@@ -1674,7 +1635,7 @@ export default function ResumeCleanerPage() {
                                 "p-0",
                                 "focus:ring-0",
                                 "placeholder-slate-200",
-                                "text-slate-500"
+                                "text-slate-500",
                               )}
                               value={item.graduationYear}
                               onChange={(e) => {
@@ -1698,7 +1659,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200"
+                              "placeholder-slate-200",
                             )}
                             value={item.degree}
                             onChange={(e) => {
@@ -1714,7 +1675,7 @@ export default function ResumeCleanerPage() {
                           <button
                             onClick={() => {
                               const newData = block.data.filter(
-                                (_, i) => i !== iIdx
+                                (_, i) => i !== iIdx,
                               );
                               updateBlock(bIdx, newData);
                             }}
@@ -1727,7 +1688,7 @@ export default function ResumeCleanerPage() {
                               "p-2",
                               "text-slate-300",
                               "hover:text-red-400",
-                              "transition-all"
+                              "transition-all",
                             )}
                           >
                             <Trash2 size={14} />
@@ -1759,7 +1720,7 @@ export default function ResumeCleanerPage() {
                           "text-slate-400",
                           "hover:text-slate-600",
                           "hover:border-slate-200",
-                          "transition-all"
+                          "transition-all",
                         )}
                       >
                         + New Education
@@ -1777,7 +1738,7 @@ export default function ResumeCleanerPage() {
                             "gap-4",
                             "items-center",
                             "group/item",
-                            "relative"
+                            "relative",
                           )}
                         >
                           <input
@@ -1788,7 +1749,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "text-slate-900"
+                              "text-slate-900",
                             )}
                             value={item.language}
                             onChange={(e) => {
@@ -1811,7 +1772,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "bg-transparent"
+                              "bg-transparent",
                             )}
                             value={item.proficiency}
                             onChange={(e) => {
@@ -1832,7 +1793,7 @@ export default function ResumeCleanerPage() {
                           <button
                             onClick={() => {
                               const newData = block.data.filter(
-                                (_, i) => i !== iIdx
+                                (_, i) => i !== iIdx,
                               );
                               updateBlock(bIdx, newData);
                             }}
@@ -1846,7 +1807,7 @@ export default function ResumeCleanerPage() {
                               "p-2",
                               "text-slate-300",
                               "hover:text-red-400",
-                              "transition-all"
+                              "transition-all",
                             )}
                           >
                             <Trash2 size={12} />
@@ -1876,7 +1837,7 @@ export default function ResumeCleanerPage() {
                           "tracking-widest",
                           "text-slate-400",
                           "hover:text-slate-600",
-                          "transition-all"
+                          "transition-all",
                         )}
                       >
                         + New Language
@@ -1894,7 +1855,7 @@ export default function ResumeCleanerPage() {
                             "gap-4",
                             "items-center",
                             "group/item",
-                            "relative"
+                            "relative",
                           )}
                         >
                           <input
@@ -1905,7 +1866,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "text-slate-900"
+                              "text-slate-900",
                             )}
                             value={item.name}
                             onChange={(e) => {
@@ -1924,7 +1885,7 @@ export default function ResumeCleanerPage() {
                               "text-slate-400",
                               "border-none",
                               "p-0",
-                              "focus:ring-0"
+                              "focus:ring-0",
                             )}
                             value={item.year}
                             onChange={(e) => {
@@ -1937,7 +1898,7 @@ export default function ResumeCleanerPage() {
                           <button
                             onClick={() => {
                               const newData = block.data.filter(
-                                (_, i) => i !== iIdx
+                                (_, i) => i !== iIdx,
                               );
                               updateBlock(bIdx, newData);
                             }}
@@ -1951,7 +1912,7 @@ export default function ResumeCleanerPage() {
                               "p-2",
                               "text-slate-300",
                               "hover:text-red-400",
-                              "transition-all"
+                              "transition-all",
                             )}
                           >
                             <Trash2 size={12} />
@@ -1982,7 +1943,7 @@ export default function ResumeCleanerPage() {
                           "tracking-widest",
                           "text-slate-400",
                           "hover:text-slate-600",
-                          "transition-all"
+                          "transition-all",
                         )}
                       >
                         + New Certification
@@ -2001,7 +1962,7 @@ export default function ResumeCleanerPage() {
                           "text-slate-400",
                           "border-none",
                           "p-0",
-                          "focus:ring-0"
+                          "focus:ring-0",
                         )}
                         value={block.data.title}
                         onChange={(e) =>
@@ -2023,7 +1984,7 @@ export default function ResumeCleanerPage() {
                           "focus:ring-0",
                           "resize-none",
                           "placeholder-slate-200",
-                          "text-slate-700"
+                          "text-slate-700",
                         )}
                         value={block.data.content}
                         onChange={(e) =>
@@ -2053,7 +2014,7 @@ export default function ResumeCleanerPage() {
             "border-zinc-200",
             "flex",
             "flex-col",
-            "items-center"
+            "items-center",
           )}
         >
           {/* Refined Toolbar */}
@@ -2073,7 +2034,7 @@ export default function ResumeCleanerPage() {
               "px-8",
               "py-4",
               "shadow-sm",
-              "transition-all"
+              "transition-all",
             )}
           >
             <div className={clsx("flex", "items-center", "gap-6")}>
@@ -2084,7 +2045,7 @@ export default function ResumeCleanerPage() {
                   "p-1",
                   "rounded-lg",
                   "border",
-                  "border-slate-200"
+                  "border-slate-200",
                 )}
               >
                 <button
@@ -2111,7 +2072,7 @@ export default function ResumeCleanerPage() {
                   "font-bold",
                   "uppercase",
                   "tracking-widest",
-                  "whitespace-nowrap"
+                  "whitespace-nowrap",
                 )}
               >
                 <Check size={12} strokeWidth={3} /> ATS Optimized
@@ -2140,7 +2101,7 @@ export default function ResumeCleanerPage() {
                   "transition-all",
                   "shadow-md",
                   "cursor-pointer",
-                  "whitespace-nowrap"
+                  "whitespace-nowrap",
                 )}
               >
                 {isCopied ? (
@@ -2165,7 +2126,7 @@ export default function ResumeCleanerPage() {
               "flex-col",
               "items-center",
               "pt-12",
-              "bg-zinc-100"
+              "bg-zinc-100",
             )}
           >
             <div
@@ -2178,7 +2139,7 @@ export default function ResumeCleanerPage() {
                     "whitespace-pre-wrap",
                     "font-mono",
                     "text-sm",
-                    "text-[#334155]"
+                    "text-[#334155]",
                   )}
                 >
                   {renderPlainText()}

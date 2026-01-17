@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import type {
   ResumeData,
   Contact,
@@ -28,7 +29,12 @@ function formatContactLink(contact: Contact): string {
   }
 }
 
-export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
+interface HeaderItem extends Partial<Contact> {
+  isContact?: boolean;
+  value: string;
+}
+
+export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
   const headerBlock = data.blocks.find((b) => b.type === "header");
   const summaryBlock = data.blocks.find((b) => b.type === "summary");
   const experienceBlock = data.blocks.find((b) => b.type === "experience");
@@ -52,32 +58,62 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
     >
       {/* 1. Header (Identity) */}
       {headerBlock && headerBlock.type === "header" && (
-        <div className="mb-6 text-center">
-          <h1 className="text-[24px] font-bold uppercase tracking-tight mb-2">
+        <div className="mb-6 text-center" style={{ textAlign: "center" }}>
+          <h1
+            className="text-[24px] font-bold uppercase tracking-tight mb-2 w-full"
+            style={{ textAlign: "center" }}
+          >
             {headerBlock.data.fullName}
           </h1>
-          <div className="text-[14px] leading-tight text-[#111] font-medium">
-            {headerBlock.data.location && (
-              <>
-                <span>{headerBlock.data.location}</span>
-                {(headerBlock.data.contacts as Contact[]).length > 0 && (
-                  <span> | </span>
-                )}
-              </>
-            )}
-            {(headerBlock.data.contacts as Contact[]).map((c, i) => (
-              <React.Fragment key={i}>
-                <a
-                  href={formatContactLink(c)}
-                  className="hover:underline text-inherit no-underline"
-                >
-                  {c.value}
-                </a>
-                {i < (headerBlock.data.contacts as Contact[]).length - 1 && (
-                  <span> | </span>
-                )}
-              </React.Fragment>
-            ))}
+          <div className="text-[13px] text-[#222] mt-1 leading-snug text-center">
+            {/* Row 1: Location, Email, Phone */}
+            <div className="flex flex-wrap justify-center items-center gap-x-2">
+              {[
+                headerBlock.data.location && ({ type: 'location', value: headerBlock.data.location } as HeaderItem),
+                ...(headerBlock.data.contacts as Contact[]).filter((c) => ["email", "phone"].includes(c.type)).map(c => ({ ...c, isContact: true } as HeaderItem)),
+              ]
+                .filter((item): item is HeaderItem => Boolean(item))
+                .map((item, index, array) => (
+                  <div key={index} className="flex items-center">
+                    <span className="whitespace-nowrap">
+                      {item.isContact ? (
+                        <a
+                           href={formatContactLink(item as Contact)}
+                           className="hover:underline text-inherit no-underline"
+                        >
+                           {item.value}
+                        </a>
+                      ) : (
+                         <span>{item.value}</span>
+                      )}
+                    </span>
+                    {index < array.length - 1 && (
+                      <span className="mx-2 text-slate-400">|</span>
+                    )}
+                  </div>
+                ))}
+            </div>
+
+            {/* Row 2: Links (LinkedIn, Website, etc.) */}
+            <div className="flex flex-wrap justify-center items-center gap-x-2 mt-0.5">
+              {(headerBlock.data.contacts as Contact[])
+                .filter((c) => !["email", "phone"].includes(c.type))
+                .map((item, index, array) => (
+                  <div key={index} className="flex items-center">
+                    <span className="whitespace-nowrap">
+                      <a
+                        href={formatContactLink(item)}
+                        className="hover:underline text-inherit no-underline"
+                      >
+                        {item.value.replace(/^https?:\/\/(www\.)?/, "")}
+                      </a>
+                    </span>
+                    {index < array.length - 1 && (
+                      <span className="mx-2 text-slate-400">|</span>
+                    )}
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       )}
@@ -105,11 +141,14 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               <div key={idx}>
                 <div className="flex justify-between items-baseline mb-1">
                   <div className="text-[14px] font-bold">
-                    {item.jobTitle} — {item.companyName}
+                    {item.jobTitle}
                   </div>
                   <div className="text-[13px] font-bold text-[#444] whitespace-nowrap ml-4">
                     {item.startDate} – {item.endDate || "Present"}
                   </div>
+                </div>
+                <div className="text-[14px] font-medium text-[#111] mb-1">
+                  {item.companyName}
                 </div>
                 <div className="space-y-1 text-[#111] pl-2">
                   {item.bullets.map((bullet, bIdx) => (
@@ -163,17 +202,18 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
           </h2>
           <div className="space-y-3">
             {(educationBlock.data as EducationItem[]).map((item, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between items-baseline text-[14px]"
-              >
-                <div>
-                  <span className="font-bold uppercase">{item.degree}</span> —{" "}
+              <div key={idx} className="mb-2">
+                <div className="flex justify-between items-baseline text-[14px]">
+                  <span className="font-bold uppercase">
+                    {item.degree}
+                  </span>
+                  <span className="font-bold text-[#444] whitespace-nowrap ml-4">
+                    {item.graduationYear}
+                  </span>
+                </div>
+                <div className="text-[14px] text-[#111]">
                   {item.institution}
                   {item.gpa && <span> (GPA: {item.gpa})</span>}
-                </div>
-                <div className="font-bold text-[#444] whitespace-nowrap ml-4">
-                  {item.graduationYear}
                 </div>
               </div>
             ))}
