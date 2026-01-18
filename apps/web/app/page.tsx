@@ -40,6 +40,11 @@ const INITIAL_DATA: ResumeData = {
   version: 1,
   metadata: {
     theme: "minimalist",
+    images: ["/og-image.png"],
+    icons: {
+      icon: "/icon.svg",
+      apple: "/icon.png",
+    },
     region: "IN",
     lastModified: new Date().toISOString(),
   },
@@ -134,14 +139,14 @@ const INITIAL_DATA: ResumeData = {
     },
     {
       type: "personal",
-      data: {
-        fullName: "Adiba Firoz",
-        fatherName: "Mr. Firoz",
-        dateOfBirth: "19 December 2001",
-        gender: "Female",
-        maritalStatus: "Unmarried",
-        nationality: "Indian",
-      },
+      data: [
+        { label: "Full Name", value: "Adiba Firoz" },
+        { label: "Father's Name", value: "Mr. Firoz" },
+        { label: "Date of Birth", value: "19 December 2001" },
+        { label: "Gender", value: "Female" },
+        { label: "Marital Status", value: "Unmarried" },
+        { label: "Nationality", value: "Indian" },
+      ],
     },
   ],
 };
@@ -164,6 +169,25 @@ export default function ResumeCleanerPage() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.id) {
+          // Robust data migration for personal block
+          if (parsed.blocks) {
+            parsed.blocks = parsed.blocks.map((block: any) => {
+              if (block.type === "personal" && !Array.isArray(block.data)) {
+                return {
+                  ...block,
+                  data: Object.entries(block.data || {}).map(
+                    ([key, value]) => ({
+                      label: key
+                        .replace(/([A-Z])/g, " $1")
+                        .replace(/^./, (str) => str.toUpperCase()),
+                      value: String(value),
+                    }),
+                  ),
+                };
+              }
+              return block;
+            });
+          }
           // Wrapped in setTimeout to avoid the linter warning about sync setState in effects
           setTimeout(() => {
             setData(parsed);
@@ -244,6 +268,18 @@ export default function ResumeCleanerPage() {
               language: "English",
               proficiency: "Native",
             },
+          ],
+        };
+        break;
+      case "personal":
+        newBlock = {
+          type: "personal",
+          data: [
+            { label: "Date of Birth", value: "" },
+            { label: "Gender", value: "" },
+            { label: "Father's Name", value: "" },
+            { label: "Marital Status", value: "" },
+            { label: "Nationality", value: "Indian" },
           ],
         };
         break;
@@ -425,6 +461,7 @@ export default function ResumeCleanerPage() {
             alt="Resume: Zero Logo"
             width={32}
             height={32}
+            className="rounded-lg shadow-sm border border-zinc-100"
           />
           <div className="h-6 w-px bg-zinc-200 mx-1 hidden sm:block" />
           <div>
@@ -433,11 +470,11 @@ export default function ResumeCleanerPage() {
                 Resume: Zero
               </h1>
               <span className="text-zinc-300">/</span>
-              <span className="text-[14px] font-medium text-zinc-500">
+              <span className="text-[14px] font-medium text-zinc-700">
                 My Resume
               </span>
             </div>
-            <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider mt-1">
+            <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1">
               v1.0 • ATS Optimized
             </p>
           </div>
@@ -466,8 +503,8 @@ export default function ResumeCleanerPage() {
                   }}
                   className={`px-3 py-1 text-[11px] font-medium rounded-md transition-all capitalize cursor-pointer ${
                     activeLayout === t
-                      ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-slate-900"
-                      : "text-zinc-500 hover:text-zinc-800"
+                      ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-zinc-900"
+                      : "text-zinc-600 hover:text-zinc-900"
                   }`}
                 >
                   {t}
@@ -476,7 +513,7 @@ export default function ResumeCleanerPage() {
             )}
           </div>
 
-          <div className={clsx("w-px", "h-6", "bg-slate-200", "mx-1")} />
+          <div className={clsx("w-px", "h-6", "bg-zinc-200", "mx-1")} />
 
           <button
             onClick={autoClean}
@@ -488,7 +525,7 @@ export default function ResumeCleanerPage() {
               "py-1.5",
               "bg-black",
               "text-white",
-              "rounded-md",
+              "rounded-lg",
               "text-[11px]",
               "font-medium",
               "hover:bg-zinc-800",
@@ -511,7 +548,7 @@ export default function ResumeCleanerPage() {
               "border-zinc-200",
               "bg-white",
               "text-zinc-900",
-              "rounded-md",
+              "rounded-lg",
               "text-[11px]",
               "font-medium",
               "hover:bg-zinc-50",
@@ -538,11 +575,11 @@ export default function ResumeCleanerPage() {
         )}
       >
         {/* Mobile View Toggle */}
-        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white rounded-full p-1 shadow-2xl flex items-center border border-white/10">
+        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white rounded-lg p-1 shadow-2xl flex items-center border border-white/10">
           <button
             onClick={() => setMobileView("edit")}
             className={clsx(
-              "px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
+              "px-6 py-2 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all",
               mobileView === "edit" ? "bg-white text-black" : "text-white/60",
             )}
           >
@@ -551,7 +588,7 @@ export default function ResumeCleanerPage() {
           <button
             onClick={() => setMobileView("preview")}
             className={clsx(
-              "px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
+              "px-6 py-2 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all",
               mobileView === "preview"
                 ? "bg-white text-black"
                 : "text-white/60",
@@ -560,6 +597,7 @@ export default function ResumeCleanerPage() {
             Preview
           </button>
         </div>
+
         {/* Editor Side */}
         <div
           className={clsx(
@@ -602,13 +640,19 @@ export default function ResumeCleanerPage() {
                 >
                   Editor
                 </h2>
-                <p className={clsx("text-xs", "text-zinc-500", "font-medium")}>
+                <p className={clsx("text-xs", "text-zinc-600", "font-medium")}>
                   Focus on your experience. We handle the rest.
                 </p>
               </div>
               <div className={clsx("flex", "flex-wrap", "gap-2")}>
                 {(
-                  ["languages", "projects", "certifications", "custom"] as const
+                  [
+                    "languages",
+                    "projects",
+                    "certifications",
+                    "custom",
+                    "personal",
+                  ] as const
                 ).map((type) => (
                   <button
                     key={type}
@@ -632,7 +676,9 @@ export default function ResumeCleanerPage() {
                     )}
                   >
                     <Plus size={12} />{" "}
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                    {type === "personal"
+                      ? "Personal Details"
+                      : type.charAt(0).toUpperCase() + type.slice(1)}
                   </button>
                 ))}
               </div>
@@ -676,7 +722,7 @@ export default function ResumeCleanerPage() {
                         "flex",
                         "items-center",
                         "gap-2",
-                        "text-slate-400",
+                        "text-zinc-400",
                       )}
                     >
                       <span
@@ -692,12 +738,12 @@ export default function ResumeCleanerPage() {
                       {isMandatory && (
                         <span
                           className={clsx(
-                            "bg-slate-100",
-                            "text-slate-500",
+                            "bg-zinc-100",
+                            "text-zinc-700",
                             "text-[9px]",
                             "px-2",
                             "py-0.5",
-                            "rounded-full",
+                            "rounded-md",
                             "font-bold",
                           )}
                         >
@@ -712,10 +758,10 @@ export default function ResumeCleanerPage() {
                           "opacity-0",
                           "group-hover:opacity-100",
                           "p-2",
-                          "text-slate-400",
-                          "hover:text-slate-900",
-                          "hover:bg-slate-100",
-                          "rounded-full",
+                          "text-zinc-400",
+                          "hover:text-zinc-900",
+                          "hover:bg-zinc-100",
+                          "rounded-md",
                           "transition-all",
                           "cursor-pointer",
                         )}
@@ -730,10 +776,10 @@ export default function ResumeCleanerPage() {
                             "opacity-0",
                             "group-hover:opacity-100",
                             "p-2",
-                            "text-slate-400",
+                            "text-zinc-400",
                             "hover:text-red-500",
                             "hover:bg-red-50",
-                            "rounded-full",
+                            "rounded-md",
                             "transition-all",
                             "cursor-pointer",
                           )}
@@ -754,8 +800,8 @@ export default function ResumeCleanerPage() {
                           "border-none",
                           "p-0",
                           "focus:ring-0",
-                          "placeholder-slate-200",
-                          "text-slate-900",
+                          "placeholder-zinc-200",
+                          "text-zinc-900",
                         )}
                         value={block.data.fullName}
                         onChange={(e) =>
@@ -779,8 +825,8 @@ export default function ResumeCleanerPage() {
                             "flex",
                             "items-center",
                             "gap-3",
-                            "text-slate-500",
-                            "focus-within:text-slate-900",
+                            "text-zinc-500",
+                            "focus-within:text-zinc-900",
                             "transition-colors",
                           )}
                         >
@@ -792,7 +838,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200",
+                              "placeholder-zinc-200",
                             )}
                             value={
                               block.data.contacts.find(
@@ -824,8 +870,8 @@ export default function ResumeCleanerPage() {
                             "flex",
                             "items-center",
                             "gap-3",
-                            "text-slate-500",
-                            "focus-within:text-slate-900",
+                            "text-zinc-500",
+                            "focus-within:text-zinc-900",
                             "transition-colors",
                           )}
                         >
@@ -837,7 +883,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200",
+                              "placeholder-zinc-200",
                             )}
                             value={
                               block.data.contacts.find(
@@ -869,8 +915,8 @@ export default function ResumeCleanerPage() {
                             "flex",
                             "items-center",
                             "gap-3",
-                            "text-slate-500",
-                            "focus-within:text-slate-900",
+                            "text-zinc-500",
+                            "focus-within:text-zinc-900",
                             "transition-colors",
                           )}
                         >
@@ -882,7 +928,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200",
+                              "placeholder-zinc-200",
                             )}
                             value={block.data.location || ""}
                             onChange={(e) =>
@@ -899,8 +945,8 @@ export default function ResumeCleanerPage() {
                             "flex",
                             "items-center",
                             "gap-3",
-                            "text-slate-500",
-                            "focus-within:text-slate-900",
+                            "text-zinc-500",
+                            "focus-within:text-zinc-900",
                             "transition-colors",
                           )}
                         >
@@ -912,7 +958,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200",
+                              "placeholder-zinc-200",
                             )}
                             value={
                               block.data.contacts.find((c: Contact) =>
@@ -965,8 +1011,8 @@ export default function ResumeCleanerPage() {
                           "p-0",
                           "focus:ring-0",
                           "resize-none",
-                          "placeholder-slate-200",
-                          "text-slate-700",
+                          "placeholder-zinc-200",
+                          "text-zinc-700",
                         )}
                         value={block.data}
                         onChange={(e) => updateBlock(bIdx, e.target.value)}
@@ -978,13 +1024,13 @@ export default function ResumeCleanerPage() {
                           "items-center",
                           "gap-2",
                           "p-3",
-                          "bg-blue-50/50",
-                          "rounded-xl",
+                          "bg-zinc-50",
+                          "rounded-lg",
                           "text-[11px]",
-                          "text-blue-600",
-                          "font-bold",
+                          "text-zinc-600",
+                          "font-medium",
                           "border",
-                          "border-blue-100",
+                          "border-zinc-200",
                         )}
                       >
                         <Info size={14} /> Note: Briefly touch on your role and
@@ -1019,8 +1065,8 @@ export default function ResumeCleanerPage() {
                                 "border-none",
                                 "p-0",
                                 "focus:ring-0",
-                                "placeholder-slate-200",
-                                "text-slate-900",
+                                "placeholder-zinc-200",
+                                "text-zinc-900",
                               )}
                               value={item.jobTitle}
                               onChange={(e) => {
@@ -1041,8 +1087,8 @@ export default function ResumeCleanerPage() {
                                   "border-none",
                                   "p-0",
                                   "focus:ring-0",
-                                  "placeholder-slate-200",
-                                  "text-slate-500",
+                                  "placeholder-zinc-200",
+                                  "text-zinc-500",
                                   "text-right",
                                   "w-20",
                                 )}
@@ -1057,7 +1103,7 @@ export default function ResumeCleanerPage() {
                                 }}
                                 placeholder="Start Date"
                               />
-                              <span className={clsx("mx-2", "text-slate-300")}>
+                              <span className={clsx("mx-2", "text-zinc-300")}>
                                 —
                               </span>
                               <input
@@ -1067,8 +1113,8 @@ export default function ResumeCleanerPage() {
                                   "border-none",
                                   "p-0",
                                   "focus:ring-0",
-                                  "placeholder-slate-200",
-                                  "text-slate-500",
+                                  "placeholder-zinc-200",
+                                  "text-zinc-500",
                                   "w-20",
                                 )}
                                 value={item.endDate || ""}
@@ -1092,7 +1138,7 @@ export default function ResumeCleanerPage() {
                               "w-full",
                               "text-xs",
                               "font-bold",
-                              "text-slate-400",
+                              "text-zinc-400",
                               "border-none",
                               "p-0",
                               "focus:ring-0",
@@ -1124,7 +1170,7 @@ export default function ResumeCleanerPage() {
                                     <div
                                       className={clsx(
                                         "shrink-0",
-                                        "text-blue-500",
+                                        "text-zinc-400",
                                         "text-lg",
                                         "leading-none",
                                         "mt-0.5",
@@ -1142,7 +1188,7 @@ export default function ResumeCleanerPage() {
                                         "resize-none",
                                         "min-h-6",
                                         "bg-transparent",
-                                        "text-slate-700",
+                                        "text-zinc-700",
                                       )}
                                       value={bullet}
                                       onChange={(e) => {
@@ -1165,7 +1211,7 @@ export default function ResumeCleanerPage() {
                                         "opacity-0",
                                         "group-hover/bullet:opacity-100",
                                         "p-1",
-                                        "text-slate-300",
+                                        "text-zinc-300",
                                         "hover:text-red-500",
                                         "transition-all",
                                         "cursor-pointer",
@@ -1190,8 +1236,8 @@ export default function ResumeCleanerPage() {
                                 "font-black",
                                 "uppercase",
                                 "tracking-widest",
-                                "text-blue-600",
-                                "hover:text-blue-800",
+                                "text-zinc-500",
+                                "hover:text-zinc-900",
                                 "transition-colors",
                                 "flex",
                                 "items-center",
@@ -1217,7 +1263,7 @@ export default function ResumeCleanerPage() {
                               "opacity-0",
                               "group-hover/item:opacity-100",
                               "p-2",
-                              "text-slate-300",
+                              "text-zinc-300",
                               "hover:text-red-400",
                               "transition-all",
                               "cursor-pointer",
@@ -1288,8 +1334,8 @@ export default function ResumeCleanerPage() {
                                 "border-none",
                                 "p-0",
                                 "focus:ring-0",
-                                "placeholder-slate-200",
-                                "text-slate-900",
+                                "placeholder-zinc-200",
+                                "text-zinc-900",
                               )}
                               value={item.name}
                               onChange={(e) => {
@@ -1310,8 +1356,8 @@ export default function ResumeCleanerPage() {
                                   "border-none",
                                   "p-0",
                                   "focus:ring-0",
-                                  "placeholder-slate-200",
-                                  "text-slate-500",
+                                  "placeholder-zinc-200",
+                                  "text-zinc-500",
                                 )}
                                 value={item.dates || ""}
                                 onChange={(e) => {
@@ -1332,7 +1378,7 @@ export default function ResumeCleanerPage() {
                               "text-xs",
                               "font-bold",
                               "tracking-widest",
-                              "text-slate-400",
+                              "text-zinc-400",
                               "border-none",
                               "p-0",
                               "focus:ring-0",
@@ -1364,7 +1410,7 @@ export default function ResumeCleanerPage() {
                                     <div
                                       className={clsx(
                                         "shrink-0",
-                                        "text-blue-500",
+                                        "text-zinc-400",
                                         "text-lg",
                                         "leading-none",
                                         "mt-0.5",
@@ -1382,7 +1428,7 @@ export default function ResumeCleanerPage() {
                                         "resize-none",
                                         "min-h-6",
                                         "bg-transparent",
-                                        "text-slate-700",
+                                        "text-zinc-700",
                                       )}
                                       value={bullet}
                                       onChange={(e) => {
@@ -1405,7 +1451,7 @@ export default function ResumeCleanerPage() {
                                         "opacity-0",
                                         "group-hover/bullet:opacity-100",
                                         "p-1",
-                                        "text-slate-300",
+                                        "text-zinc-300",
                                         "hover:text-red-500",
                                         "transition-all",
                                         "cursor-pointer",
@@ -1430,8 +1476,8 @@ export default function ResumeCleanerPage() {
                                 "font-black",
                                 "uppercase",
                                 "tracking-widest",
-                                "text-blue-600",
-                                "hover:text-blue-800",
+                                "text-zinc-500",
+                                "hover:text-zinc-900",
                                 "transition-colors",
                                 "flex",
                                 "items-center",
@@ -1457,7 +1503,7 @@ export default function ResumeCleanerPage() {
                               "opacity-0",
                               "group-hover/item:opacity-100",
                               "p-2",
-                              "text-slate-300",
+                              "text-zinc-300",
                               "hover:text-red-400",
                               "transition-all",
                               "cursor-pointer",
@@ -1517,7 +1563,7 @@ export default function ResumeCleanerPage() {
                                 "text-[10px]",
                                 "font-black",
                                 "tracking-[0.2em]",
-                                "text-slate-400",
+                                "text-zinc-400",
                                 "border-none",
                                 "p-0",
                                 "focus:ring-0",
@@ -1544,7 +1590,7 @@ export default function ResumeCleanerPage() {
                                 "opacity-0",
                                 "group-hover/skill:opacity-100",
                                 "p-1",
-                                "text-slate-300",
+                                "text-zinc-300",
                                 "hover:text-red-400",
                                 "transition-all",
                               )}
@@ -1560,7 +1606,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "text-slate-700",
+                              "text-zinc-700",
                               "bg-transparent",
                               "resize-none",
                               "overflow-hidden",
@@ -1593,14 +1639,14 @@ export default function ResumeCleanerPage() {
                           "py-3",
                           "border",
                           "border-dashed",
-                          "border-slate-100",
-                          "rounded-xl",
+                          "border-zinc-100",
+                          "rounded-lg",
                           "text-[10px]",
                           "font-black",
                           "uppercase",
                           "tracking-widest",
-                          "text-slate-400",
-                          "hover:text-slate-600",
+                          "text-zinc-400",
+                          "hover:text-zinc-600",
                           "transition-all",
                           "cursor-pointer",
                         )}
@@ -1636,8 +1682,8 @@ export default function ResumeCleanerPage() {
                                 "border-none",
                                 "p-0",
                                 "focus:ring-0",
-                                "placeholder-slate-200",
-                                "text-slate-900",
+                                "placeholder-zinc-200",
+                                "text-zinc-900",
                               )}
                               value={item.institution}
                               onChange={(e) => {
@@ -1658,8 +1704,8 @@ export default function ResumeCleanerPage() {
                                 "border-none",
                                 "p-0",
                                 "focus:ring-0",
-                                "placeholder-slate-200",
-                                "text-slate-500",
+                                "placeholder-zinc-200",
+                                "text-zinc-500",
                               )}
                               value={item.graduationYear}
                               onChange={(e) => {
@@ -1679,11 +1725,11 @@ export default function ResumeCleanerPage() {
                               "text-sm",
                               "font-medium",
                               "italic",
-                              "text-slate-500",
+                              "text-zinc-500",
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "placeholder-slate-200",
+                              "placeholder-zinc-200",
                             )}
                             value={item.degree}
                             onChange={(e) => {
@@ -1710,7 +1756,7 @@ export default function ResumeCleanerPage() {
                               "opacity-0",
                               "group-hover/item:opacity-100",
                               "p-2",
-                              "text-slate-300",
+                              "text-zinc-300",
                               "hover:text-red-400",
                               "transition-all",
                               "cursor-pointer",
@@ -1737,15 +1783,15 @@ export default function ResumeCleanerPage() {
                           "py-4",
                           "border-2",
                           "border-dashed",
-                          "border-slate-100",
-                          "rounded-2xl",
+                          "border-zinc-100",
+                          "rounded-lg",
                           "text-[11px]",
                           "font-black",
                           "uppercase",
                           "tracking-widest",
-                          "text-slate-400",
-                          "hover:text-slate-600",
-                          "hover:border-slate-200",
+                          "text-zinc-400",
+                          "hover:text-zinc-600",
+                          "hover:border-zinc-200",
                           "transition-all",
                           "cursor-pointer",
                         )}
@@ -1776,7 +1822,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "text-slate-900",
+                              "text-zinc-900",
                             )}
                             value={item.language}
                             onChange={(e) => {
@@ -1795,7 +1841,7 @@ export default function ResumeCleanerPage() {
                               "text-right",
                               "text-xs",
                               "font-bold",
-                              "text-slate-500",
+                              "text-zinc-500",
                               "border-none",
                               "p-0",
                               "focus:ring-0",
@@ -1828,11 +1874,11 @@ export default function ResumeCleanerPage() {
                               "absolute",
                               "-right-8",
                               "top-1/2",
-                              "-translate-y-1/2",
+                              "-tranzinc-y-1/2",
                               "opacity-0",
                               "group-hover/item:opacity-100",
                               "p-2",
-                              "text-slate-300",
+                              "text-zinc-300",
                               "hover:text-red-400",
                               "transition-all",
                               "cursor-pointer",
@@ -1894,7 +1940,7 @@ export default function ResumeCleanerPage() {
                               "border-none",
                               "p-0",
                               "focus:ring-0",
-                              "text-slate-900",
+                              "text-zinc-900",
                             )}
                             value={item.name}
                             onChange={(e) => {
@@ -1910,7 +1956,7 @@ export default function ResumeCleanerPage() {
                               "text-right",
                               "text-xs",
                               "font-bold",
-                              "text-slate-400",
+                              "text-zinc-400",
                               "border-none",
                               "p-0",
                               "focus:ring-0",
@@ -1934,11 +1980,11 @@ export default function ResumeCleanerPage() {
                               "absolute",
                               "-right-8",
                               "top-1/2",
-                              "-translate-y-1/2",
+                              "-tranzinc-y-1/2",
                               "opacity-0",
                               "group-hover/item:opacity-100",
                               "p-2",
-                              "text-slate-300",
+                              "text-zinc-300",
                               "hover:text-red-400",
                               "transition-all",
                               "cursor-pointer",
@@ -1981,97 +2027,82 @@ export default function ResumeCleanerPage() {
                   )}
 
                   {block.type === "personal" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                          Full Name
-                        </label>
-                        <input
-                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                          value={block.data.fullName}
-                          onChange={(e) =>
-                            updateBlock(bIdx, {
-                              ...block.data,
-                              fullName: e.target.value,
-                            })
-                          }
-                        />
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        {(Array.isArray(block.data) ? block.data : []).map(
+                          (item: any, iIdx: number) => (
+                            <div
+                              key={iIdx}
+                              className="space-y-1.5 group/pitem relative"
+                            >
+                              <div className="flex items-center justify-between">
+                                <input
+                                  className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider border-none p-0 focus:ring-0 bg-transparent w-full"
+                                  value={item.label}
+                                  onChange={(e) => {
+                                    const newData = [...block.data];
+                                    newData[iIdx] = {
+                                      ...item,
+                                      label: e.target.value,
+                                    };
+                                    updateBlock(bIdx, newData);
+                                  }}
+                                  placeholder="FIELD LABEL"
+                                />
+                                <button
+                                  onClick={() => {
+                                    const newData = block.data.filter(
+                                      (_: any, i: number) => i !== iIdx,
+                                    );
+                                    updateBlock(bIdx, newData);
+                                  }}
+                                  className="opacity-0 group-hover/pitem:opacity-100 p-1 text-zinc-300 hover:text-red-400 transition-all cursor-pointer"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                              <input
+                                className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                                value={item.value}
+                                onChange={(e) => {
+                                  const newData = [...block.data];
+                                  newData[iIdx] = {
+                                    ...item,
+                                    value: e.target.value,
+                                  };
+                                  updateBlock(bIdx, newData);
+                                }}
+                                placeholder="Value..."
+                              />
+                            </div>
+                          ),
+                        )}
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                          Father&apos;s Name
-                        </label>
-                        <input
-                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                          value={block.data.fatherName}
-                          onChange={(e) =>
-                            updateBlock(bIdx, {
-                              ...block.data,
-                              fatherName: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                          Date of Birth
-                        </label>
-                        <input
-                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                          value={block.data.dateOfBirth}
-                          onChange={(e) =>
-                            updateBlock(bIdx, {
-                              ...block.data,
-                              dateOfBirth: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                          Gender
-                        </label>
-                        <input
-                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                          value={block.data.gender}
-                          onChange={(e) =>
-                            updateBlock(bIdx, {
-                              ...block.data,
-                              gender: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                          Marital Status
-                        </label>
-                        <input
-                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                          value={block.data.maritalStatus}
-                          onChange={(e) =>
-                            updateBlock(bIdx, {
-                              ...block.data,
-                              maritalStatus: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                          Nationality
-                        </label>
-                        <input
-                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                          value={block.data.nationality}
-                          onChange={(e) =>
-                            updateBlock(bIdx, {
-                              ...block.data,
-                              nationality: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
+                      <button
+                        onClick={() =>
+                          updateBlock(bIdx, [
+                            ...block.data,
+                            { label: "New Field", value: "" },
+                          ])
+                        }
+                        className={clsx(
+                          "w-full",
+                          "py-3",
+                          "border-2",
+                          "border-dashed",
+                          "border-zinc-200",
+                          "rounded-md",
+                          "text-[11px]",
+                          "font-medium",
+                          "text-zinc-400",
+                          "hover:text-zinc-900",
+                          "hover:border-zinc-300",
+                          "transition-all",
+                          "cursor-pointer",
+                        )}
+                      >
+                        + Add Personal Detail Field
+                      </button>
                     </div>
                   )}
 
@@ -2083,7 +2114,7 @@ export default function ResumeCleanerPage() {
                           "font-black",
                           "tracking-[0.2em]",
                           "text-[10px]",
-                          "text-slate-400",
+                          "text-zinc-400",
                           "border-none",
                           "p-0",
                           "focus:ring-0",
@@ -2107,8 +2138,8 @@ export default function ResumeCleanerPage() {
                           "p-0",
                           "focus:ring-0",
                           "resize-none",
-                          "placeholder-slate-200",
-                          "text-slate-700",
+                          "placeholder-zinc-200",
+                          "text-zinc-700",
                         )}
                         value={block.data.content}
                         onChange={(e) =>
@@ -2166,30 +2197,30 @@ export default function ResumeCleanerPage() {
               <div
                 className={clsx(
                   "flex",
-                  "bg-slate-100",
+                  "bg-zinc-100",
                   "p-1",
                   "rounded-lg",
                   "border",
-                  "border-slate-200",
+                  "border-zinc-200",
                 )}
               >
                 <button
                   onClick={() => setPreviewMode("styled")}
-                  className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all cursor-pointer uppercase tracking-wider ${previewMode === "styled" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                  className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all cursor-pointer uppercase tracking-wider ${previewMode === "styled" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-600 hover:text-zinc-800"}`}
                 >
                   Styled
                 </button>
                 <button
                   onClick={() => setPreviewMode("plain")}
-                  className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all cursor-pointer uppercase tracking-wider ${previewMode === "plain" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                  className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all cursor-pointer uppercase tracking-wider ${previewMode === "plain" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-600 hover:text-zinc-800"}`}
                 >
                   Plain Text
                 </button>
               </div>
-              <div className={clsx("h-6", "w-px", "bg-slate-200")} />
+              <div className={clsx("h-6", "w-px", "bg-zinc-200")} />
               <span
                 className={clsx(
-                  "text-emerald-600",
+                  "text-emerald-700",
                   "flex",
                   "items-center",
                   "gap-1.5",
@@ -2214,14 +2245,14 @@ export default function ResumeCleanerPage() {
                   "gap-2",
                   "px-6",
                   "py-2",
-                  "bg-slate-900",
+                  "bg-zinc-900",
                   "text-white",
-                  "rounded-full",
+                  "rounded-lg",
                   "text-[10px]",
                   "font-black",
                   "uppercase",
                   "tracking-widest",
-                  "hover:bg-slate-800",
+                  "hover:bg-black",
                   "active:scale-95",
                   "transition-all",
                   "shadow-md",

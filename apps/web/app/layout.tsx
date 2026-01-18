@@ -27,6 +27,10 @@ export const metadata: Metadata = {
       "The minimalist, ATS-optimized resume builder for professionals.",
     images: ["/og-image.png"],
   },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

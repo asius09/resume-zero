@@ -72,7 +72,13 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
           style={{ textAlign: "center" }}
         >
           <h1
-            className={clsx('font-bold', 'uppercase', 'tracking-tight', 'mb-2', 'w-full')}
+            className={clsx(
+              "font-bold",
+              "uppercase",
+              "tracking-tight",
+              "mb-2",
+              "w-full",
+            )}
             style={{ textAlign: "center", fontSize: "12pt" }}
           >
             {headerBlock.data.fullName}
@@ -186,7 +192,7 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
           >
             SUMMARY
           </h2>
-          <p className={clsx('leading-relaxed')} style={{ fontSize: "10pt" }}>
+          <p className={clsx("leading-relaxed")} style={{ fontSize: "10pt" }}>
             {summaryBlock.data as string}
           </p>
         </div>
@@ -220,7 +226,10 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                     "mb-1",
                   )}
                 >
-                  <div className={clsx('font-bold')} style={{ fontSize: "10pt" }}>
+                  <div
+                    className={clsx("font-bold")}
+                    style={{ fontSize: "10pt" }}
+                  >
                     {item.jobTitle}
                   </div>
                   <div
@@ -236,11 +245,7 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                   </div>
                 </div>
                 <div
-                  className={clsx(
-                    "font-medium",
-                    "text-[#111]",
-                    "mb-1",
-                  )}
+                  className={clsx("font-medium", "text-[#111]", "mb-1")}
                   style={{ fontSize: "10pt" }}
                 >
                   {item.companyName}
@@ -289,7 +294,11 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
           </h2>
           <div className="space-y-2">
             {(skillsBlock.data as SkillGroup[]).map((item, idx) => (
-              <div key={idx} className={clsx("leading-normal")} style={{ fontSize: "10pt" }}>
+              <div
+                key={idx}
+                className={clsx("leading-normal")}
+                style={{ fontSize: "10pt" }}
+              >
                 <span className="font-bold">{item.category}:</span>
                 <div className={clsx("mt-1", "space-y-1", "pl-2")}>
                   {item.skills.map((skill, sIdx) => (
@@ -337,11 +346,7 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
             {(educationBlock.data as EducationItem[]).map((item, idx) => (
               <div key={idx} className="mb-2">
                 <div
-                  className={clsx(
-                    "flex",
-                    "justify-between",
-                    "items-baseline",
-                  )}
+                  className={clsx("flex", "justify-between", "items-baseline")}
                   style={{ fontSize: "10pt" }}
                 >
                   <span className={clsx("font-bold")}>{item.degree}</span>
@@ -356,7 +361,10 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                     {item.graduationYear}
                   </span>
                 </div>
-                <div className={clsx("text-[#111]")} style={{ fontSize: "10pt" }}>
+                <div
+                  className={clsx("text-[#111]")}
+                  style={{ fontSize: "10pt" }}
+                >
                   {item.institution}
                   {item.gpa && <span> (GPA: {item.gpa})</span>}
                 </div>
@@ -384,11 +392,7 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
             LANGUAGES
           </h2>
           <div
-            className={clsx(
-              "space-y-1",
-              "leading-normal",
-              "pl-2",
-            )}
+            className={clsx("space-y-1", "leading-normal", "pl-2")}
             style={{ fontSize: "10pt" }}
           >
             {(languagesBlock.data as LanguageItem[]).map((item, idx) => (
@@ -434,7 +438,10 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                     "mb-1",
                   )}
                 >
-                  <div className={clsx("font-bold")} style={{ fontSize: "10pt" }}>
+                  <div
+                    className={clsx("font-bold")}
+                    style={{ fontSize: "10pt" }}
+                  >
                     {item.link ? (
                       <a
                         href={item.link}
@@ -465,18 +472,33 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                   )}
                 </div>
                 {item.description && (
-                  <p className={clsx('mb-2', 'italic', 'text-[#334155]', 'leading-normal')} style={{ fontSize: "10pt" }}>
+                  <p
+                    className={clsx(
+                      "mb-2",
+                      "italic",
+                      "text-[#334155]",
+                      "leading-normal",
+                    )}
+                    style={{ fontSize: "10pt" }}
+                  >
                     {item.description}
                   </p>
                 )}
-                <div className={clsx('space-y-1', 'text-[#111]', 'pl-2')}>
+                <div className={clsx("space-y-1", "text-[#111]", "pl-2")}>
                   {item.bullets.map((bullet, bIdx) => (
                     <div
                       key={bIdx}
-                      className={clsx('flex', 'items-start', 'gap-2', 'leading-normal')}
+                      className={clsx(
+                        "flex",
+                        "items-start",
+                        "gap-2",
+                        "leading-normal",
+                      )}
                       style={{ fontSize: "10pt" }}
                     >
-                      <span className={clsx('shrink-0', 'text-black', 'mr-2')}>•</span>
+                      <span className={clsx("shrink-0", "text-black", "mr-2")}>
+                        •
+                      </span>
                       <span>{bullet}</span>
                     </div>
                   ))}
@@ -505,16 +527,12 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
             CERTIFICATIONS
           </h2>
           <div
-            className={clsx(
-              "space-y-1",
-              "leading-normal",
-              "pl-2",
-            )}
+            className={clsx("space-y-1", "leading-normal", "pl-2")}
             style={{ fontSize: "10pt" }}
           >
             {(certsBlock.data as CertificationItem[]).map((item, idx) => (
-              <div key={idx} className={clsx('flex', 'items-start', 'gap-2')}>
-                <span className={clsx('shrink-0', 'text-black', 'mr-2')}>
+              <div key={idx} className={clsx("flex", "items-start", "gap-2")}>
+                <span className={clsx("shrink-0", "text-black", "mr-2")}>
                   •
                 </span>
                 <span>
@@ -544,10 +562,7 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
             {(block.data as CustomBlock).title}
           </h2>
           <div
-            className={clsx(
-              "whitespace-pre-wrap",
-              "leading-normal",
-            )}
+            className={clsx("whitespace-pre-wrap", "leading-normal")}
             style={{ fontSize: "10pt" }}
           >
             {(block.data as CustomBlock).content}
@@ -572,27 +587,13 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
           >
             PERSONAL DETAILS
           </h2>
-          <div className={clsx('space-y-1')} style={{ fontSize: "10pt" }}>
-            <div>
-              <span className="font-bold">Date of Birth:</span>{" "}
-              {personalBlock.data.dateOfBirth}
-            </div>
-            <div>
-              <span className="font-bold">Gender:</span>{" "}
-              {personalBlock.data.gender}
-            </div>
-            <div>
-              <span className="font-bold">Father's Name:</span>{" "}
-              {personalBlock.data.fatherName}
-            </div>
-            <div>
-              <span className="font-bold">Marital Status:</span>{" "}
-              {personalBlock.data.maritalStatus}
-            </div>
-            <div>
-              <span className="font-bold">Nationality:</span>{" "}
-              {personalBlock.data.nationality}
-            </div>
+          <div className={clsx("space-y-1")} style={{ fontSize: "10pt" }}>
+            {Array.isArray(personalBlock.data) &&
+              personalBlock.data.map((item: any, idx: number) => (
+                <div key={idx}>
+                  <span className="font-bold">{item.label}:</span> {item.value}
+                </div>
+              ))}
           </div>
         </div>
       )}

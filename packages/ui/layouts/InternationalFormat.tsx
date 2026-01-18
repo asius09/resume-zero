@@ -269,26 +269,12 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
             PERSONAL DETAILS
           </h2>
           <div className="grid grid-cols-2 gap-y-2 text-[14px]">
-            <div>
-              <span className="font-bold">Full Name:</span>{" "}
-              {personalBlock.data.fullName}
-            </div>
-            <div>
-              <span className="font-bold">DOB:</span>{" "}
-              {personalBlock.data.dateOfBirth}
-            </div>
-            <div>
-              <span className="font-bold">Gender:</span>{" "}
-              {personalBlock.data.gender}
-            </div>
-            <div>
-              <span className="font-bold">Marital Status:</span>{" "}
-              {personalBlock.data.maritalStatus}
-            </div>
-            <div>
-              <span className="font-bold">Nationality:</span>{" "}
-              {personalBlock.data.nationality}
-            </div>
+            {Array.isArray(personalBlock.data) &&
+              personalBlock.data.map((item: any, idx: number) => (
+                <div key={idx}>
+                  <span className="font-bold">{item.label}:</span> {item.value}
+                </div>
+              ))}
           </div>
         </div>
       )}

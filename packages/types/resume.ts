@@ -50,14 +50,12 @@ export const CertificationItemSchema = z.object({
   year: z.string().min(1),
 });
 
-export const PersonalDetailsSchema = z.object({
-  fullName: z.string().min(1),
-  fatherName: z.string().optional(),
-  dateOfBirth: z.string().optional(),
-  gender: z.string().optional(),
-  maritalStatus: z.string().optional(),
-  nationality: z.string().default('Indian'),
+export const PersonalDetailItemSchema = z.object({
+  label: z.string().min(1),
+  value: z.string().min(1),
 });
+
+export const PersonalDetailsSchema = z.array(PersonalDetailItemSchema);
 
 export const CustomBlockSchema = z.object({
   title: z.string().min(1),
