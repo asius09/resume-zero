@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { clsx } from "clsx";
+import { cn } from "@/lib/cn";
 import { useResumeData } from "@/hooks/use-resume-data";
 import { Header } from "@/components/layout/header";
 import { ResumeEditor } from "@/components/resume-editor/resume-editor";
@@ -32,34 +32,25 @@ export default function ResumeCleanerPage() {
   if (!isMounted) return null;
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100 selection:text-black">
+    <div className={cn('min-h-screen', 'bg-white')}>
       <Header
         resumeName={data.metadata.name || ""}
         onResumeNameChange={setResumeName}
-        activeLayout={data.metadata.theme as "minimalist" | "professional" | "international"}
+        activeLayout={
+          data.metadata.theme as "minimalist" | "professional" | "international"
+        }
         onLayoutChange={setTheme}
         onCleanAll={autoClean}
         onExportPDF={handleExportPDF}
       />
 
-      <main
-        className={clsx(
-          "max-w-[1600px]",
-          "mx-auto",
-          "grid",
-          "grid-cols-1",
-          "lg:grid-cols-2",
-          "gap-0",
-          "min-h-[calc(100vh-80px)]",
-          "relative",
-        )}
-      >
+      <main className={cn('grid', 'grid-cols-1', 'lg:grid-cols-2', 'min-h-[calc(100vh-80px)]')}>
         {/* Mobile View Toggle */}
-        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white rounded-lg p-1 shadow-2xl flex items-center border border-white/10">
+        <div className={cn('lg:hidden', 'fixed', 'bottom-10', 'left-1/2', '-translate-x-1/2', 'z-50', 'bg-zinc-900/90', 'backdrop-blur-md', 'text-white', 'rounded-full', 'p-1.5', 'shadow-2xl', 'flex', 'items-center', 'border', 'border-white/10')}>
           <button
             onClick={() => setMobileView("edit")}
-            className={clsx(
-              "px-6 py-2 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all",
+            className={cn(
+              "px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
               mobileView === "edit" ? "bg-white text-black" : "text-white/60",
             )}
           >
@@ -67,8 +58,8 @@ export default function ResumeCleanerPage() {
           </button>
           <button
             onClick={() => setMobileView("preview")}
-            className={clsx(
-              "px-6 py-2 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all",
+            className={cn(
+              "px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
               mobileView === "preview"
                 ? "bg-white text-black"
                 : "text-white/60",
@@ -80,18 +71,11 @@ export default function ResumeCleanerPage() {
 
         {/* Editor Side */}
         <div
-          className={clsx(
-            "no-print",
-            "editor-side",
-            "p-6",
-            "lg:p-12",
+          className={cn(
+            "editor-side no-print transition-all duration-300",
             mobileView === "edit" ? "block" : "hidden lg:block",
-            "bg-[#fafafa]",
-            "border-r",
-            "border-zinc-200",
-            "overflow-y-auto",
-            "max-h-[calc(100vh-80px)]",
-            "custom-scrollbar",
+            "bg-[#fafafa]/50 border-r border-zinc-100",
+            "overflow-y-auto max-h-[calc(100vh-80px)] custom-scrollbar",
           )}
         >
           <ResumeEditor
@@ -105,16 +89,22 @@ export default function ResumeCleanerPage() {
 
         {/* Preview Side */}
         <div
-          className={clsx(
-            "preview-side",
+          className={cn(
+            "preview-container",
+            "bg-zinc-100/30 overflow-y-auto max-h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-4 lg:pt-8",
             mobileView === "preview" ? "block" : "hidden lg:block",
           )}
         >
           <ResumePreview
             data={data}
-            activeLayout={data.metadata.theme as "minimalist" | "professional" | "international"}
-            renderPlainText={() => renderPlainText(data)}
-          />
+            activeLayout={
+              data.metadata.theme as
+                | "minimalist"
+                | "professional"
+                  | "international"
+              }
+              renderPlainText={() => renderPlainText(data)}
+            />
         </div>
       </main>
     </div>

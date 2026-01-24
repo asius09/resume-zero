@@ -18,6 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("http://localhost:3000"),
   title: "Resume: Zero",
   description:
     "The minimalist, ATS-optimized resume builder for professionals. Zero friction, zero clutter.",

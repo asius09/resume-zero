@@ -1,8 +1,15 @@
 "use client";
 
 import React from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, LayoutGrid, List } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import type { SkillGroup } from "@resume/types";
+import { cn } from "@/lib/cn";
+import { EditorAddButton } from "./editor-add-button";
 
 interface SkillsEditorProps {
   data: SkillGroup[];
@@ -23,48 +30,64 @@ export function SkillsEditor({ data, onUpdate }: SkillsEditorProps) {
   };
 
   const addGroup = () => {
-    onUpdate([...items, { category: "Category", skills: [] }]);
+    onUpdate([...items, { category: "", skills: [] }]);
   };
 
   return (
-    <div className="space-y-8">
-      {items.map((group, iIdx) => (
-        <div
-          key={iIdx}
-          className="p-4 bg-zinc-50/30 border border-zinc-100 rounded-xl space-y-3 group/skill relative transition-all hover:border-zinc-200"
-        >
-          <div className="flex items-center justify-between gap-4">
-            <input
-              className="editor-input editor-input-heading"
-              value={group.category}
-              onChange={(e) => updateGroup(iIdx, { category: e.target.value })}
-              placeholder="Skill Category (e.g. Languages)"
-            />
-            <button
-              onClick={() => removeGroup(iIdx)}
-              className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/skill:opacity-100"
-            >
-              <Trash2 size={13} />
-            </button>
-          </div>
-          <textarea
-            className="editor-input text-xs text-zinc-500 font-normal leading-relaxed resize-none h-16"
-            value={group.skills.join(", ")}
-            onChange={(e) =>
-              updateGroup(iIdx, {
-                skills: e.target.value.split(",").map((s) => s.trim()),
-              })
-            }
-            placeholder="Skill 1, Skill 2, Skill 3..."
-          />
-        </div>
-      ))}
-      <button
+    <div className="space-y-4">
+      <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4')}>
+        {items.map((group, iIdx) => (
+          <Card
+            key={iIdx}
+            className={cn('group/skill', 'border-zinc-200', 'shadow-sm', 'hover:border-zinc-300', 'transition-all', 'duration-200', 'overflow-hidden')}
+          >
+            <CardContent className={cn('p-4', 'space-y-4')}>
+              <div className={cn('flex', 'items-center', 'justify-between', 'gap-4')}>
+                <div className={cn('flex', 'items-center', 'gap-2', 'flex-1')}>
+                  <LayoutGrid size={14} className="text-zinc-400" />
+                  <Input
+                    className={cn('h-8', 'font-bold', 'text-xs', 'border-transparent', 'hover:border-zinc-200', 'focus:border-zinc-900', 'focus:ring-0', 'p-0', 'px-2', 'transition-all', 'bg-transparent')}
+                    value={group.category}
+                    onChange={(e) =>
+                      updateGroup(iIdx, { category: e.target.value })
+                    }
+                    placeholder="Category (e.g. Frontend)"
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeGroup(iIdx)}
+                  className={cn('h-7', 'w-7', 'text-zinc-300', 'hover:text-red-500', 'hover:bg-red-50', 'sm:opacity-0', 'sm:group-hover/skill:opacity-100', 'transition-all')}
+                >
+                  <Trash2 size={12} />
+                </Button>
+              </div>
+              <div className={cn('space-y-2')}>
+                <div className={cn('flex', 'items-center', 'gap-2', 'px-1')}>
+                   <List size={12} className="text-zinc-400" />
+                   <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-400')}>Skills (comma separated)</Label>
+                </div>
+                <Textarea
+                  className={cn('min-h-[80px]', 'text-xs', 'py-2', 'border-zinc-100', 'focus:border-zinc-900', 'focus:ring-0', 'rounded-lg', 'bg-zinc-50/30', 'transition-all', 'resize-none')}
+                  value={group.skills.join(", ")}
+                  onChange={(e) =>
+                    updateGroup(iIdx, {
+                      skills: e.target.value.split(",").map((s) => s.trim()),
+                    })
+                  }
+                  placeholder="React, TypeScript, Next.js, Redux, Tailwind..."
+                />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <EditorAddButton
+        label="Add Skill Category"
         onClick={addGroup}
-        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
-      >
-        + New Skills Group
-      </button>
+      />
     </div>
   );
 }

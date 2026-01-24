@@ -13,6 +13,8 @@ import { LanguagesEditor } from "./languages-editor";
 import { CertificationsEditor } from "./certifications-editor";
 import { PersonalEditor } from "./personal-editor";
 import { CustomEditor } from "./custom-editor";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
 import type {
   ResumeData,
   ResumeSectionType,
@@ -42,20 +44,20 @@ export function ResumeEditor({
   removeBlock,
   handleCopySection,
 }: ResumeEditorProps) {
-  const mandatory = ["header", "summary", "experience", "skills", "education"];
+  const mandatory = ["header", "summary", 'mb-12', 'pb-32']
 
   return (
-    <div className="max-w-[700px] mx-auto space-y-6 pb-20">
-      <div className="border-b border-zinc-200 pb-6 mb-2">
-        <div className="mb-4">
-          <h2 className="text-xl font-bold tracking-tight text-zinc-900">
-            Editor
+    <div className={cn('max-w-[720px]', 'mx-auto', 'pb-32', 'space-y-12')}>
+      <div className={cn('flex', 'flex-col', 'gap-6', 'sticky', 'top-0', 'bg-white/80', 'backdrop-blur-md', 'z-10', 'py-3', 'border-b', 'border-zinc-100', 'px-4')}>
+        <div>
+          <h2 className={cn('text-xl', 'font-semibold', 'tracking-tight', 'text-zinc-900')}>
+            Resume Editor
           </h2>
-          <p className="text-xs text-zinc-500 font-medium">
-            Focus on your experience. We handle the rest.
+          <p className={cn('text-xs', 'text-zinc-500', 'font-medium')}>
+            Build your professional identity.
           </p>
         </div>
-        <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 custom-scrollbar-hide">
+        <div className={cn('flex', 'flex-nowrap', 'overflow-x-auto', 'gap-2', 'pb-2', 'custom-scrollbar', 'scroll-smooth')}>
           {(
             [
               "languages",
@@ -65,94 +67,98 @@ export function ResumeEditor({
               "custom",
             ] as const
           ).map((type) => (
-            <button
+            <Button
               key={type}
+              variant="outline"
+              size="sm"
               onClick={() => addBlock(type)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-100 rounded-lg text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 hover:border-zinc-200 transition-all cursor-pointer whitespace-nowrap shrink-0"
+              className={cn('rounded-full', 'h-8', 'px-4', 'text-[10px]', 'whitespace-nowrap', 'bg-white/50')}
             >
-              <Plus size={12} />{" "}
+              <Plus size={12} className="mr-1.5" />{" "}
               {type === "personal"
                 ? "Personal Details"
                 : type.charAt(0).toUpperCase() + type.slice(1)}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
-      {data.blocks.map((block, bIdx) => {
-        const isMandatory = mandatory.includes(block.type);
+      <div className={cn("space-y-8 px-6 lg:px-8 xl:px-10")}>
+        {data.blocks.map((block, bIdx) => {
+          const isMandatory = mandatory.includes(block.type);
 
-        return (
-          <SectionWrapper
-            key={bIdx}
-            type={block.type}
-            isMandatory={isMandatory}
-            onCopy={() => handleCopySection(bIdx)}
-            onRemove={() => removeBlock(bIdx)}
-          >
-            {block.type === "header" && (
-              <HeaderEditor
-                data={block.data}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "summary" && (
-              <SummaryEditor
-                data={block.data as string}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "experience" && (
-              <ExperienceEditor
-                data={block.data as ExperienceItem[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "projects" && (
-              <ProjectsEditor
-                data={block.data as ProjectItem[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "skills" && (
-              <SkillsEditor
-                data={block.data as SkillGroup[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "education" && (
-              <EducationEditor
-                data={block.data as EducationItem[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "languages" && (
-              <LanguagesEditor
-                data={block.data as LanguageItem[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "certifications" && (
-              <CertificationsEditor
-                data={block.data as CertificationItem[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "personal" && (
-              <PersonalEditor
-                data={block.data as PersonalDetailItem[]}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-            {block.type === "custom" && (
-              <CustomEditor
-                data={block.data as CustomBlock}
-                onUpdate={(newData) => updateBlock(bIdx, newData)}
-              />
-            )}
-          </SectionWrapper>
-        );
-      })}
+          return (
+            <SectionWrapper
+              key={bIdx}
+              type={block.type}
+              isMandatory={isMandatory}
+              onCopy={() => handleCopySection(bIdx)}
+              onRemove={() => removeBlock(bIdx)}
+            >
+              {block.type === "header" && (
+                <HeaderEditor
+                  data={block.data}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "summary" && (
+                <SummaryEditor
+                  data={block.data as string}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "experience" && (
+                <ExperienceEditor
+                  data={block.data as ExperienceItem[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "projects" && (
+                <ProjectsEditor
+                  data={block.data as ProjectItem[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "skills" && (
+                <SkillsEditor
+                  data={block.data as SkillGroup[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "education" && (
+                <EducationEditor
+                  data={block.data as EducationItem[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "languages" && (
+                <LanguagesEditor
+                  data={block.data as LanguageItem[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "certifications" && (
+                <CertificationsEditor
+                  data={block.data as CertificationItem[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "personal" && (
+                <PersonalEditor
+                  data={block.data as PersonalDetailItem[]}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+              {block.type === "custom" && (
+                <CustomEditor
+                  data={block.data as CustomBlock}
+                  onUpdate={(newData) => updateBlock(bIdx, newData)}
+                />
+              )}
+            </SectionWrapper>
+          );
+        })}
+      </div>
     </div>
   );
 }

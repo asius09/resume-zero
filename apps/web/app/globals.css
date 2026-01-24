@@ -3,159 +3,136 @@
 :root {
   --background: #ffffff;
   --foreground: #09090b;
-  --zinc-50: #fafafa;
-  --zinc-100: #f4f4f5;
-  --zinc-200: #e4e4e7;
-  --zinc-300: #d4d4d8;
-  --zinc-400: #a1a1aa;
-  --zinc-500: #71717a;
-  --zinc-600: #52525b;
-  --zinc-700: #3f3f46;
-  --zinc-800: #27272a;
-  --zinc-900: #18181b;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family:
-    var(--font-inter),
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    sans-serif;
+  background-color: white;
+  color: #18181b;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-@layer base {
-  body {
-    @apply bg-white text-zinc-950;
-  }
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
-/* Base Input Styling - Clean & Minimal */
-.editor-input {
-  @apply w-full bg-transparent border-none p-0 focus:ring-0 transition-colors placeholder:text-zinc-300;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.editor-input-title {
-  @apply text-lg font-semibold tracking-tight text-zinc-900;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e4e4e7;
+  border-radius: 9999px;
 }
 
-.editor-input-heading {
-  @apply text-sm font-medium text-zinc-800;
-}
-
-.editor-input-subtext {
-  @apply text-xs text-zinc-500 font-normal;
-}
-
-.editor-label {
-  @apply text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2 block;
-}
-
-/* Section Cards */
-.editor-section {
-  @apply bg-white rounded-xl border border-zinc-100 p-6 relative hover:border-zinc-200 transition-all;
-}
-
-/* Custom Scrollbar for non-Chrome */
-.custom-scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.custom-scrollbar-hide::-webkit-scrollbar {
-  display: none;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #d4d4d8;
 }
 
 /* Print Overrides */
 @media print {
   @page {
-    margin: 0mm !important;
+    margin: 0 !important;
     size: A4;
   }
 
+  /* Reset layout structure for print */
   html,
-  body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    width: 210mm !important;
-    height: 100% !important;
-    overflow: visible !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    font-family:
-      var(--font-inter), "Inter", "Helvetica", Arial, sans-serif !important;
-    color: #111 !important;
-  }
-
-  .no-print,
-  button,
-  header,
-  nav,
-  input,
-  textarea {
-    display: none !important;
-  }
-
+  body,
+  #__next,
   main {
     display: block !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 210mm !important;
+    height: auto !important;
+    min-height: auto !important;
+    background: white !important;
+    overflow: visible !important;
+    position: static !important;
+    transform: none !important;
+    box-shadow: none !important;
   }
 
-  .preview-side {
+  /* Hide EVERY UI element explicitly */
+  .no-print,
+  .editor-side,
+  header,
+  footer,
+  nav,
+  button,
+  .mobile-toggle,
+  .fixed,
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  /* Ensure the preview container fills the page without its own padding/margins */
+  .preview-container {
     display: block !important;
     width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
     background: white !important;
+    overflow: visible !important;
   }
 
+  /* Target intermediate wrappers from ResumePreview.tsx */
+  /* We flatten them to ensure the resume is positioned at 0,0 of the print container */
+  .preview-container > div,
+  .preview-container div[class*="max-w-"] {
+    display: block !important;
+    width: 210mm !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* Target the #resume-preview wrapper */
   #resume-preview {
     display: block !important;
-    transform: none !important;
-    scale: 1 !important;
+    width: 210mm !important;
+    height: auto !important;
+    min-height: 296mm !important; /* Slightly less than A4 to prevent blank page overflow */
     margin: 0 !important;
     padding: 0 !important;
+    transform: none !important;
+    scale: 1 !important;
     box-shadow: none !important;
     border: none !important;
-    width: 210mm !important;
-    min-height: 297mm !important;
     background: white !important;
     position: static !important;
-  }
-
-  .resume-container {
-    box-sizing: border-box !important;
-    padding: 20mm !important;
-    width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    background: white !important;
-    display: block !important;
     overflow: visible !important;
-    border: none !important;
-    page-break-after: always;
   }
-}
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+  /* THE RESUME - Maintain internal spacing of the layout components */
+  .resume-container {
+    display: block !important;
+    width: 210mm !important;
+    min-height: 296mm !important;
+    margin: 0 !important;
+    padding: 20mm !important; /* Re-apply to be absolutely certain */
+    box-sizing: border-box !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    page-break-after: avoid !important;
+  }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-zinc-200 rounded-full hover:bg-zinc-300 transition-colors;
+  /* Preserve colors and fonts */
+  .resume-container * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color: black !important;
+  }
 }

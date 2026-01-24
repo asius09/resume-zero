@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import { clsx } from "clsx";
 import { Copy, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { cn } from "../../lib/cn";
 
 interface SectionWrapperProps {
   type: string;
@@ -19,56 +21,47 @@ export function SectionWrapper({
   onRemove,
   children,
 }: SectionWrapperProps) {
+  const title =
+    type === "personal"
+      ? "Personal Details"
+      : type.charAt(0).toUpperCase() + type.slice(1);
+
   return (
-    <div className="editor-section group">
-      <div className={clsx("flex", "items-center", "justify-between", "mb-6")}>
-        <div className={clsx("flex", "items-center", "gap-2", "text-zinc-400")}>
-          <span className="editor-label">{type}</span>
+    <div className={cn('section-container', 'group', 'animate-in', 'fade-in', 'slide-in-from-top-4', 'duration-500')}>
+      <div className={cn('flex', 'items-center', 'justify-between w-full', 'mb-4', 'px-2')}>
+        <div className={cn('flex', 'items-center', 'justify-between', 'gap-2')}>
+          <Label className={cn('text-sm', 'text-zinc-900', 'font-bold', 'mb-0')}>
+            {title}
+          </Label>
           {isMandatory && (
-            <span className="text-[10px] font-bold text-zinc-400/80 bg-zinc-100 px-1.5 py-0.5 rounded">
-              REQUIRED
+            <span className={cn('text-[9px]', 'font-black', 'text-red-500', 'tracking-tighter', 'uppercase')}>
+              Required
             </span>
           )}
         </div>
-        <div className={clsx("flex", "items-center", "gap-2")}>
-          <button
+        <div className={cn('flex', 'items-center', 'gap-1', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity')}>
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onCopy}
-            className={clsx(
-              "opacity-0",
-              "group-hover:opacity-100",
-              "p-2",
-              "text-zinc-400",
-              "hover:text-zinc-900",
-              "hover:bg-zinc-100",
-              "rounded-md",
-              "transition-all",
-              "cursor-pointer",
-            )}
-            title="Copy Section Text"
+            className={cn('h-8', 'w-8')}
+            title="Copy as text"
           >
-            <Copy size={14} />
-          </button>
+            <Copy size={14} className="text-zinc-400" />
+          </Button>
           {!isMandatory && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onRemove}
-              className={clsx(
-                "opacity-0",
-                "group-hover:opacity-100",
-                "p-2",
-                "text-zinc-400",
-                "hover:text-red-500",
-                "hover:bg-red-50",
-                "rounded-md",
-                "transition-all",
-                "cursor-pointer",
-              )}
+              className={cn('h-8', 'w-8', 'hover:text-red-500', 'hover:bg-red-50')}
             >
-              <Trash2 size={16} />
-            </button>
+              <Trash2 size={14} className="text-zinc-400" />
+            </Button>
           )}
         </div>
       </div>
-      {children}
+      <div className="bg-transparent">{children}</div>
     </div>
   );
 }

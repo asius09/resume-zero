@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
-import { Download } from "lucide-react";
-import { clsx } from "clsx";
+import { Download, Sparkles } from "lucide-react";
+import { cn } from "@/lib/cn";
+import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   resumeName: string;
@@ -25,43 +25,113 @@ export function Header({
   onExportPDF,
 }: HeaderProps) {
   return (
-    <header className="no-print sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-dashed border-zinc-200 px-6 py-3 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <Image
-          src="/logo.svg"
-          alt="Resume: Zero Logo"
-          width={32}
-          height={32}
-          className="rounded-lg shadow-sm border border-zinc-100"
+    <header
+      className={cn(
+        "no-print",
+        "sticky",
+        "top-0",
+        "z-50",
+        "bg-white/80",
+        "backdrop-blur-xl",
+        "border-b",
+        "border-zinc-100",
+        "px-6",
+        "py-4",
+        "flex",
+        "items-center",
+        "justify-between",
+      )}
+    >
+      <div className={cn("flex", "items-center", "gap-4")}>
+        <div className={cn("relative", "group")}>
+          <div
+            className={cn(
+              "absolute",
+              "-inset-1",
+              "bg-linear-to-r",
+              "from-zinc-200",
+              "to-zinc-100",
+              "rounded-lg",
+              "blur",
+              "opacity-25",
+              "group-hover:opacity-100",
+              "transition",
+              "duration-1000",
+              "group-hover:duration-200",
+            )}
+          ></div>
+          <Image
+            src="/logo.svg"
+            alt="Resume: Zero Logo"
+            width={32}
+            height={32}
+            className={cn(
+              "relative",
+              "rounded-lg",
+              "border",
+              "border-zinc-200",
+              "shadow-sm",
+            )}
+          />
+        </div>
+        <div
+          className={cn(
+            "h-6",
+            "w-px",
+            "bg-zinc-200",
+            "mx-1",
+            "hidden",
+            "sm:block",
+          )}
         />
-        <div className="h-6 w-px bg-zinc-200 mx-1 hidden sm:block" />
-        <div>
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <h1 className="text-[14px] font-semibold tracking-tight text-zinc-900 leading-none hidden xs:block">
-              Resume: Zero
+        <div className={cn("flex", "flex-col")}>
+          <div className={cn("flex", "items-center", "gap-2")}>
+            <h1
+              className={cn(
+                "text-sm",
+                "font-bold",
+                "tracking-tighter",
+                "text-zinc-900",
+                "leading-none",
+              )}
+            >
+              RESUME:ZERO
             </h1>
-            <span className="text-zinc-300 hidden xs:block">/</span>
+            <span className={cn("text-zinc-200", "font-light")}>/</span>
             <input
-              className="text-[14px] font-medium text-zinc-700 bg-transparent border-none p-0 focus:ring-0 w-24 sm:w-32 focus:text-zinc-900 transition-colors truncate"
+              className={cn(
+                "text-sm",
+                "font-medium",
+                "text-zinc-600",
+                "bg-transparent",
+                "border-none",
+                "p-0",
+                "focus:ring-0",
+                "w-32",
+                "focus:text-zinc-900",
+                "transition-colors",
+                "truncate",
+              )}
               value={resumeName || ""}
               onChange={(e) => onResumeNameChange(e.target.value)}
-              placeholder="My Resume"
+              placeholder="Untitled"
             />
           </div>
-          <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1">
-            v1.0.0
-          </p>
         </div>
       </div>
 
-      <div className={clsx("flex", "items-center", "gap-3")}>
+      <div className={cn("flex", "items-center", "gap-6")}>
         <div
-          className={clsx(
+          className={cn(
             "hidden",
             "md:flex",
-            "bg-zinc-100/50 border border-zinc-200",
-            "p-0.5",
-            "rounded-lg",
+            "items-center",
+            "bg-zinc-50",
+            "border",
+            "border-zinc-200",
+            "p-1",
+            "rounded-full",
+            "px-2",
           )}
         >
           {(["minimalist", "professional", "international"] as const).map(
@@ -69,11 +139,12 @@ export function Header({
               <button
                 key={t}
                 onClick={() => onLayoutChange(t)}
-                className={`px-3 py-1 text-[11px] font-medium rounded-md transition-all capitalize cursor-pointer ${
+                className={cn(
+                  "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer",
                   activeLayout === t
-                    ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-zinc-900"
-                    : "text-zinc-600 hover:text-zinc-900"
-                }`}
+                    ? "bg-white shadow-sm text-zinc-900 border border-zinc-100"
+                    : "text-zinc-400 hover:text-zinc-600",
+                )}
               >
                 {t}
               </button>
@@ -81,59 +152,31 @@ export function Header({
           )}
         </div>
 
-        <div className={clsx("w-px", "h-6", "bg-zinc-200", "mx-1")} />
+        <div className={cn("flex", "items-center", "gap-2")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onCleanAll}
+            className={cn(
+              "hidden",
+              "sm:flex",
+              "text-zinc-500",
+              "hover:text-zinc-900",
+              "gap-2",
+            )}
+          >
+            <Sparkles size={14} className="text-zinc-400" />
+            Auto Clean
+          </Button>
 
-        <button
-          onClick={onCleanAll}
-          className={clsx(
-            "flex",
-            "items-center",
-            "gap-2",
-            "px-3",
-            "sm:px-4",
-            "py-2",
-            "sm:py-1.5",
-            "bg-black",
-            "text-white",
-            "rounded-lg",
-            "text-[11px]",
-            "font-bold",
-            "sm:font-medium",
-            "hover:bg-zinc-800",
-            "active:scale-95",
-            "transition-all",
-            "cursor-pointer",
-            "whitespace-nowrap",
-          )}
-        >
-          Clean All
-        </button>
-
-        <button
-          onClick={onExportPDF}
-          className={clsx(
-            "flex",
-            "items-center",
-            "gap-2",
-            "px-3",
-            "sm:px-4",
-            "py-1.5",
-            "border",
-            "border-zinc-200",
-            "bg-white",
-            "text-zinc-900",
-            "rounded-lg",
-            "text-[11px]",
-            "font-medium",
-            "hover:bg-zinc-50",
-            "transition-all",
-            "cursor-pointer",
-          )}
-        >
-          <Download size={12} />
-          <span className="hidden xs:inline">Export PDF</span>
-          <span className="xs:hidden">PDF</span>
-        </button>
+          <Button
+            onClick={onExportPDF}
+            className={cn("gap-2", "shadow-sm", "rounded-full")}
+          >
+            <Download size={14} />
+            Export PDF
+          </Button>
+        </div>
       </div>
     </header>
   );

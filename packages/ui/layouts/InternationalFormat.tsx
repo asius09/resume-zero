@@ -44,9 +44,10 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
   return (
     <div
-      className="resume-container w-[210mm] min-h-[297mm] mx-auto bg-white text-[#111]"
+      className="resume-container w-[210mm] min-h-[296mm] mx-auto bg-white text-[#111]"
       style={{
         padding: "20mm",
+        boxSizing: "border-box",
         fontFamily: "var(--font-inter), 'Helvetica', Arial, sans-serif",
       }}
     >
