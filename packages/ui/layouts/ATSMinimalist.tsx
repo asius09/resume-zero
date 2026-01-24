@@ -144,8 +144,8 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
                   ...(block.data.contacts as Contact[]).map((c, i) => (
                     <React.Fragment key={`contact-${i}`}>
                       {(i > 0 || block.data.location) && (
-                        <span className="text-zinc-400 font-bold px-1.5 select-none" aria-hidden="true">
-                          •
+                        <span className="text-zinc-400 font-normal px-1.5 select-none" aria-hidden="true">
+                          |
                         </span>
                       )}
                       <span className="whitespace-nowrap px-1">
@@ -169,7 +169,7 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
           if (!block.data) return null;
           return (
             <div key={idx} className={cn('text-left', 'w-full', 'mb-4')}>
-              <SectionHeader title="Professional Summary" />
+              <SectionHeader title="Summary" />
               <p className={cn('leading-normal', 'text-zinc-800', 'text-left')} style={{ fontSize: "9.5pt" }}>
                 {block.data as string}
               </p>
@@ -202,7 +202,7 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
         case "skills":
           return (
             <div key={idx} className={cn('text-left', 'w-full', 'mb-4')}>
-              <SectionHeader title="Skills & Expertise" />
+              <SectionHeader title="Skills" />
               <div className={cn('space-y-0.5', 'text-left', 'pl-1')}>
                 {(block.data as SkillGroup[]).map((group, i) => (
                   <BulletItem key={i}>
