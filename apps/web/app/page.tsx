@@ -26,10 +26,17 @@ export default function ResumeCleanerPage() {
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
     documentTitle: data.metadata.name || "My Resume",
+    onAfterPrint: () => console.log("Print success"),
+    onPrintError: (errorLocation, error) => {
+      console.error("Print error:", errorLocation, error);
+      // Fallback or user notification could go here
+    },
   });
 
   const handleExportPDF = () => {
-    handlePrint();
+    if (componentRef.current) {
+      handlePrint();
+    }
   };
 
   if (!isMounted) return null;
@@ -117,7 +124,7 @@ export default function ResumeCleanerPage() {
         <div
           className={cn(
             "preview-container",
-            "bg-zinc-100/30 overflow-y-auto max-h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-4 lg:pt-8",
+            "bg-zinc-100/30 overflow-y-auto max-h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-4 lg:pt-8 pb-32",
             mobileView === "preview" ? "block" : "hidden lg:block",
           )}
         >

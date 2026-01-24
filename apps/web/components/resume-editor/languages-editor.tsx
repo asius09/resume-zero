@@ -41,11 +41,6 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Languages</h3>
-        <span className="text-[10px] font-bold text-zinc-400 uppercase">{items.length} languages</span>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.map((item, iIdx) => {
           const isCommonLanguage = COMMON_LANGUAGES.includes(item.language) || item.language === "";
