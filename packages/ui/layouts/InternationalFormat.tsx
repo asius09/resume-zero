@@ -72,7 +72,10 @@ export const InternationalFormat = forwardRef<HTMLDivElement, { data: ResumeData
                       href={formatContactLink(c)}
                       className="hover:underline text-inherit no-underline"
                     >
-                      {c.value}
+                      {c.type === "linkedin" ? "LinkedIn" : 
+                       c.type === "github" ? "GitHub" : 
+                       c.type === "website" ? "Website" : 
+                       c.value}
                     </a>
                     {i < (headerBlock.data.contacts as Contact[]).length - 1 && (
                       <span className="ml-4 opacity-30">|</span>

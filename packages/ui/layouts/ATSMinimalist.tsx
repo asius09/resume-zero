@@ -153,9 +153,10 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
                           href={formatContactLink(c)}
                           className={cn("hover:text-zinc-900 transition-colors no-underline text-zinc-600")}
                         >
-                          {["linkedin", "github", "website"].includes(c.type!)
-                            ? c.value.replace(/^https?:\/\/(www\.)?/, "")
-                            : c.value}
+                          {c.type === "linkedin" ? "LinkedIn" : 
+                           c.type === "github" ? "GitHub" : 
+                           c.type === "website" ? "Website" : 
+                           c.value}
                         </a>
                       </span>
                     </React.Fragment>
