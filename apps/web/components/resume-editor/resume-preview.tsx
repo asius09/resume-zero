@@ -1,5 +1,6 @@
 "use client";
 
+import React, { forwardRef } from "react";
 import { cn } from "@/lib/cn";
 import {
   ATSMinimalist,
@@ -13,12 +14,10 @@ interface ResumePreviewProps {
   activeLayout: "minimalist" | "professional" | "international";
 }
 
-export function ResumePreview({
-  data,
-  activeLayout,
-}: ResumePreviewProps) {
-  return (
-      <div className={cn('w-full', 'relative', 'flex', 'justify-center')}>
+export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
+  ({ data, activeLayout }, ref) => {
+    return (
+      <div className={cn("w-full", "relative", "flex", "justify-center")}>
         <div
           id="resume-preview"
           className={cn(
@@ -26,15 +25,18 @@ export function ResumePreview({
             " sm:scale-[0.75] 2xl:scale-[1]",
           )}
         >
-        
-              {activeLayout === "minimalist" && <ATSMinimalist data={data} />}
-              {activeLayout === "professional" && (
-                <ModernProfessional data={data} />
-              )}
-              {activeLayout === "international" && (
-                <InternationalFormat data={data} />
-              )}
+          {activeLayout === "minimalist" && <ATSMinimalist data={data} ref={ref} />}
+          {activeLayout === "professional" && (
+            <ModernProfessional data={data} ref={ref} />
+          )}
+          {activeLayout === "international" && (
+            <InternationalFormat data={data} ref={ref} />
+          )}
         </div>
       </div>
-  );
-}
+    );
+  },
+);
+
+ResumePreview.displayName = "ResumePreview";
+

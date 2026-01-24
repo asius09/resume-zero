@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { forwardRef } from "react";
 import clsx from "clsx";
 import type {
   ResumeData,
@@ -100,232 +102,238 @@ interface HeaderItem extends Omit<Partial<Contact>, "type"> {
 
 // --- Main Template Component ---
 
-export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
-  const renderBlock = (block: any, idx: number) => {
-    switch (block.type) {
-      case "header":
-        return (
-          <div key={idx} className={clsx('mb-6', 'text-center')}>
-            <h1
-              className={clsx('font-bold', 'uppercase', 'tracking-[0.05em]', 'text-zinc-900', 'mb-2')}
-              style={{ fontSize: "18pt", lineHeight: "1.2" }}
-            >
-              {block.data.fullName}
-            </h1>
-            <div
-              className={clsx('text-zinc-700', 'leading-snug', 'flex', 'justify-center', 'flex-wrap', 'gap-x-3', 'gap-y-1', 'mx-auto', 'max-w-[90%]')}
-              style={{ fontSize: "9pt" }}
-            >
-              {[
-                block.data.location &&
-                  ({ type: "location", value: block.data.location } as HeaderItem),
-                ...(block.data.contacts as Contact[]).map(
-                  (c) => ({ ...c, isContact: true } as HeaderItem)
-                ),
-              ]
-                .filter((item): item is HeaderItem => Boolean(item))
-                .map((item, index, array) => (
-                  <React.Fragment key={index}>
-                    <span className="whitespace-nowrap">
-                      {item.isContact ? (
-                        <a
-                          href={formatContactLink(item as Contact)}
-                          className={clsx('hover:text-zinc-900', 'transition-colors', 'no-underline')}
-                        >
-                          {["linkedin", "github", "website"].includes(item.type!)
-                            ? item.value.replace(/^https?:\/\/(www\.)?/, "")
-                            : item.value}
-                        </a>
-                      ) : (
-                        item.value
+export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
+  ({ data }, ref) => {
+    const renderBlock = (block: any, idx: number) => {
+      switch (block.type) {
+        case "header":
+          return (
+            <div key={idx} className={clsx('mb-6', 'text-center')}>
+              <h1
+                className={clsx('font-bold', 'uppercase', 'tracking-[0.05em]', 'text-zinc-900', 'mb-2')}
+                style={{ fontSize: "18pt", lineHeight: "1.2" }}
+              >
+                {block.data.fullName}
+              </h1>
+              <div
+                className={clsx('text-zinc-700', 'leading-snug', 'flex', 'justify-center', 'flex-wrap', 'gap-x-3', 'gap-y-1', 'mx-auto', 'max-w-[90%]')}
+                style={{ fontSize: "9pt" }}
+              >
+                {[
+                  block.data.location &&
+                    ({ type: "location", value: block.data.location } as HeaderItem),
+                  ...(block.data.contacts as Contact[]).map(
+                    (c) => ({ ...c, isContact: true } as HeaderItem)
+                  ),
+                ]
+                  .filter((item): item is HeaderItem => Boolean(item))
+                  .map((item, index, array) => (
+                    <React.Fragment key={index}>
+                      <span className="whitespace-nowrap">
+                        {item.isContact ? (
+                          <a
+                            href={formatContactLink(item as Contact)}
+                            className={clsx('hover:text-zinc-900', 'transition-colors', 'no-underline')}
+                          >
+                            {["linkedin", "github", "website"].includes(item.type!)
+                              ? item.value.replace(/^https?:\/\/(www\.)?/, "")
+                              : item.value}
+                          </a>
+                        ) : (
+                          item.value
+                        )}
+                      </span>
+                      {index < array.length - 1 && (
+                        <span className={clsx('text-zinc-400', 'font-light')}>|</span>
                       )}
-                    </span>
-                    {index < array.length - 1 && (
-                      <span className={clsx('text-zinc-400', 'font-light')}>|</span>
-                    )}
-                  </React.Fragment>
+                    </React.Fragment>
+                  ))}
+              </div>
+            </div>
+          );
+
+        case "summary":
+          if (!block.data) return null;
+          return (
+            <div key={idx} className={clsx('text-left', 'w-full', 'mb-4')}>
+              <SectionHeader title="Professional Summary" />
+              <p className={clsx('leading-normal', 'text-zinc-800', 'text-left')} style={{ fontSize: "9.5pt" }}>
+                {block.data as string}
+              </p>
+            </div>
+          );
+
+        case "experience":
+          return (
+            <div key={idx} className={clsx('text-left', 'w-full', 'mb-4')}>
+              <SectionHeader title="Experience" />
+              <div className="space-y-4">
+                {(block.data as ExperienceItem[]).map((item, i) => (
+                  <div key={i} className="text-left">
+                    <ItemHeader 
+                      title={item.jobTitle}
+                      subtitle={item.companyName}
+                      rightLabel={`${item.startDate} \u2013 ${item.endDate || "Present"}`}
+                    />
+                    <div className={clsx('space-y-0.5', 'text-left', 'pl-1')}>
+                      {item.bullets.map((bullet, b) => (
+                        <BulletItem key={b}>{bullet}</BulletItem>
+                      ))}
+                    </div>
+                  </div>
                 ))}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      case "summary":
-        if (!block.data) return null;
-        return (
-          <div key={idx} className={clsx('text-left', 'w-full', 'mb-4')}>
-            <SectionHeader title="Professional Summary" />
-            <p className={clsx('leading-normal', 'text-zinc-800', 'text-left')} style={{ fontSize: "9.5pt" }}>
-              {block.data as string}
-            </p>
-          </div>
-        );
+        case "skills":
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title="Skills & Expertise" />
+              <div className={clsx('space-y-0.5', 'pl-1')}>
+                {(block.data as SkillGroup[]).map((group, i) => (
+                  <BulletItem key={i}>
+                    <span className={clsx('font-bold', 'text-zinc-900')}>{group.category}:</span>{" "}
+                    <span className="text-zinc-700">{group.skills.join(", ")}</span>
+                  </BulletItem>
+                ))}
+              </div>
+            </div>
+          );
 
-      case "experience":
-        return (
-          <div key={idx} className={clsx('text-left', 'w-full', 'mb-4')}>
-            <SectionHeader title="Experience" />
-            <div className="space-y-4">
-              {(block.data as ExperienceItem[]).map((item, i) => (
-                <div key={i} className="text-left">
-                  <ItemHeader 
-                    title={item.jobTitle}
-                    subtitle={item.companyName}
-                    rightLabel={`${item.startDate} \u2013 ${item.endDate || "Present"}`}
-                  />
-                  <div className={clsx('space-y-0.5', 'text-left', 'pl-1')}>
-                    {item.bullets.map((bullet, b) => (
-                      <BulletItem key={b}>{bullet}</BulletItem>
-                    ))}
+        case "education":
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title="Education" />
+              <div className="space-y-3">
+                {(block.data as EducationItem[]).map((edu, i) => (
+                  <div key={i}>
+                    <ItemHeader 
+                      title={edu.degree}
+                      subtitle={
+                        <>
+                          {edu.institution}
+                          {edu.gpa && <span className={clsx('font-semibold', 'text-zinc-600')}> — GPA: {edu.gpa}</span>}
+                        </>
+                      }
+                      rightLabel={edu.graduationYear}
+                    />
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      case "skills":
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title="Skills & Expertise" />
-            <div className={clsx('space-y-0.5', 'pl-1')}>
-              {(block.data as SkillGroup[]).map((group, i) => (
-                <BulletItem key={i}>
-                  <span className={clsx('font-bold', 'text-zinc-900')}>{group.category}:</span>{" "}
-                  <span className="text-zinc-700">{group.skills.join(", ")}</span>
-                </BulletItem>
-              ))}
+        case "languages":
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title="Languages" />
+              <div className={clsx('space-y-0.5', 'pl-1')}>
+                {(block.data as LanguageItem[]).map((lang, l) => (
+                  <BulletItem key={l}>
+                    <span className={clsx('font-bold', 'text-zinc-900')}>{lang.language}</span>
+                    {lang.proficiency && (
+                      <span className={clsx('text-zinc-600', 'italic', 'ml-1')}>({lang.proficiency})</span>
+                    )}
+                  </BulletItem>
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      case "education":
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title="Education" />
-            <div className="space-y-3">
-              {(block.data as EducationItem[]).map((edu, i) => (
-                <div key={i}>
-                  <ItemHeader 
-                    title={edu.degree}
-                    subtitle={
-                      <>
-                        {edu.institution}
-                        {edu.gpa && <span className={clsx('font-semibold', 'text-zinc-600')}> — GPA: {edu.gpa}</span>}
-                      </>
-                    }
-                    rightLabel={edu.graduationYear}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      case "languages":
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title="Languages" />
-            <div className={clsx('space-y-0.5', 'pl-1')}>
-              {(block.data as LanguageItem[]).map((lang, l) => (
-                <BulletItem key={l}>
-                  <span className={clsx('font-bold', 'text-zinc-900')}>{lang.language}</span>
-                  {lang.proficiency && (
-                    <span className={clsx('text-zinc-600', 'italic', 'ml-1')}>({lang.proficiency})</span>
-                  )}
-                </BulletItem>
-              ))}
-            </div>
-          </div>
-        );
-
-      case "projects":
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title="Projects" />
-            <div className="space-y-4">
-              {(block.data as ProjectItem[]).map((proj, i) => (
-                <div key={i}>
-                  <ItemHeader 
-                    title={proj.link ? (
-                      <a href={proj.link} className={clsx('hover:text-zinc-900', 'border-b', 'border-transparent', 'hover:border-zinc-900', 'transition-all')}>
-                        {proj.name}
-                      </a>
-                    ) : proj.name}
-                    rightLabel={proj.dates}
-                  />
-                  {proj.description && (
-                    <p className={clsx('mb-1.5', 'text-zinc-600', 'leading-snug')} style={{ fontSize: "9.5pt" }}>
-                      {proj.description}
-                    </p>
-                  )}
-                  <div className={clsx("space-y-1", "pl-1")}>
-                    {proj.bullets.map((bullet, b) => (
-                      <BulletItem key={b}>{bullet}</BulletItem>
-                    ))}
+        case "projects":
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title="Projects" />
+              <div className="space-y-4">
+                {(block.data as ProjectItem[]).map((proj, i) => (
+                  <div key={i}>
+                    <ItemHeader 
+                      title={proj.link ? (
+                        <a href={proj.link} className={clsx('hover:text-zinc-900', 'border-b', 'border-transparent', 'hover:border-zinc-900', 'transition-all')}>
+                          {proj.name}
+                        </a>
+                      ) : proj.name}
+                      rightLabel={proj.dates}
+                    />
+                    {proj.description && (
+                      <p className={clsx('mb-1.5', 'text-zinc-600', 'leading-snug')} style={{ fontSize: "9.5pt" }}>
+                        {proj.description}
+                      </p>
+                    )}
+                    <div className={clsx("space-y-1", "pl-1")}>
+                      {proj.bullets.map((bullet, b) => (
+                        <BulletItem key={b}>{bullet}</BulletItem>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      case "certifications":
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title="Certifications" />
-            <div className={clsx("space-y-1.5 pl-1")}>
-              {(block.data as CertificationItem[]).map((cert, c) => (
-                <BulletItem key={c}>
-                  <span className={clsx('font-bold', 'text-zinc-900')}>{cert.name}</span>
-                  <span className="text-zinc-500"> — {cert.issuer} ({cert.year})</span>
-                </BulletItem>
-              ))}
+        case "certifications":
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title="Certifications" />
+              <div className={clsx("space-y-1.5 pl-1")}>
+                {(block.data as CertificationItem[]).map((cert, c) => (
+                  <BulletItem key={c}>
+                    <span className={clsx('font-bold', 'text-zinc-900')}>{cert.name}</span>
+                    <span className="text-zinc-500"> — {cert.issuer} ({cert.year})</span>
+                  </BulletItem>
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      case "custom":
-        const custom = block.data as CustomBlock;
-        if (!custom.title) return null;
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title={custom.title} />
-            <div className={clsx('whitespace-pre-wrap', 'leading-normal', 'text-zinc-700')} style={{ fontSize: "9.5pt" }}>
-              {custom.content}
+        case "custom":
+          const custom = block.data as CustomBlock;
+          if (!custom.title) return null;
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title={custom.title} />
+              <div className={clsx('whitespace-pre-wrap', 'leading-normal', 'text-zinc-700')} style={{ fontSize: "9.5pt" }}>
+                {custom.content}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      case "personal":
-        return (
-          <div key={idx} className="mb-4">
-            <SectionHeader title="Personal Details" />
-            <div className={clsx('space-y-1', 'pl-1')}>
-              {Array.isArray(block.data) && (block.data as any[]).map((item, i) => (
-                <div key={i} className={clsx('flex', 'gap-2', 'text-left')} style={{ fontSize: "9.5pt" }}>
-                  <span className={clsx('font-bold', 'text-zinc-900', 'min-w-[100px]')}>{item.label}:</span>
-                  <span className="text-zinc-700">{formatPersonalValue(item.label, item.value)}</span>
-                </div>
-              ))}
+        case "personal":
+          return (
+            <div key={idx} className="mb-4">
+              <SectionHeader title="Personal Details" />
+              <div className={clsx('space-y-1', 'pl-1')}>
+                {Array.isArray(block.data) && (block.data as any[]).map((item, i) => (
+                  <div key={i} className={clsx('flex', 'gap-2', 'text-left')} style={{ fontSize: "9.5pt" }}>
+                    <span className={clsx('font-bold', 'text-zinc-900', 'min-w-[100px]')}>{item.label}:</span>
+                    <span className="text-zinc-700">{formatPersonalValue(item.label, item.value)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      default:
-        return null;
-    }
-  };
+        default:
+          return null;
+      }
+    };
 
-  return (
-    <div
-      className={clsx('resume-container', 'w-[210mm]', 'min-h-[296mm]', 'mx-auto', 'bg-white', 'text-zinc-900', 'print:p-0', 'flex', 'flex-col')}
-      style={{
-        padding: "12mm 15mm",
-        boxSizing: "border-box",
-        fontFamily: "'Inter', 'Helvetica', 'Arial', sans-serif",
-      }}
-    >
-      {data.blocks.map((block, index) => renderBlock(block, index))}
-    </div>
-  );
-};
+    return (
+      <div
+        ref={ref}
+        className={clsx('resume-container', 'w-[210mm]', 'min-h-[296mm]', 'mx-auto', 'bg-white', 'text-zinc-900', 'print:p-0', 'print:m-0', 'flex', 'flex-col')}
+        style={{
+          padding: "12mm 15mm",
+          boxSizing: "border-box",
+          fontFamily: "'Inter', 'Helvetica', 'Arial', sans-serif",
+        }}
+      >
+        {data.blocks.map((block, index) => renderBlock(block, index))}
+      </div>
+    );
+  }
+);
+
+ATSMinimalist.displayName = "ATSMinimalist";
+

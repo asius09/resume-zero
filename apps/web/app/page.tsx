@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { cn } from "@/lib/cn";
 import { useResumeData } from "@/hooks/use-resume-data";
 import { Header } from "@/components/layout/header";
@@ -20,18 +21,21 @@ export default function ResumeCleanerPage() {
   } = useResumeData();
 
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: data.metadata.name || "My Resume",
+  });
 
   const handleExportPDF = () => {
-    const originalTitle = document.title;
-    document.title = data.metadata.name || "My Resume";
-    window.print();
-    document.title = originalTitle;
+    handlePrint();
   };
 
   if (!isMounted) return null;
 
   return (
-    <div className={cn('min-h-screen', 'bg-white')}>
+    <div className={cn("min-h-screen", "bg-white")}>
       <Header
         resumeName={data.metadata.name || ""}
         onResumeNameChange={setResumeName}
@@ -42,9 +46,35 @@ export default function ResumeCleanerPage() {
         onExportPDF={handleExportPDF}
       />
 
-      <main className={cn('grid', 'grid-cols-1', 'lg:grid-cols-2', 'min-h-[calc(100vh-80px)]')}>
+      <main
+        className={cn(
+          "grid",
+          "grid-cols-1",
+          "lg:grid-cols-2",
+          "min-h-[calc(100vh-80px)]",
+        )}
+      >
         {/* Mobile View Toggle */}
-        <div className={cn('lg:hidden', 'fixed', 'bottom-10', 'left-1/2', '-translate-x-1/2', 'z-50', 'bg-zinc-900/90', 'backdrop-blur-md', 'text-white', 'rounded-full', 'p-1.5', 'shadow-2xl', 'flex', 'items-center', 'border', 'border-white/10')}>
+        <div
+          className={cn(
+            "lg:hidden",
+            "fixed",
+            "bottom-10",
+            "left-1/2",
+            "-translate-x-1/2",
+            "z-50",
+            "bg-zinc-900/90",
+            "backdrop-blur-md",
+            "text-white",
+            "rounded-full",
+            "p-1.5",
+            "shadow-2xl",
+            "flex",
+            "items-center",
+            "border",
+            "border-white/10",
+          )}
+        >
           <button
             onClick={() => setMobileView("edit")}
             className={cn(
@@ -58,9 +88,7 @@ export default function ResumeCleanerPage() {
             onClick={() => setMobileView("preview")}
             className={cn(
               "px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
-              mobileView === "preview"
-                ? "bg-white text-black"
-                : "text-white/60",
+              mobileView === "preview" ? "bg-white text-black" : "text-white/60",
             )}
           >
             Preview
@@ -94,16 +122,15 @@ export default function ResumeCleanerPage() {
           )}
         >
           <ResumePreview
+            ref={componentRef}
             data={data}
             activeLayout={
-              data.metadata.theme as
-                | "minimalist"
-                | "professional"
-                  | "international"
-              }
-            />
+              data.metadata.theme as "minimalist" | "professional" | "international"
+            }
+          />
         </div>
       </main>
     </div>
   );
 }
+
