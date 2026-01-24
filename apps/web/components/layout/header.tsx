@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Download, Sparkles } from "lucide-react";
+import { Download } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +12,6 @@ interface HeaderProps {
   onLayoutChange: (
     layout: "minimalist" | "professional" | "international",
   ) => void;
-  onCleanAll: () => void;
   onExportPDF: () => void;
 }
 
@@ -21,7 +20,6 @@ export function Header({
   onResumeNameChange,
   activeLayout,
   onLayoutChange,
-  onCleanAll,
   onExportPDF,
 }: HeaderProps) {
   return (
@@ -153,28 +151,14 @@ export function Header({
         </div>
 
         <div className={cn("flex", "items-center", "gap-2")}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onCleanAll}
-            className={cn(
-              "hidden",
-              "sm:flex",
-              "text-zinc-500",
-              "hover:text-zinc-900",
-              "gap-2",
-            )}
-          >
-            <Sparkles size={14} className="text-zinc-400" />
-            Auto Clean
-          </Button>
 
           <Button
+            size="sm"
             onClick={onExportPDF}
-            className={cn("gap-2", "shadow-sm", "rounded-full")}
+            className={cn("gap-2", "rounded-full font-medium")}
           >
             <Download size={14} />
-            Export PDF
+           <span className={cn('md:block', 'hidden')}>Export PDF</span>
           </Button>
         </div>
       </div>

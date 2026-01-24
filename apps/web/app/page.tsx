@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { useResumeData } from "@/hooks/use-resume-data";
 import { Header } from "@/components/layout/header";
 import { ResumeEditor } from "@/components/resume-editor/resume-editor";
 import { ResumePreview } from "@/components/resume-editor/resume-preview";
-import { handleCopySection, renderPlainText } from "@/lib/utils";
+import { handleCopySection } from "@/lib/utils";
 
 export default function ResumeCleanerPage() {
   const {
@@ -15,7 +15,6 @@ export default function ResumeCleanerPage() {
     updateBlock,
     addBlock,
     removeBlock,
-    autoClean,
     setResumeName,
     setTheme,
   } = useResumeData();
@@ -40,7 +39,6 @@ export default function ResumeCleanerPage() {
           data.metadata.theme as "minimalist" | "professional" | "international"
         }
         onLayoutChange={setTheme}
-        onCleanAll={autoClean}
         onExportPDF={handleExportPDF}
       />
 
@@ -103,7 +101,6 @@ export default function ResumeCleanerPage() {
                 | "professional"
                   | "international"
               }
-              renderPlainText={() => renderPlainText(data)}
             />
         </div>
       </main>
