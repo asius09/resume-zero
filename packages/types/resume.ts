@@ -37,6 +37,7 @@ export const EducationItemSchema = z.object({
   location: z.string().optional(),
   graduationYear: z.string().min(1),
   gpa: z.string().optional(),
+  isPursuing: z.boolean().default(false),
 });
 
 export const SkillGroupSchema = z.object({

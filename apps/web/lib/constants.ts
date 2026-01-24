@@ -41,20 +41,18 @@ export const INITIAL_DATA: ResumeData = {
       data: [
         {
           jobTitle: "Front Office Executive",
-          companyName: "BLK Max Super Speciality Hospital",
+          companyName: "BLK-Max Super Speciality Hospital",
           location: "Delhi, India",
           startDate: "Jan 2024",
           endDate: "Present",
           isCurrent: true,
           bullets: [
-            "Orchestrate seamless patient reception and front-desk workflows in a high-volume multi-speciality environment.",
-            "Drive efficiency in appointment scheduling and follow-ups, reducing patient wait times and improving satisfaction.",
-            "Lead rigorous insurance verification and coordination processes to ensure 100% billing accuracy.",
-            "Mastermind medical billing and basic coding for complex government and private medical bills.",
-            "Deliver exceptional customer service by resolving patient inquiries and maintaining professional communication.",
-            "Uphold meticulous clinic documentation and records management in compliance with hospital standards.",
-            "Leverage advanced MS Office and clinic management software to enhance operational productivity.",
-            "Optimized patient registration flow, resulting in faster service delivery during peak hours."
+            "Manage patient billing, payment processing, and basic insurance checks including verification of government bills.",
+            "Guide patients at the front desk with registration, appointments, and general inquiries.",
+            "Coordinate with clinical and support teams to ensure smooth and timely patient flow.",
+            "Maintain accurate patient records and provide clear information to patients and their families.",
+            "Ensure a polite and calm front desk experience during high-volume busy hours.",
+            "Handle incoming calls and support faster overall service delivery."
           ],
         },
       ],
@@ -63,15 +61,23 @@ export const INITIAL_DATA: ResumeData = {
       type: "skills",
       data: [
         {
-          category: "Key Professional Skills",
+          category: "Professional Skills",
           skills: [
-            "Patient Reception & Front Desk Handling",
-            "Appointment Scheduling & Follow-ups",
-            "Insurance Verification & Coordination",
-            "Medical Billing & Basic Medical Coding",
-            "Customer Service & Professional Communication",
-            "Clinic Documentation & Records Management",
-            "MS Office & Clinic Management Software",
+            "Patient Reception",
+            "Hospital Billing",
+            "Insurance Verification",
+            "Appointment Scheduling",
+            "Records Management",
+            "Documentation",
+            "Patient Communication"
+          ],
+        },
+        {
+          category: "Computer Skills",
+          skills: [
+            "Microsoft Excel",
+            "Microsoft Word",
+            "Tally Software"
           ],
         },
       ],
@@ -81,18 +87,21 @@ export const INITIAL_DATA: ResumeData = {
       data: [
         {
           degree: "MBA in Operations Management",
-          institution: "Pursuing",
-          graduationYear: "2025 (Expected)",
+          institution: "Indira Gandhi National Open University",
+          graduationYear: "2025",
+          isPursuing: true,
         },
         {
           degree: "Bachelor of Arts",
           institution: "University of Delhi",
           graduationYear: "2021",
+          isPursuing: false,
         },
         {
           degree: "Higher Secondary Education (C.B.S.E)",
           institution: "Delhi",
           graduationYear: "2018",
+          isPursuing: false,
         },
       ],
     },

@@ -39,6 +39,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
       degree: "",
       institution: "",
       graduationYear: new Date().getFullYear().toString(),
+      isPursuing: false,
     };
     onUpdate([...items, newItem]);
     setExpandedIndex(items.length);
@@ -92,7 +93,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                   <div className={cn('flex', 'items-center', 'gap-4', 'mt-1', 'text-[10px]', 'sm:text-xs', 'text-zinc-500')}>
                     <div className={cn('flex', 'items-center', 'gap-1')}>
                       <Calendar size={12} className="shrink-0" />
-                      {item.graduationYear || "Year"}
+                      {item.isPursuing ? `${item.graduationYear} (Expected)` : (item.graduationYear || "Year")}
                     </div>
                   </div>
                 )}
@@ -144,7 +145,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Graduation Year</Label>
+                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Graduation / Expected Year</Label>
                       <Select 
                         className="h-11"
                         value={item.graduationYear} 
@@ -153,6 +154,32 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                         <option value="">Select Year</option>
                         {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                       </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                       <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>GPA / Grade (Optional)</Label>
+                       <Input
+                         className={cn('h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all')}
+                         value={item.gpa || ""}
+                         onChange={(e) => updateItem(iIdx, { gpa: e.target.value })}
+                         placeholder="e.g. 3.8/4.0 or 85%"
+                       />
+                    </div>
+
+                    <div className="flex items-center space-x-2 pt-2">
+                      <input
+                        type="checkbox"
+                        id={`pursuing-${iIdx}`}
+                        checked={item.isPursuing}
+                        onChange={(e) => updateItem(iIdx, { isPursuing: e.target.checked })}
+                        className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
+                      />
+                      <Label 
+                        htmlFor={`pursuing-${iIdx}`} 
+                        className="text-xs font-bold uppercase text-zinc-600 cursor-pointer select-none tracking-tight"
+                      >
+                        Currently Pursuing
+                      </Label>
                     </div>
                   </div>
                 </div>

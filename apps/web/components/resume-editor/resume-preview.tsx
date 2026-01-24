@@ -17,7 +17,7 @@ interface ResumePreviewProps {
 export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
   ({ data, activeLayout }, ref) => {
     return (
-      <div className={cn("w-full", "relative", "flex", "justify-center")}>
+      <div className={cn("w-full", "relative", "flex", "justify-center", "bg-zinc-50/50", "py-20", "min-h-screen")}>
         <div
           id="resume-preview"
           className={cn(

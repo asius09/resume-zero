@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginHorizontal: 8,
-    color: "#a1a1aa", // zinc-400
+    color: "#52525b", // zinc-600
+    fontWeight: 700,
   },
   section: {
     width: "100%",
@@ -254,7 +255,7 @@ export const ATSMinimalistPDF: React.FC<{ data: ResumeData }> = ({ data }) => {
                       <Text>{item.value}</Text>
                     )}
                     {index < array.length - 1 && (
-                      <Text style={styles.divider}>|</Text>
+                      <Text style={styles.divider}>•</Text>
                     )}
                   </React.Fragment>
                 ))}
@@ -331,7 +332,9 @@ export const ATSMinimalistPDF: React.FC<{ data: ResumeData }> = ({ data }) => {
               <View key={i} style={{ marginBottom: 8 }}>
                 <View style={styles.itemHeaderRow}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
-                  <Text style={styles.itemRightLabel}>{edu.graduationYear}</Text>
+                  <Text style={styles.itemRightLabel}>
+                    {edu.isPursuing ? `${edu.graduationYear} (Expected)` : edu.graduationYear}
+                  </Text>
                 </View>
                 <Text style={styles.itemSubtitle}>
                   {edu.institution}
