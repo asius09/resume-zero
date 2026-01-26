@@ -12,12 +12,17 @@ import { handleCopySection } from "@/lib/utils";
 export default function ResumeCleanerPage() {
   const {
     data,
+    resumes,
+    activeId,
     isMounted,
     updateBlock,
     addBlock,
     removeBlock,
     setResumeName,
     setTheme,
+    createNewVersion,
+    selectVersion,
+    deleteVersion,
   } = useResumeData();
 
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
@@ -51,6 +56,11 @@ export default function ResumeCleanerPage() {
         }
         onLayoutChange={setTheme}
         onExportPDF={handleExportPDF}
+        resumes={resumes}
+        activeId={activeId}
+        onSelectVersion={selectVersion}
+        onCreateNewVersion={createNewVersion}
+        onDeleteVersion={deleteVersion}
       />
 
       <main

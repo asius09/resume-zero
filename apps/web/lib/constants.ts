@@ -1,6 +1,8 @@
 import type { ResumeData } from "@resume/types";
 
 export const STORAGE_KEY = "resume_creator_v1_data";
+export const RESUMES_STORAGE_KEY = "resume_creator_v1_all_resumes";
+export const ACTIVE_RESUME_ID_KEY = "resume_creator_v1_active_id";
 
 export const INITIAL_DATA: ResumeData = {
   id: crypto.randomUUID(),

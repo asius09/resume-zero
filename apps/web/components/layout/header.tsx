@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Download } from "lucide-react";
+import { Download, Trash2, Copy } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
+import type { ResumeData } from "@resume/types";
 
 interface HeaderProps {
   resumeName: string;
@@ -13,6 +14,11 @@ interface HeaderProps {
     layout: "minimalist" | "professional" | "international",
   ) => void;
   onExportPDF: () => void;
+  resumes: Record<string, ResumeData>;
+  activeId: string | null;
+  onSelectVersion: (id: string) => void;
+  onCreateNewVersion: () => void;
+  onDeleteVersion: (id: string) => void;
 }
 
 export function Header({
@@ -21,6 +27,11 @@ export function Header({
   activeLayout,
   onLayoutChange,
   onExportPDF,
+  resumes,
+  activeId,
+  onSelectVersion,
+  onCreateNewVersion,
+  onDeleteVersion,
 }: HeaderProps) {
   return (
     <header
@@ -116,6 +127,53 @@ export function Header({
             />
           </div>
         </div>
+
+        <div className={cn("h-6", "w-px", "bg-zinc-200", "mx-1", "hidden", "md:block")} />
+
+        <div className={cn("hidden", "md:flex", "items-center", "gap-2")}>
+          <select
+            className={cn(
+              "text-[10px]",
+              "font-bold",
+              "uppercase",
+              "tracking-wider",
+              "bg-zinc-50",
+              "border",
+              "border-zinc-200",
+              "rounded-full",
+              "px-3",
+              "py-1",
+              "focus:ring-0",
+              "cursor-pointer",
+            )}
+            value={activeId || ""}
+            onChange={(e) => onSelectVersion(e.target.value)}
+          >
+            {Object.values(resumes).map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.metadata.name || "Untitled"}
+              </option>
+            ))}
+          </select>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 rounded-full"
+            onClick={onCreateNewVersion}
+            title="Create Copy"
+          >
+            <Copy size={12} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 rounded-full text-red-500 hover:text-red-600 hover:bg-red-50"
+            onClick={() => activeId && onDeleteVersion(activeId)}
+            title="Delete Version"
+          >
+            <Trash2 size={12} />
+          </Button>
+        </div>
       </div>
 
       <div className={cn("flex", "items-center", "gap-6")}>
@@ -151,14 +209,13 @@ export function Header({
         </div>
 
         <div className={cn("flex", "items-center", "gap-2")}>
-
           <Button
             size="sm"
             onClick={onExportPDF}
             className={cn("gap-2", "rounded-full font-medium")}
           >
             <Download size={14} />
-           <span className={cn('md:block', 'hidden')}>Export PDF</span>
+            <span className={cn("md:block", "hidden")}>Export PDF</span>
           </Button>
         </div>
       </div>

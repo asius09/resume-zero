@@ -9,56 +9,92 @@ import type {
   ProjectItem,
 } from "@resume/types";
 import { normalizeBullet, cleanText } from "@resume/cleaner";
-import { INITIAL_DATA, STORAGE_KEY } from "@/lib/constants";
+import {
+  INITIAL_DATA,
+  STORAGE_KEY,
+  RESUMES_STORAGE_KEY,
+  ACTIVE_RESUME_ID_KEY,
+} from "@/lib/constants";
 
 export function useResumeData() {
-  const [data, setData] = useState<ResumeData>(INITIAL_DATA);
+  const [resumes, setResumes] = useState<Record<string, ResumeData>>({});
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+
+  const data = (activeId && resumes[activeId]) || INITIAL_DATA;
+
+  const setData = (newData: ResumeData | ((prev: ResumeData) => ResumeData)) => {
+    if (!activeId) return;
+    setResumes((prev) => {
+      const current = prev[activeId] || INITIAL_DATA;
+      const next = typeof newData === "function" ? newData(current) : newData;
+      return {
+        ...prev,
+        [activeId]: next,
+      };
+    });
+  };
 
   // Load from LocalStorage once on mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    const savedResumes = localStorage.getItem(RESUMES_STORAGE_KEY);
+    const savedActiveId = localStorage.getItem(ACTIVE_RESUME_ID_KEY);
+    const legacySaved = localStorage.getItem(STORAGE_KEY);
+
+    let initialResumes: Record<string, ResumeData> = {};
+    let initialActiveId: string | null = null;
+
+    if (savedResumes) {
       try {
-        const parsed = JSON.parse(saved);
+        initialResumes = JSON.parse(savedResumes);
+        initialActiveId = savedActiveId;
+      } catch (e) {
+        console.error("Failed to parse saved resumes", e);
+      }
+    } else if (legacySaved) {
+      // Migrate legacy single resume
+      try {
+        const parsed = JSON.parse(legacySaved);
         if (parsed.id) {
-          // Robust data migration for personal block
-          if (parsed.blocks) {
-            parsed.blocks = parsed.blocks.map((block: ResumeBlock) => {
-              if (block.type === "personal" && !Array.isArray(block.data)) {
-                return {
-                  ...block,
-                  data: Object.entries(block.data || {}).map(([key, value]) => ({
-                    label: key
-                      .replace(/([A-Z])/g, " $1")
-                      .replace(/^./, (str) => str.toUpperCase()),
-                    value: String(value),
-                  })),
-                };
-              }
-              return block;
-            });
-          }
-          // Wrapped in setTimeout to avoid the linter warning about sync setState in effects
-          setTimeout(() => {
-            setData(parsed);
-          }, 0);
+          initialResumes = { [parsed.id]: parsed };
+          initialActiveId = parsed.id;
         }
       } catch (e) {
-        console.error("Failed to parse saved data", e);
+        console.error("Failed to parse legacy saved data", e);
       }
     }
+
+    // Ensure we have at least one resume
+    if (Object.keys(initialResumes).length === 0) {
+      const firstId = INITIAL_DATA.id;
+      initialResumes = { [firstId]: INITIAL_DATA };
+      initialActiveId = firstId;
+    }
+
+    if (!initialActiveId || !initialResumes[initialActiveId]) {
+      initialActiveId = Object.keys(initialResumes)[0];
+    }
+
+    // Wrapped in setTimeout to avoid the linter warning about sync setState in effects
+    setTimeout(() => {
+      setResumes(initialResumes);
+      setActiveId(initialActiveId);
+    }, 0);
+
     setTimeout(() => {
       setIsMounted(true);
     }, 0);
   }, []);
 
-  // Save to LocalStorage whenever data changes
+  // Save to LocalStorage whenever resumes or activeId changes
   useEffect(() => {
     if (isMounted) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(RESUMES_STORAGE_KEY, JSON.stringify(resumes));
+      if (activeId) {
+        localStorage.setItem(ACTIVE_RESUME_ID_KEY, activeId);
+      }
     }
-  }, [data, isMounted]);
+  }, [resumes, activeId, isMounted]);
 
   const updateBlock = (index: number, newData: ResumeBlock["data"]) => {
     const newBlocks = [...data.blocks];
@@ -187,8 +223,47 @@ export function useResumeData() {
     }));
   };
 
+  const createNewVersion = () => {
+    const newId = crypto.randomUUID();
+    const newResume: ResumeData = {
+      ...data,
+      id: newId,
+      metadata: {
+        ...data.metadata,
+        name: `${data.metadata.name} (Copy)`,
+        lastModified: new Date().toISOString(),
+      },
+    };
+    setResumes((prev) => ({ ...prev, [newId]: newResume }));
+    setActiveId(newId);
+  };
+
+  const deleteVersion = (id: string) => {
+    const versionCount = Object.keys(resumes).length;
+    if (versionCount <= 1) {
+      alert("You must have at least one resume.");
+      return;
+    }
+
+    if (confirm("Are you sure you want to delete this version?")) {
+      const newResumes = { ...resumes };
+      delete newResumes[id];
+      setResumes(newResumes);
+
+      if (activeId === id) {
+        setActiveId(Object.keys(newResumes)[0]);
+      }
+    }
+  };
+
+  const selectVersion = (id: string) => {
+    setActiveId(id);
+  };
+
   return {
     data,
+    resumes,
+    activeId,
     setData,
     isMounted,
     updateBlock,
@@ -197,5 +272,8 @@ export function useResumeData() {
     autoClean,
     setResumeName,
     setTheme,
+    createNewVersion,
+    deleteVersion,
+    selectVersion,
   };
 }
