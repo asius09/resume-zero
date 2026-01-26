@@ -53,7 +53,7 @@ export default function ResumeCleanerPage() {
         resumeName={data.metadata.name || ""}
         onResumeNameChange={setResumeName}
         activeLayout={
-          data.metadata.theme as "minimalist" | "professional" | "international"
+          data.metadata.theme as "minimalist" | "professional" | "international" | "executive"
         }
         onLayoutChange={setTheme}
         onExportPDF={handleExportPDF}
@@ -143,7 +143,7 @@ export default function ResumeCleanerPage() {
             ref={componentRef}
             data={data}
             activeLayout={
-              data.metadata.theme as "minimalist" | "professional" | "international"
+              data.metadata.theme as "minimalist" | "professional" | "international" | "executive"
             }
           />
         </div>

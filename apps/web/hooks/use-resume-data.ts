@@ -221,7 +221,7 @@ export function useResumeData() {
     }));
   };
 
-  const setTheme = (theme: "minimalist" | "professional" | "international") => {
+  const setTheme = (theme: "minimalist" | "professional" | "international" | "executive") => {
     setData((prev) => ({
       ...prev,
       metadata: { ...prev.metadata, theme },

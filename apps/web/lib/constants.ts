@@ -22,8 +22,8 @@ export const INITIAL_DATA: ResumeData = {
     {
       type: "header",
       data: {
-        fullName: "Adiba Firoz",
-        location: "Karol Bagh, Delhi, India",
+        fullName: "ADIBA FIROZ",
+        location: "Delhi, India",
         contacts: [
           { type: "phone", value: "+91 95825 76055" },
           { type: "email", value: "adibafiroz2001@gmail.com" },
@@ -36,7 +36,7 @@ export const INITIAL_DATA: ResumeData = {
     },
     {
       type: "summary",
-      data: "Patient-focused Front Office Executive with over a year of experience in high-volume medical environments at BLK-Max Super Speciality Hospital. Expert in managing patient billing, insurance verification, and coordinating complex clinical flow. Dedicated to providing calm, professional, and efficient front-desk assistance while ensuring accurate records management and exceptional patient care.",
+      data: "Dedicated Front Office Executive with 1+ years in high-volume hospital administration. Expert in patient registration, OPD/IPD billing, and insurance verification for 80+ daily patients. Delivers efficient hospital coordination and premium patient support with 100% documentation accuracy.",
     },
     {
       type: "experience",
@@ -49,12 +49,11 @@ export const INITIAL_DATA: ResumeData = {
           endDate: "Present",
           isCurrent: true,
           bullets: [
-            "Manage patient billing, payment processing, and basic insurance checks including verification of government bills.",
-            "Guide patients at the front desk with registration, appointments, and general inquiries.",
-            "Coordinate with clinical and support teams to ensure smooth and timely patient flow.",
-            "Maintain accurate patient records and provide clear information to patients and their families.",
-            "Ensure a polite and calm front desk experience during high-volume busy hours.",
-            "Handle incoming calls and support faster overall service delivery."
+            "Managed front desk operations for a high-volume hospital, handling 80+ patient registrations and billing inquiries daily.",
+            "Processed government insurance verifications and OPD/IPD billing with 100% accuracy, streamlining treasury operations.",
+            "Coordinated with clinical and nursing departments to optimize patient flow, reducing average waiting time during peak hours.",
+            "Verified and maintained digital patient records while facilitating clear communication between patients, families, and doctors.",
+            "Handled 40+ daily telephonic inquiries and resolved complex patient queries with a focus on service efficiency and resolution."
           ],
         },
       ],
@@ -63,23 +62,24 @@ export const INITIAL_DATA: ResumeData = {
       type: "skills",
       data: [
         {
-          category: "Professional Skills",
+          category: "Core Skills",
           skills: [
-            "Patient Reception",
-            "Hospital Billing",
+            "Patient Registration",
+            "OPD/IPD Coordination",
+            "Cash Handling",
+            "Billing",
             "Insurance Verification",
-            "Appointment Scheduling",
-            "Records Management",
-            "Documentation",
-            "Patient Communication"
+            "Front Desk Operations",
+            "Patient Resolution"
           ],
         },
         {
-          category: "Computer Skills",
+          category: "Tools",
           skills: [
-            "Microsoft Excel",
-            "Microsoft Word",
-            "Tally Software"
+            "MS Excel",
+            "MS Word",
+            "Tally",
+            "HIS (Hospital Information System)"
           ],
         },
       ],

@@ -6,12 +6,13 @@ import {
   ATSMinimalist,
   ModernProfessional,
   InternationalFormat,
+  ExecutiveSerif,
 } from "@resume/ui";
 import type { ResumeData } from "@resume/types";
 
 interface ResumePreviewProps {
   data: ResumeData;
-  activeLayout: "minimalist" | "professional" | "international";
+  activeLayout: "minimalist" | "professional" | "international" | "executive";
 }
 
 export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
@@ -81,6 +82,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                 {activeLayout === "minimalist" && <ATSMinimalist data={data} ref={ref} />}
                 {activeLayout === "professional" && <ModernProfessional data={data} ref={ref} />}
                 {activeLayout === "international" && <InternationalFormat data={data} ref={ref} />}
+                {activeLayout === "executive" && <ExecutiveSerif data={data} ref={ref} />}
               </div>
 
               {/* Precise Page Terminators */}

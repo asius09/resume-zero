@@ -25,9 +25,9 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface HeaderProps {
   resumeName: string;
   onResumeNameChange: (name: string) => void;
-  activeLayout: string;
+  activeLayout: "minimalist" | "professional" | "international" | "executive";
   onLayoutChange: (
-    layout: "minimalist" | "professional" | "international",
+    layout: "minimalist" | "professional" | "international" | "executive",
   ) => void;
   onExportPDF: () => void;
   resumes: Record<string, ResumeData>;
@@ -224,13 +224,13 @@ export function Header({
           value={activeLayout}
           onValueChange={(v) =>
             onLayoutChange(
-              v as "minimalist" | "professional" | "international",
+              v as "minimalist" | "professional" | "international" | "executive",
             )
           }
           className={cn('hidden', 'md:block')}
         >
           <TabsList className={cn('bg-zinc-50', 'border', 'border-zinc-200', 'rounded-full', 'h-8', 'px-1')}>
-            {(["minimalist", "professional", "international"] as const).map(
+            {(["minimalist", "professional", "international", "executive"] as const).map(
               (t) => (
                 <TabsTrigger
                   key={t}

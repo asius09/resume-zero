@@ -101,7 +101,7 @@ export const ResumeDataSchema = z.object({
   version: z.number().default(1),
   metadata: z.object({
     name: z.string().default('My Resume'),
-    theme: z.enum(['minimalist', 'professional', 'international']).default('minimalist'),
+    theme: z.enum(['minimalist', 'professional', 'international', 'executive']).default('minimalist'),
     region: z.string().default('US'),
     lastModified: z.string().default(() => new Date().toISOString()),
     images: z.array(z.string()).optional(),
