@@ -174,7 +174,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                 <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-8', 'gap-y-6', 'text-sm', 'sm:text-base')}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Job Title</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Job Title</Label>
                       <div className="relative">
                         <Briefcase className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
                         <Input
@@ -187,7 +187,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                     </div>
                     
                     <div className="space-y-2">
-                        <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Company Name</Label>
+                        <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Company Name</Label>
                         <Input
                           className={cn('h-11', 'border-zinc-200', 'rounded-lg')}
                           value={item.companyName}
@@ -199,7 +199,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Location</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Location</Label>
                       <div className="relative">
                         <MapPin className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
                         <Input
@@ -214,7 +214,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                     <div className="space-y-4">
                       {/* Start Date Selection */}
                       <div className="space-y-2">
-                        <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Start Date</Label>
+                        <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Start Date</Label>
                         <div className={cn('grid', 'grid-cols-2', 'gap-2')}>
                           <Select 
                             value={startDate.month} 
@@ -248,7 +248,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                       {/* End Date Selection */}
                       <div className="space-y-2">
                         <div className={cn('flex', 'items-center', 'justify-between')}>
-                          <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>End Date</Label>
+                          <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>End Date</Label>
                           <button 
                             type="button"
                             onClick={() => updateItem(iIdx, { 
@@ -304,7 +304,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                 {/* Accomplishments Section */}
                 <div className={cn('space-y-4', 'pt-4', 'border-t', 'border-zinc-100')}>
                   <div className={cn('flex', 'items-center', 'justify-between')}>
-                    <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Key Accomplishments</Label>
+                    <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Key Accomplishments</Label>
                     <span className={cn('text-[10px]', 'text-zinc-400', 'italic', 'hidden', 'sm:inline')}>Focus on metrics and impact</span>
                   </div>
                   

@@ -16,10 +16,27 @@ interface ResumePreviewProps {
 
 export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
   ({ data, activeLayout }, ref) => {
+    const [numPages, setNumPages] = React.useState(1);
+
+    React.useEffect(() => {
+      const el = document.getElementById("resume-canvas");
+      if (!el) return;
+
+      const observer = new ResizeObserver(() => {
+        const heightPx = el.getBoundingClientRect().height;
+        const pageHeightPx = 297 * 3.7795275591; // mm to px approx
+        const calculatedPages = Math.max(1, Math.ceil(heightPx / pageHeightPx));
+        setNumPages(calculatedPages);
+      });
+
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, []);
+
     return (
       <div className={cn(
-        "w-full relative flex flex-col items-center bg-zinc-100/50 min-h-screen",
-        "py-4 md:py-12 px-0 md:px-4 overflow-y-auto custom-scrollbar select-none"
+        "w-full relative flex flex-col items-center bg-zinc-100/50",
+        "py-4 md:py-12 px-0 md:px-4 overflow-x-hidden select-none"
       )}>
         {/* Absolute Scaling Engine */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -68,22 +85,25 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
 
               {/* Precise Page Terminators */}
               <div className="absolute inset-0 pointer-events-none no-print">
-                {[1, 2, 3, 4].map((p) => (
-                  <div 
-                    key={p}
-                    className="absolute w-full border-t border-dashed border-red-200"
-                    style={{ top: `${p * 297}mm` }}
-                  >
-                    <div className="absolute right-0 -translate-y-full px-2 py-0.5 bg-white text-red-300 text-[8px] font-bold uppercase tracking-tight">
-                        Page {p} Cut
+                {Array.from({ length: Math.max(0, numPages - 1) }).map((_, i) => {
+                  const p = i + 1;
+                  return (
+                    <div 
+                      key={p}
+                      className="absolute w-full border-t border-dashed border-red-200"
+                      style={{ top: `${p * 297}mm` }}
+                    >
+                      <div className="absolute right-0 -translate-y-full px-2 py-0.5 bg-white text-red-400/60 text-[8px] font-semibold uppercase tracking-widest">
+                          Page {p} Cut
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Bottom Padding for Scaled View */}
-            <div className="h-40" />
+            <div className="h-20" />
           </div>
         </div>
       </div>
@@ -92,4 +112,3 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
 );
 
 ResumePreview.displayName = "ResumePreview";
-

@@ -62,7 +62,7 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2 px-1">
                         <Languages size={12} className="text-zinc-400" />
-                        <Label className="text-[10px] font-bold uppercase text-zinc-400">Language</Label>
+                        <Label className="text-[10px] font-semibold uppercase text-zinc-400">Language</Label>
                       </div>
                       <Select
                         value={isCommonLanguage ? item.language : "other"}
@@ -112,7 +112,7 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 px-1">
                      <Star size={12} className="text-zinc-400" />
-                     <Label className="text-[10px] font-bold uppercase text-zinc-400">Proficiency Level</Label>
+                     <Label className="text-[10px] font-semibold uppercase text-zinc-400">Proficiency Level</Label>
                   </div>
                   <Select
                     value={item.proficiency}

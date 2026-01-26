@@ -46,7 +46,7 @@ export function SkillsEditor({ data, onUpdate }: SkillsEditorProps) {
                 <div className={cn('flex', 'items-center', 'gap-2', 'flex-1')}>
                   <LayoutGrid size={14} className="text-zinc-400" />
                   <Input
-                    className={cn('h-8', 'font-bold', 'text-xs', 'border-transparent', 'hover:border-zinc-200', 'focus:border-zinc-900', 'focus:ring-0', 'p-0', 'px-2', 'transition-all', 'bg-transparent')}
+                    className={cn('h-8', 'font-semibold', 'text-xs', 'border-transparent', 'hover:border-zinc-200', 'focus:border-zinc-900', 'focus:ring-0', 'p-0', 'px-2', 'transition-all', 'bg-transparent')}
                     value={group.category}
                     onChange={(e) =>
                       updateGroup(iIdx, { category: e.target.value })
@@ -66,7 +66,7 @@ export function SkillsEditor({ data, onUpdate }: SkillsEditorProps) {
               <div className={cn('space-y-2')}>
                 <div className={cn('flex', 'items-center', 'gap-2', 'px-1')}>
                    <List size={12} className="text-zinc-400" />
-                   <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-400')}>Skills (comma separated)</Label>
+                   <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-400')}>Skills (comma separated)</Label>
                 </div>
                 <Textarea
                   className={cn('min-h-[80px]', 'text-xs', 'py-2', 'border-zinc-100', 'focus:border-zinc-900', 'focus:ring-0', 'rounded-lg', 'bg-zinc-50/30', 'transition-all', 'resize-none')}

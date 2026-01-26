@@ -36,9 +36,9 @@ export function HeaderEditor({ data, onUpdate }: HeaderEditorProps) {
     <Card className="border-zinc-100 shadow-none">
       <CardContent className="p-6 space-y-6">
         <div className="space-y-1.5">
-          <Label>Full Name</Label>
+          <Label className="text-[10px] uppercase tracking-wider font-semibold text-zinc-500">Full Name</Label>
           <Input
-            className="text-lg font-bold"
+            className="text-lg font-semibold"
             value={data.fullName || ""}
             onChange={(e) => onUpdate({ ...data, fullName: e.target.value })}
             placeholder="e.g. John Doe"
@@ -47,7 +47,7 @@ export function HeaderEditor({ data, onUpdate }: HeaderEditorProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label>Email Address</Label>
+            <Label className="text-[10px] uppercase tracking-wider font-semibold text-zinc-500">Email Address</Label>
             <Input
               value={
                 data.contacts?.find((c: Contact) => c.type === "email")
@@ -58,7 +58,7 @@ export function HeaderEditor({ data, onUpdate }: HeaderEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Phone Number</Label>
+            <Label className="text-[10px] uppercase tracking-wider font-semibold text-zinc-500">Phone Number</Label>
             <Input
               value={
                 data.contacts?.find((c: Contact) => c.type === "phone")
@@ -69,7 +69,7 @@ export function HeaderEditor({ data, onUpdate }: HeaderEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Location</Label>
+            <Label className="text-[10px] uppercase tracking-wider font-semibold text-zinc-500">Location</Label>
             <Input
               value={data.location || ""}
               onChange={(e) => onUpdate({ ...data, location: e.target.value })}
@@ -77,7 +77,7 @@ export function HeaderEditor({ data, onUpdate }: HeaderEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Social / Website</Label>
+            <Label className="text-[10px] uppercase tracking-wider font-semibold text-zinc-500">Social / Website</Label>
             <Input
               value={
                 data.contacts?.find((c: Contact) =>

@@ -1,6 +1,5 @@
 import React from "react";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 interface EditorAddButtonProps {
@@ -10,60 +9,48 @@ interface EditorAddButtonProps {
   className?: string;
 }
 
-export function EditorAddButton({ 
-  onClick, 
-  label, 
+export function EditorAddButton({
+  onClick,
+  label,
   variant = "primary",
-  className 
+  className,
 }: EditorAddButtonProps) {
-  if (variant === "secondary") {
-    return (
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onClick}
-        className={cn(
-          'mt-2', 
-          'w-full', 
-          'md:w-fit', 
-          'border-dashed', 
-          'border-zinc-200', 
-          'text-zinc-500', 
-          'hover:text-zinc-900', 
-          'hover:border-zinc-900', 
-          'hover:bg-white', 
-          'transition-all', 
-          'h-10', 
-          'rounded-lg',
-          className
-        )}
-      >
-        <Plus size={14} className={cn('mr-2')} /> {label}
-      </Button>
-    );
-  }
+  const isPrimary = variant === "primary";
 
   return (
-    <Button
-      variant="outline"
+    <button
+      type="button"
+      onClick={onClick}
       className={cn(
-        'w-full', 
-        'border-dashed', 
-        'border-zinc-300', 
-        'text-zinc-500', 
-        'hover:text-zinc-900', 
-        'hover:border-zinc-900', 
-        'hover:bg-zinc-50', 
-        'py-8', 
-        'text-sm', 
-        'font-medium', 
-        'transition-all', 
-        'rounded-xl',
+        "group relative flex items-center justify-center gap-2.5 transition-all duration-300 select-none cursor-pointer",
+        isPrimary
+          ? "w-full py-3.5 border border-dashed border-zinc-200 rounded-lg hover:border-zinc-300 bg-zinc-50/20 hover:bg-zinc-50/50"
+          : "w-fit py-1.5 px-3 border border-dashed border-zinc-200 rounded-md hover:border-zinc-400 bg-transparent",
         className
       )}
-      onClick={onClick}
     >
-      <Plus size={16} className={cn('mr-2')} /> {label}
-    </Button>
+      <div
+        className={cn(
+          "flex items-center justify-center transition-all duration-300",
+          isPrimary 
+            ? "w-5 h-5 bg-white border border-zinc-100 rounded-full shadow-xs group-hover:scale-110 group-active:scale-90" 
+            : "group-hover:rotate-90"
+        )}
+      >
+        <Plus
+          size={isPrimary ? 12 : 10}
+          className="text-zinc-400 group-hover:text-zinc-900 transition-colors"
+          strokeWidth={3}
+        />
+      </div>
+      <span
+        className={cn(
+          "text-[10px] font-semibold uppercase tracking-wider transition-colors",
+          "text-zinc-400 group-hover:text-zinc-900"
+        )}
+      >
+        {label}
+      </span>
+    </button>
   );
 }

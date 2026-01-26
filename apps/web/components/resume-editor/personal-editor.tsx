@@ -157,7 +157,7 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
             </PopoverContent>
           </Popover>
           <div className="px-1">
-             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight">Format: 19 December 2001</span>
+             <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-tight">Format: 19 December 2001</span>
           </div>
         </div>
       );
@@ -183,7 +183,7 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between gap-4">
                 <input
-                  className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 bg-transparent border-none p-0 focus:ring-0 w-full hover:text-zinc-600 transition-colors"
+                  className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 bg-transparent border-none p-0 focus:ring-0 w-full hover:text-zinc-600 transition-colors"
                   value={item.label || ""}
                   onChange={(e) => updateItem(iIdx, { label: e.target.value })}
                   placeholder="FIELD LABEL"

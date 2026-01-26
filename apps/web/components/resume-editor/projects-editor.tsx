@@ -137,7 +137,7 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-bold uppercase text-zinc-500 tracking-wider">Project Name</Label>
+                      <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Project Name</Label>
                       <div className="relative">
                         <FolderGit2 className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                         <Input
@@ -150,7 +150,7 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-bold uppercase text-zinc-500 tracking-wider">Project Link</Label>
+                      <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Project Link</Label>
                       <div className="relative">
                         <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                         <Input
@@ -165,7 +165,7 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-bold uppercase text-zinc-500 tracking-wider">Date / Period</Label>
+                      <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Date / Period</Label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                         <Input
@@ -180,7 +180,7 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase text-zinc-500 tracking-wider">Description</Label>
+                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Description</Label>
                   <Textarea
                     className="min-h-[80px] border-zinc-200 rounded-lg focus:border-zinc-900 focus:ring-0 transition-all"
                     value={item.description || ""}
@@ -191,7 +191,7 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
 
                 {/* Key Highlights Section */}
                 <div className="space-y-4 pt-4 border-t border-zinc-100">
-                  <Label className="text-[10px] font-bold uppercase text-zinc-500 tracking-wider">Key Highlights / Features</Label>
+                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Key Highlights / Features</Label>
                   
                   <div className="space-y-3">
                     {(item.bullets || []).map((bullet, bulIdx) => (

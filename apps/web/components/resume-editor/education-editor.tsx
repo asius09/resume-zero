@@ -126,7 +126,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                 <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-8', 'gap-y-6')}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Institution</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Institution</Label>
                       <Input
                         className={cn('h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all', 'font-medium')}
                         value={item.institution}
@@ -136,7 +136,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Degree / Course</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Degree / Course</Label>
                       <div className="relative">
                         <GraduationCap className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
                         <Input
@@ -151,7 +151,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Graduation / Expected Year</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Graduation / Expected Year</Label>
                       <Select 
                         value={item.graduationYear} 
                         onValueChange={(val) => updateItem(iIdx, { graduationYear: val })}
@@ -168,7 +168,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                     </div>
 
                     <div className="space-y-2">
-                       <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>GPA / Grade (Optional)</Label>
+                       <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>GPA / Grade (Optional)</Label>
                        <Input
                          className={cn('h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all')}
                          value={item.gpa || ""}
@@ -178,13 +178,13 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                     </div>
 
                     <div className="space-y-3 pt-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-400', 'tracking-widest')}>Education Status</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-400', 'tracking-widest')}>Education Status</Label>
                       <div className="flex p-1 bg-zinc-100/50 rounded-lg border border-zinc-100">
                         <button
                           type="button"
                           onClick={() => updateItem(iIdx, { isPursuing: false })}
                           className={cn(
-                            "flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
+                            "flex-1 py-1.5 px-3 rounded-md text-[10px] font-semibold uppercase tracking-wider transition-all",
                             !item.isPursuing 
                               ? "bg-white text-zinc-900 shadow-sm border border-zinc-200/50" 
                               : "text-zinc-400 hover:text-zinc-600"
@@ -196,7 +196,7 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                           type="button"
                           onClick={() => updateItem(iIdx, { isPursuing: true })}
                           className={cn(
-                            "flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
+                            "flex-1 py-1.5 px-3 rounded-md text-[10px] font-semibold uppercase tracking-wider transition-all",
                             item.isPursuing 
                               ? "bg-white text-zinc-900 shadow-sm border border-zinc-200/50" 
                               : "text-zinc-400 hover:text-zinc-600"

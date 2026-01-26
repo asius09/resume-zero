@@ -124,7 +124,7 @@ export function CertificationsEditor({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Certification Name</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Certification Name</Label>
                       <div className="relative">
                         <Award className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
                         <Input
@@ -137,7 +137,7 @@ export function CertificationsEditor({
                     </div>
                     
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Issuer</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Issuer</Label>
                       <Input
                         className={cn('h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all')}
                         value={item.issuer || ""}
@@ -149,7 +149,7 @@ export function CertificationsEditor({
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Issue Date</Label>
+                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Issue Date</Label>
                       <div className="relative">
                         <Calendar className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
                         <Input

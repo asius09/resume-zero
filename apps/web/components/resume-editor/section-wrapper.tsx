@@ -30,11 +30,11 @@ export function SectionWrapper({
     <div className={cn('section-container', 'group', 'animate-in', 'fade-in', 'slide-in-from-top-4', 'duration-500')}>
       <div className={cn('flex', 'items-center', 'justify-between w-full', 'mb-4', 'px-2')}>
         <div className={cn('flex', 'items-center', 'justify-between', 'gap-2')}>
-          <Label className={cn('text-sm', 'text-zinc-900', 'font-bold', 'mb-0')}>
+          <Label className={cn('text-sm', 'text-zinc-900', 'font-semibold', 'mb-0')}>
             {title}
           </Label>
           {isMandatory && (
-            <span className={cn('text-[9px]', 'font-black', 'text-red-500', 'tracking-tighter', 'uppercase')}>
+            <span className={cn('text-[9px]', 'font-semibold', 'text-red-500', 'tracking-tighter', 'uppercase')}>
               Required
             </span>
           )}
