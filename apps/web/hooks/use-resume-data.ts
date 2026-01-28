@@ -21,14 +21,99 @@ export function useResumeData() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [history, setHistory] = useState<Record<string, ResumeData[]>>({});
+  const [historyIndex, setHistoryIndex] = useState<Record<string, number>>({});
 
   const data = (activeId && resumes[activeId]) || INITIAL_DATA;
 
-  const setData = (newData: ResumeData | ((prev: ResumeData) => ResumeData)) => {
+  // Persistence for history
+  useEffect(() => {
+    const savedHistory = localStorage.getItem("resume_history");
+    const savedIndices = localStorage.getItem("resume_history_indices");
+    
+    setTimeout(() => {
+      if (savedHistory) {
+        try {
+          setHistory(JSON.parse(savedHistory));
+        } catch (e) {
+          console.error("Failed to parse history", e);
+        }
+      }
+      if (savedIndices) {
+        try {
+          setHistoryIndex(JSON.parse(savedIndices));
+        } catch (e) {
+          console.error("Failed to parse history indices", e);
+        }
+      }
+    }, 0);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("resume_history", JSON.stringify(history));
+      localStorage.setItem("resume_history_indices", JSON.stringify(historyIndex));
+    }
+  }, [history, historyIndex, isMounted]);
+
+  const pushToHistory = (resumeId: string, item: ResumeData) => {
+    setHistory((prev) => {
+      const resumeHistory = prev[resumeId] || [];
+      const currentIndex = historyIndex[resumeId] ?? -1;
+      
+      const truncatedHistory = resumeHistory.slice(0, currentIndex + 1);
+      const newHistory = [...truncatedHistory, item].slice(-6); 
+      return { ...prev, [resumeId]: newHistory };
+    });
+    setHistoryIndex((prev) => {
+      const newIdx = Math.min((historyIndex[resumeId] ?? -1) + 1, 5);
+      return { ...prev, [resumeId]: newIdx };
+    });
+  };
+
+  const undo = () => {
+    if (!activeId) return false;
+    const currentIndex = historyIndex[activeId] ?? -1;
+    const resumeHistory = history[activeId] || [];
+    
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      const previousState = resumeHistory[newIndex];
+      
+      setHistoryIndex(prev => ({ ...prev, [activeId]: newIndex }));
+      setResumes(prev => ({ ...prev, [activeId]: previousState }));
+      return true;
+    }
+    return false;
+  };
+
+  const redo = () => {
+    if (!activeId) return false;
+    const currentIndex = historyIndex[activeId] ?? -1;
+    const resumeHistory = history[activeId] || [];
+    
+    if (currentIndex < resumeHistory.length - 1) {
+      const newIndex = currentIndex + 1;
+      const nextState = resumeHistory[newIndex];
+      
+      setHistoryIndex(prev => ({ ...prev, [activeId]: newIndex }));
+      setResumes(prev => ({ ...prev, [activeId]: nextState }));
+      return true;
+    }
+    return false;
+  };
+
+  const setData = (newData: ResumeData | ((prev: ResumeData) => ResumeData), skipHistory = false) => {
     if (!activeId) return;
     setResumes((prev) => {
       const current = prev[activeId] || INITIAL_DATA;
       const next = typeof newData === "function" ? newData(current) : newData;
+      
+      if (!skipHistory && JSON.stringify(current) !== JSON.stringify(next)) {
+        pushToHistory(activeId, next);
+      }
+      
       return {
         ...prev,
         [activeId]: next,
@@ -53,7 +138,6 @@ export function useResumeData() {
         console.error("Failed to parse saved resumes", e);
       }
     } else if (legacySaved) {
-      // Migrate legacy single resume
       try {
         const parsed = JSON.parse(legacySaved);
         if (parsed.id) {
@@ -65,7 +149,6 @@ export function useResumeData() {
       }
     }
 
-    // Ensure we have at least one resume
     if (Object.keys(initialResumes).length === 0) {
       const firstId = INITIAL_DATA.id;
       initialResumes = { [firstId]: INITIAL_DATA };
@@ -76,13 +159,26 @@ export function useResumeData() {
       initialActiveId = Object.keys(initialResumes)[0];
     }
 
-    // Wrapped in setTimeout to avoid the linter warning about sync setState in effects
     setTimeout(() => {
       setResumes(initialResumes);
       setActiveId(initialActiveId);
-    }, 0);
+      
+      // Seed initial history if empty
+      setHistory(prev => {
+        const obj: Record<string, ResumeData[]> = { ...prev };
+        Object.entries(initialResumes).forEach(([id, resume]) => {
+          if (!obj[id]) obj[id] = [resume];
+        });
+        return obj;
+      });
+      setHistoryIndex(prev => {
+        const obj: Record<string, number> = { ...prev };
+        Object.keys(initialResumes).forEach(id => {
+          if (obj[id] === undefined) obj[id] = 0;
+        });
+        return obj;
+      });
 
-    setTimeout(() => {
       setIsMounted(true);
     }, 0);
   }, []);
@@ -90,13 +186,15 @@ export function useResumeData() {
   // Save to LocalStorage whenever resumes or activeId changes
   useEffect(() => {
     if (isMounted) {
-      setIsSaving(true);
       localStorage.setItem(RESUMES_STORAGE_KEY, JSON.stringify(resumes));
       if (activeId) {
         localStorage.setItem(ACTIVE_RESUME_ID_KEY, activeId);
       }
-      // Simulate/ensure UI feedback for saving
-      const timer = setTimeout(() => setIsSaving(false), 500);
+      
+      const timer = setTimeout(() => {
+        setIsSaving(true);
+        setTimeout(() => setIsSaving(false), 500);
+      }, 0);
       return () => clearTimeout(timer);
     }
   }, [resumes, activeId, isMounted]);
@@ -313,5 +411,9 @@ export function useResumeData() {
     createNewVersion,
     deleteVersion,
     selectVersion,
+    undo,
+    redo,
+    canUndo: (activeId && (historyIndex[activeId] ?? 0) > 0) || false,
+    canRedo: (activeId && (historyIndex[activeId] ?? 0) < (history[activeId]?.length ?? 0) - 1) || false,
   };
 }

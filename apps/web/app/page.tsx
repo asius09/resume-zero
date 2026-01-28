@@ -4,11 +4,11 @@ import React, { useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { cn } from "@/lib/cn";
 import { useResumeData } from "@/hooks/use-resume-data";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { Header } from "@/components/layout/header";
 import { ResumeEditor } from "@/components/resume-editor/resume-editor";
 import { ResumePreview } from "@/components/resume-editor/resume-preview";
 import { handleCopySection } from "@/lib/utils";
-
 import { useToast } from "@/hooks/use-toast";
 
 export default function ResumeCleanerPage() {
@@ -27,6 +27,10 @@ export default function ResumeCleanerPage() {
     createNewVersion,
     selectVersion,
     deleteVersion,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   } = useResumeData();
 
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
@@ -63,6 +67,32 @@ export default function ResumeCleanerPage() {
     }
   };
 
+  const handleUndo = () => {
+    if (undo()) {
+      toast({
+        title: "Undo Action",
+        description: "Reverted to previous state.",
+        variant: "default",
+      });
+    }
+  };
+
+  const handleRedo = () => {
+    if (redo()) {
+      toast({
+        title: "Redo Action",
+        description: "Restored the change.",
+        variant: "default",
+      });
+    }
+  };
+
+  useKeyboardShortcuts({
+    onUndo: handleUndo,
+    onRedo: handleRedo,
+    onExport: handleExportPDF,
+  });
+
   if (!isMounted) return null;
 
   return (
@@ -81,6 +111,10 @@ export default function ResumeCleanerPage() {
         onCreateNewVersion={createNewVersion}
         onDeleteVersion={deleteVersion}
         isSaving={isSaving}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
+        canUndo={canUndo}
+        canRedo={canRedo}
       />
 
       <main
@@ -169,4 +203,3 @@ export default function ResumeCleanerPage() {
     </div>
   );
 }
-
