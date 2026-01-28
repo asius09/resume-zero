@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { LanguageItem } from "@resume/types";
 import { EditorAddButton } from "./editor-add-button";
+import { useToast } from "@/hooks/use-toast";
 
 interface LanguagesEditorProps {
   data: LanguageItem[];
@@ -29,6 +30,7 @@ const COMMON_LANGUAGES = [
 ].sort();
 
 export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
 
   const updateItem = (index: number, updates: Partial<LanguageItem>) => {
@@ -38,7 +40,13 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
   };
 
   const removeItem = (index: number) => {
+    const lang = items[index].language || "Language";
     onUpdate(items.filter((_, i) => i !== index));
+    toast({
+      title: "Language Removed",
+      description: `Removed ${lang} from your profile.`,
+      variant: "destructive",
+    });
   };
 
   const addItem = () => {
@@ -141,6 +149,8 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
       <EditorAddButton
         label="Add Language"
         onClick={addItem}
+        toastTitle="Language Added"
+        toastDescription="A new language entry has been created."
       />
     </div>
   );

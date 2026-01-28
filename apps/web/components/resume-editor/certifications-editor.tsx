@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { CertificationItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
+import { useToast } from "@/hooks/use-toast";
 
 interface CertificationsEditorProps {
   data: CertificationItem[];
@@ -19,6 +20,7 @@ export function CertificationsEditor({
   data,
   onUpdate,
 }: CertificationsEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
@@ -30,8 +32,15 @@ export function CertificationsEditor({
 
   const removeItem = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    const name = items[index].name || "Certification";
     onUpdate(items.filter((_, i) => i !== index));
     if (expandedIndex === index) setExpandedIndex(null);
+    
+    toast({
+      title: "Certification Removed",
+      description: `Removed ${name} from your certifications.`,
+      variant: "destructive",
+    });
   };
 
   const addItem = () => {
@@ -171,6 +180,8 @@ export function CertificationsEditor({
       <EditorAddButton
         label="Add Certification"
         onClick={addItem}
+        toastTitle="Certification Added"
+        toastDescription="A new certification record has been created."
       />
     </div>
   );

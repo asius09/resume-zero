@@ -16,6 +16,7 @@ import {
 import type { EducationItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
+import { useToast } from "@/hooks/use-toast";
 
 const YEARS = Array.from({ length: 40 }, (_, i) => (new Date().getFullYear() + 5 - i).toString());
 
@@ -25,6 +26,7 @@ interface EducationEditorProps {
 }
 
 export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
@@ -36,8 +38,15 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
 
   const removeItem = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    const degree = items[index].degree || "Education entry";
     onUpdate(items.filter((_, i) => i !== index));
     if (expandedIndex === index) setExpandedIndex(null);
+
+    toast({
+      title: "Education Removed",
+      description: `Removed ${degree} from your education.`,
+      variant: "destructive",
+    });
   };
 
   const addItem = () => {
@@ -126,26 +135,26 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                 <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-8', 'gap-y-6')}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Institution</Label>
-                      <Input
-                        className={cn('h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all', 'font-medium')}
-                        value={item.institution}
-                        onChange={(e) => updateItem(iIdx, { institution: e.target.value })}
-                        placeholder="e.g. Stanford University"
-                      />
+                       <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Institution</Label>
+                       <Input
+                         className={cn('h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all', 'font-medium')}
+                         value={item.institution}
+                         onChange={(e) => updateItem(iIdx, { institution: e.target.value })}
+                         placeholder="e.g. Stanford University"
+                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Degree / Course</Label>
-                      <div className="relative">
-                        <GraduationCap className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
-                        <Input
-                          className={cn('pl-10', 'h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all')}
-                          value={item.degree}
-                          onChange={(e) => updateItem(iIdx, { degree: e.target.value })}
-                          placeholder="e.g. Master's in Computer Science"
-                        />
-                      </div>
+                       <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Degree / Course</Label>
+                       <div className="relative">
+                         <GraduationCap className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
+                         <Input
+                           className={cn('pl-10', 'h-11', 'border-zinc-200', 'rounded-lg', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all')}
+                           value={item.degree}
+                           onChange={(e) => updateItem(iIdx, { degree: e.target.value })}
+                           placeholder="e.g. Master's in Computer Science"
+                         />
+                       </div>
                     </div>
                   </div>
 
@@ -217,6 +226,8 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
       <EditorAddButton
         label="Add Education"
         onClick={addItem}
+        toastTitle="Education Added"
+        toastDescription="A new academic record has been created."
       />
     </div>
   );

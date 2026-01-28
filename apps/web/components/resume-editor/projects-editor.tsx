@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { ProjectItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProjectsEditorProps {
   data: ProjectItem[];
@@ -17,6 +18,7 @@ interface ProjectsEditorProps {
 }
 
 export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
@@ -28,8 +30,15 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
 
   const removeItem = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    const name = items[index].name || "Project";
     onUpdate(items.filter((_, i) => i !== index));
     if (expandedIndex === index) setExpandedIndex(null);
+
+    toast({
+      title: "Project Removed",
+      description: `Removed ${name} from your projects.`,
+      variant: "destructive",
+    });
   };
 
   const addItem = () => {
@@ -220,6 +229,8 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
                       label="Add Highlight"
                       variant="secondary"
                       onClick={() => addBullet(iIdx)}
+                      toastTitle="Highlight Added"
+                      toastDescription="A new project highlight has been created."
                     />
                   </div>
                 </div>
@@ -232,6 +243,8 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
       <EditorAddButton
         label="Add Project"
         onClick={addItem}
+        toastTitle="Project Added"
+        toastDescription="A new project entry has been created."
       />
     </div>
   );

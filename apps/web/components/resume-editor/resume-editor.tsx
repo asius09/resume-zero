@@ -50,12 +50,36 @@ export function ResumeEditor({
   const mandatory = ["header", "summary", 'mb-12', 'pb-32']
 
   const onRemoveBlock = (index: number) => {
-    const blockType = data.blocks[index].type;
+    const block = data.blocks[index];
+    const sectionName = block.type.charAt(0).toUpperCase() + block.type.slice(1);
+    
     removeBlock(index);
     toast({
-      title: "Section removed",
-      description: `Removed the ${blockType} section. You can re-add it from the toolbar above.`,
+      title: `${sectionName} Removed`,
+      description: `The ${block.type} section has been removed from your resume.`,
       variant: "destructive",
+    });
+  };
+
+  const onAddBlock = (type: ResumeSectionType) => {
+    const sectionName = type.charAt(0).toUpperCase() + type.slice(1);
+    addBlock(type);
+    toast({
+      title: `${sectionName} Added`,
+      description: `A new ${type} section is now ready for editing.`,
+      variant: "success",
+    });
+  };
+
+  const onCopySection = (index: number) => {
+    const block = data.blocks[index];
+    const sectionName = block.type.charAt(0).toUpperCase() + block.type.slice(1);
+    
+    handleCopySection(index);
+    toast({
+      title: `${sectionName} Copied`,
+      description: "Section content is now in your clipboard.",
+      variant: "default",
     });
   };
 
@@ -84,7 +108,7 @@ export function ResumeEditor({
               key={type}
               variant="outline"
               size="sm"
-              onClick={() => addBlock(type)}
+              onClick={() => onAddBlock(type)}
               className={cn('rounded-full', 'h-8', 'px-4', 'text-[10px]', 'whitespace-nowrap', 'bg-white', 'border-zinc-200', 'hover:bg-zinc-50', 'text-zinc-600', 'font-semibold', 'uppercase', 'tracking-wider')}
             >
               <Plus size={12} className="mr-1.5" />{" "}
@@ -105,7 +129,7 @@ export function ResumeEditor({
               key={bIdx}
               type={block.type}
               isMandatory={isMandatory}
-              onCopy={() => handleCopySection(bIdx)}
+              onCopy={() => onCopySection(bIdx)}
               onRemove={() => onRemoveBlock(bIdx)}
             >
               {block.type === "header" && (

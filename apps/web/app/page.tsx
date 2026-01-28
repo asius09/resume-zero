@@ -9,7 +9,10 @@ import { ResumeEditor } from "@/components/resume-editor/resume-editor";
 import { ResumePreview } from "@/components/resume-editor/resume-preview";
 import { handleCopySection } from "@/lib/utils";
 
+import { useToast } from "@/hooks/use-toast";
+
 export default function ResumeCleanerPage() {
+  const { toast } = useToast();
   const {
     data,
     resumes,
@@ -32,15 +35,30 @@ export default function ResumeCleanerPage() {
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
     documentTitle: data.metadata.name || "My Resume",
-    onAfterPrint: () => console.log("Print success"),
+    onAfterPrint: () => {
+      toast({
+        title: "Export Success",
+        description: "Your resume is saved and ready.",
+        variant: "success",
+      });
+    },
     onPrintError: (errorLocation, error) => {
       console.error("Print error:", errorLocation, error);
-      // Fallback or user notification could go here
+      toast({
+        title: "Export Failed",
+        description: "Something went wrong during PDF generation.",
+        variant: "destructive",
+      });
     },
   });
 
   const handleExportPDF = () => {
     if (componentRef.current) {
+      toast({
+        title: "Generating PDF",
+        description: "Preparing your resume for export...",
+        variant: "info",
+      });
       handlePrint();
     }
   };

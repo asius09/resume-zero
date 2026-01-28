@@ -1,12 +1,15 @@
 import React from "react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/hooks/use-toast";
 
 interface EditorAddButtonProps {
   onClick: () => void;
   label: string;
   variant?: "primary" | "secondary";
   className?: string;
+  toastTitle?: string;
+  toastDescription?: string;
 }
 
 export function EditorAddButton({
@@ -14,13 +17,27 @@ export function EditorAddButton({
   label,
   variant = "primary",
   className,
+  toastTitle,
+  toastDescription,
 }: EditorAddButtonProps) {
+  const { toast } = useToast();
   const isPrimary = variant === "primary";
+
+  const handleClick = () => {
+    onClick();
+    if (toastTitle) {
+      toast({
+        title: toastTitle,
+        description: toastDescription,
+        variant: "success",
+      });
+    }
+  };
 
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
         "group relative flex items-center justify-center gap-2.5 transition-all duration-300 select-none cursor-pointer",
         isPrimary

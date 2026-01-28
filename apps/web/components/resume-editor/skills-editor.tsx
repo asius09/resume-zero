@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import type { SkillGroup } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
+import { useToast } from "@/hooks/use-toast";
 
 interface SkillsEditorProps {
   data: SkillGroup[];
@@ -17,6 +18,7 @@ interface SkillsEditorProps {
 }
 
 export function SkillsEditor({ data, onUpdate }: SkillsEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
 
   const updateGroup = (index: number, updates: Partial<SkillGroup>) => {
@@ -26,7 +28,13 @@ export function SkillsEditor({ data, onUpdate }: SkillsEditorProps) {
   };
 
   const removeGroup = (index: number) => {
+    const category = items[index].category || "Skill category";
     onUpdate(items.filter((_, i) => i !== index));
+    toast({
+      title: "Category Removed",
+      description: `Removed ${category} and its skills.`,
+      variant: "destructive",
+    });
   };
 
   const addGroup = () => {
@@ -87,6 +95,8 @@ export function SkillsEditor({ data, onUpdate }: SkillsEditorProps) {
       <EditorAddButton
         label="Add Skill Category"
         onClick={addGroup}
+        toastTitle="Category Added"
+        toastDescription="A new skill category has been created."
       />
     </div>
   );

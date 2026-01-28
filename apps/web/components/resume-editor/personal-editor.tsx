@@ -19,6 +19,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { EditorAddButton } from "./editor-add-button";
+import { useToast } from "@/hooks/use-toast";
 
 interface PersonalEditorProps {
   data: PersonalDetailItem[];
@@ -43,6 +44,7 @@ const NATIONALITY_OPTIONS = [
 ];
 
 export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
 
   const updateItem = (index: number, updates: Partial<PersonalDetailItem>) => {
@@ -52,7 +54,13 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
   };
 
   const removeItem = (index: number) => {
+    const label = items[index].label || "Detail";
     onUpdate(items.filter((_, i) => i !== index));
+    toast({
+      title: "Detail Removed",
+      description: `Removed ${label} from personal information.`,
+      variant: "destructive",
+    });
   };
 
   const addItem = () => {
@@ -208,6 +216,8 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
       <EditorAddButton
         label="Add Personal Detail"
         onClick={addItem}
+        toastTitle="Detail Added"
+        toastDescription="A new personal information field has been created."
       />
     </div>
   );

@@ -15,7 +15,6 @@ import {
 import type { ExperienceItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
-
 import { useToast } from "@/hooks/use-toast";
 
 const MONTHS = [
@@ -50,8 +49,8 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
     if (expandedIndex === index) setExpandedIndex(null);
 
     toast({
-      title: "Experience removed",
-      description: `Removed ${jobTitle} from your resume.`,
+      title: "Position Removed",
+      description: `Removed ${jobTitle} from your experience.`,
       variant: "destructive",
     });
   };
@@ -361,6 +360,8 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                       label="Add Bullet Point"
                       variant="secondary"
                       onClick={() => addBullet(iIdx)}
+                      toastTitle="Bullet Added"
+                      toastDescription="A new accomplishment point has been created."
                     />
                   </div>
                 </div>
@@ -373,6 +374,8 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
       <EditorAddButton
         label="Add Professional Position"
         onClick={addItem}
+        toastTitle="Position Added"
+        toastDescription="A new professional experience entry has been created."
       />
     </div>
   );
