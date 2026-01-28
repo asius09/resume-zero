@@ -29,6 +29,8 @@ import type {
   CustomBlock,
 } from "@resume/types";
 
+import { useToast } from "@/hooks/use-toast";
+
 interface ResumeEditorProps {
   data: ResumeData;
   updateBlock: (index: number, newData: ResumeBlock["data"]) => void;
@@ -44,7 +46,18 @@ export function ResumeEditor({
   removeBlock,
   handleCopySection,
 }: ResumeEditorProps) {
+  const { toast } = useToast();
   const mandatory = ["header", "summary", 'mb-12', 'pb-32']
+
+  const onRemoveBlock = (index: number) => {
+    const blockType = data.blocks[index].type;
+    removeBlock(index);
+    toast({
+      title: "Section removed",
+      description: `Removed the ${blockType} section. You can re-add it from the toolbar above.`,
+      variant: "destructive",
+    });
+  };
 
   return (
     <div className={cn('max-w-[720px]', 'mx-auto', 'pb-48 sm:pb-32', 'space-y-12')}>
@@ -57,8 +70,11 @@ export function ResumeEditor({
         <div className={cn('flex', 'flex-nowrap', 'overflow-x-auto', 'gap-2', 'pb-2', 'custom-scrollbar', 'scroll-smooth')}>
           {(
             [
-              "languages",
+              "experience",
+              "skills",
+              "education",
               "projects",
+              "languages",
               "certifications",
               "personal",
               "custom",
@@ -90,7 +106,7 @@ export function ResumeEditor({
               type={block.type}
               isMandatory={isMandatory}
               onCopy={() => handleCopySection(bIdx)}
-              onRemove={() => removeBlock(bIdx)}
+              onRemove={() => onRemoveBlock(bIdx)}
             >
               {block.type === "header" && (
                 <HeaderEditor

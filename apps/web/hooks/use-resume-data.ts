@@ -114,6 +114,45 @@ export function useResumeData() {
   const addBlock = (type: ResumeSectionType) => {
     let newBlock: ResumeBlock;
     switch (type) {
+      case "experience":
+        newBlock = {
+          type: "experience",
+          data: [
+            {
+              jobTitle: "",
+              companyName: "",
+              location: "",
+              startDate: "",
+              isCurrent: false,
+              bullets: [""],
+            },
+          ],
+        };
+        break;
+      case "skills":
+        newBlock = {
+          type: "skills",
+          data: [
+            {
+              category: "Technical Skills",
+              skills: [""],
+            },
+          ],
+        };
+        break;
+      case "education":
+        newBlock = {
+          type: "education",
+          data: [
+            {
+              degree: "",
+              institution: "",
+              graduationYear: new Date().getFullYear().toString(),
+              isPursuing: false,
+            },
+          ],
+        };
+        break;
       case "projects":
         newBlock = {
           type: "projects",
@@ -172,13 +211,6 @@ export function useResumeData() {
   };
 
   const removeBlock = (index: number) => {
-    const block = data.blocks[index];
-    const mandatory = ["header", "summary", "experience", "skills", "education"];
-    if (block && mandatory.includes(block.type)) {
-      alert(`The ${block.type} section is required for a professional resume.`);
-      return;
-    }
-
     const newBlocks = data.blocks.filter((_, i) => i !== index);
     setData((prev) => ({ ...prev, blocks: newBlocks }));
   };

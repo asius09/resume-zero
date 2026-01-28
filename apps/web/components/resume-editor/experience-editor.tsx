@@ -16,6 +16,8 @@ import type { ExperienceItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
 
+import { useToast } from "@/hooks/use-toast";
+
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -29,6 +31,7 @@ interface ExperienceEditorProps {
 }
 
 export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
+  const { toast } = useToast();
   const items = data || [];
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
@@ -40,8 +43,17 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
 
   const removeItem = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    const itemToRemove = items[index];
+    const jobTitle = itemToRemove.jobTitle || "Experience item";
+    
     onUpdate(items.filter((_, i) => i !== index));
     if (expandedIndex === index) setExpandedIndex(null);
+
+    toast({
+      title: "Experience removed",
+      description: `Removed ${jobTitle} from your resume.`,
+      variant: "destructive",
+    });
   };
 
   const addItem = () => {
@@ -96,6 +108,20 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
 
   return (
     <div className="space-y-4">
+      {items.length === 0 && (
+        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-zinc-100 rounded-xl bg-zinc-50/30 text-center space-y-3">
+          <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center">
+            <Briefcase size={20} className="text-zinc-400" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="text-sm font-medium text-zinc-900">No experience yet?</h4>
+            <p className="text-xs text-zinc-500 max-w-[280px]">
+              If you&apos;re a fresher, you can focus on projects, education, and skills. Or add internships and volunteer work here.
+            </p>
+          </div>
+        </div>
+      )}
+
       {items.map((item, iIdx) => {
         const isExpanded = expandedIndex === iIdx;
         const startDate = parseDate(item.startDate);
