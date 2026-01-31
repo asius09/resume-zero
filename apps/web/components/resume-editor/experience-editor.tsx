@@ -24,6 +24,55 @@ const MONTHS = [
 
 const YEARS = Array.from({ length: 60 }, (_, i) => (new Date().getFullYear() - i).toString());
 
+interface DateSelectorProps {
+  label: string;
+  value: { month: string; year: string };
+  onChange: (field: "month" | "year", value: string) => void;
+  disabled?: boolean;
+}
+
+function DateSelector({ label, value, onChange, disabled }: DateSelectorProps) {
+  return (
+    <div className="space-y-2">
+      {label && <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>{label}</Label>}
+      <div className={cn('grid', 'grid-cols-2', 'gap-2')}>
+        <Select
+          value={value.month || undefined}
+          onValueChange={(val) => onChange("month", val)}
+          disabled={disabled}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Month" />
+          </SelectTrigger>
+          <SelectContent>
+            {MONTHS.map((m) => (
+              <SelectItem key={m} value={m}>
+                {m}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={value.year || undefined}
+          onValueChange={(val) => onChange("year", val)}
+          disabled={disabled}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Year" />
+          </SelectTrigger>
+          <SelectContent>
+            {YEARS.map((y) => (
+              <SelectItem key={y} value={y}>
+                {y}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+}
+
 interface ExperienceEditorProps {
   data: ExperienceItem[];
   onUpdate: (newData: ExperienceItem[]) => void;
@@ -94,27 +143,54 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
 
   const parseDate = (dateStr: string) => {
     if (!dateStr) return { month: "", year: "" };
-    const [year, month] = dateStr.split("-");
-    const monthName = MONTHS[parseInt(month) - 1] || "";
-    return { month: monthName, year };
+    
+    // Check for "Jan 2026"
+    const parts = dateStr.trim().split(" ");
+    
+    if (parts.length === 2 && parts[0] !== "" && parts[1] !== "") {
+      const [shortMonth, year] = parts;
+      const fullMonth = MONTHS.find(m => m.startsWith(shortMonth));
+      if (fullMonth) return { month: fullMonth, year };
+    }
+  
+    // Check for single parts (month OR year)
+    if (parts.length === 1) {
+        // Is it a 4-digit year?
+        if (/^\d{4}$/.test(parts[0])) {
+             return { month: "", year: parts[0] };
+        }
+        // Assume it's a month
+        const fullMonth = MONTHS.find(m => m.startsWith(parts[0]));
+        if (fullMonth) return { month: fullMonth, year: "" };
+    }
+
+    // Fallback for "YYYY-MM"
+    if (dateStr.includes("-")) {
+        const [year, month] = dateStr.split("-");
+        const monthName = MONTHS[parseInt(month) - 1] || "";
+        return { month: monthName, year };
+    }
+
+    return { month: "", year: "" };
   };
 
   const formatDate = (month: string, year: string) => {
-    if (!month || !year) return "";
-    const monthIdx = (MONTHS.indexOf(month) + 1).toString().padStart(2, "0");
-    return `${year}-${monthIdx}`;
+    const m = month ? month.slice(0, 3) : "";
+    const y = year || "";
+    // Will result in "Jan 2026", "Jan ", or " 2026"
+    return `${m} ${y}`.trim();
   };
 
   return (
     <div className="space-y-4">
       {items.length === 0 && (
-        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-zinc-100 rounded-xl bg-zinc-50/30 text-center space-y-3">
-          <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center">
+        <div className={cn('flex', 'flex-col', 'items-center', 'justify-center', 'p-8', 'border-2', 'border-dashed', 'border-zinc-100', 'rounded-xl', 'bg-zinc-50/30', 'text-center', 'space-y-3')}>
+          <div className={cn('h-12', 'w-12', 'rounded-full', 'bg-zinc-100', 'flex', 'items-center', 'justify-center')}>
             <Briefcase size={20} className="text-zinc-400" />
           </div>
           <div className="space-y-1">
-            <h4 className="text-sm font-medium text-zinc-900">No experience yet?</h4>
-            <p className="text-xs text-zinc-500 max-w-[280px]">
+            <h4 className={cn('text-sm', 'font-medium', 'text-zinc-900')}>No experience yet?</h4>
+            <p className={cn('text-xs', 'text-zinc-500', 'max-w-[280px]')}>
               If you&apos;re a fresher, you can focus on projects, education, and skills. Or add internships and volunteer work here.
             </p>
           </div>
@@ -165,7 +241,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                   <div className={cn('flex', 'flex-wrap', 'items-center', 'gap-3', 'sm:gap-4', 'mt-1', 'text-[10px]', 'sm:text-xs', 'text-zinc-500')}>
                     <div className={cn('flex', 'items-center', 'gap-1')}>
                       <Calendar size={12} className="shrink-0" />
-                      {startDate.month && startDate.year ? `${startDate.month.slice(0,3)} ${startDate.year}` : "Start"} — {item.isCurrent ? "Present" : (endDate.month && endDate.year ? `${endDate.month.slice(0,3)} ${endDate.year}` : "End")}
+                      {startDate.month || startDate.year ? `${formatDate(startDate.month, startDate.year)}` : "Start"} — {item.isCurrent ? "Present" : (endDate.month || endDate.year ? `${formatDate(endDate.month, endDate.year)}` : "End")}
                     </div>
                     {item.location && (
                       <div className={cn('flex', 'items-center', 'gap-1', 'min-w-0')}>
@@ -238,37 +314,14 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
 
                     <div className="space-y-4">
                       {/* Start Date Selection */}
-                      <div className="space-y-2">
-                        <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Start Date</Label>
-                        <div className={cn('grid', 'grid-cols-2', 'gap-2')}>
-                          <Select 
-                            value={startDate.month} 
-                            onValueChange={(val) => updateItem(iIdx, { startDate: formatDate(val, startDate.year) })}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {MONTHS.map(m => (
-                                <SelectItem key={m} value={m}>{m}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Select 
-                            value={startDate.year} 
-                            onValueChange={(val) => updateItem(iIdx, { startDate: formatDate(startDate.month, val) })}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Year" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {YEARS.map(y => (
-                                <SelectItem key={y} value={y}>{y}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
+                      <DateSelector 
+                        label="Start Date"
+                        value={startDate}
+                        onChange={(field, val) => {
+                          const newDate = { ...startDate, [field]: val };
+                          updateItem(iIdx, { startDate: formatDate(newDate.month, newDate.year) });
+                        }}
+                      />
 
                       {/* End Date Selection */}
                       <div className="space-y-2">
@@ -292,33 +345,15 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                           </button>
                         </div>
                         {!item.isCurrent && (
-                          <div className={cn('grid', 'grid-cols-2', 'gap-2', 'animate-in', 'fade-in', 'duration-200')}>
-                             <Select 
-                              value={endDate.month} 
-                              onValueChange={(val) => updateItem(iIdx, { endDate: formatDate(val, endDate.year) })}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Month" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {MONTHS.map(m => (
-                                  <SelectItem key={m} value={m}>{m}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <Select 
-                              value={endDate.year} 
-                              onValueChange={(val) => updateItem(iIdx, { endDate: formatDate(endDate.month, val) })}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Year" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {YEARS.map(y => (
-                                  <SelectItem key={y} value={y}>{y}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                          <div className={cn('animate-in', 'fade-in', 'duration-200')}>
+                             <DateSelector 
+                              label=""
+                              value={endDate}
+                              onChange={(field, val) => {
+                                const newDate = { ...endDate, [field]: val };
+                                updateItem(iIdx, { endDate: formatDate(newDate.month, newDate.year) });
+                              }}
+                            />
                           </div>
                         )}
                       </div>
