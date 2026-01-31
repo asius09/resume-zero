@@ -7,6 +7,9 @@ import {
   ChevronDown,
   Cloud,
   Plus,
+  ChevronUp,
+  Loader,
+  Loader2,
 } from "lucide-react";
 import { IoDuplicate } from "react-icons/io5";
 import { cn } from "@/lib/cn";
@@ -27,6 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Kbd } from "@/components/ui/kbd";
+import {format} from "date-fns"
 
 interface HeaderProps {
   resumeName: string;
@@ -78,7 +82,7 @@ export function Header({
           "backdrop-blur-xl",
           "border-b",
           "border-zinc-100",
-          "px-3 sm:px-6",
+          "px-6 sm:px-8",
           "py-3",
           "flex",
           "items-center",
@@ -91,18 +95,13 @@ export function Header({
             <NextImage
               src="/logo.svg"
               alt="Logo"
-              width={24}
-              height={24}
+              width={32}
+              height={32}
               className={cn("relative", "rounded", "border", "border-zinc-200")}
             />
           </div>
           
           <div className={cn("flex", "flex-col", "min-w-0")}>
-            <div className={cn("flex", "items-center", "gap-1.5")}>
-              <h1 className={cn('text-[10px]', 'font-semibold', 'tracking-tight', 'text-zinc-400', 'hidden', 'xs:block')}>
-                ZERO
-              </h1>
-              <span className={cn('text-zinc-200', 'hidden', 'xs:block')}>/</span>
               <input
                 className={cn(
                   "text-xs sm:text-sm",
@@ -110,7 +109,7 @@ export function Header({
                   "text-zinc-600",
                   "bg-transparent",
                   "border-none",
-                  "p-0",
+                  "p-1",
                   "focus:ring-0",
                   "focus:text-zinc-900",
                   "transition-colors",
@@ -122,7 +121,6 @@ export function Header({
                 onChange={(e) => onResumeNameChange(e.target.value)}
                 placeholder="Untitled"
               />
-            </div>
           </div>
 
           <div className={cn('flex', 'items-center', 'gap-1.5', 'sm:gap-3')}>
@@ -133,13 +131,40 @@ export function Header({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={cn('h-7', 'sm:h-8', 'gap-1.5', 'px-2', 'sm:px-3', 'rounded-full', 'border', 'border-zinc-200', 'bg-zinc-50', 'hover:bg-zinc-100', 'text-zinc-600', 'transition-all')}
+                  className={cn(
+                    "group",
+                    "h-7 sm:h-8",
+                    "gap-1.5",
+                    "px-2 sm:px-3",
+                    "rounded-full",
+                    "border border-zinc-200 cursor-pointer focus:border-0 focus:ring-0",
+                    "bg-zinc-50 hover:bg-zinc-100",
+                    "text-zinc-600",
+                    "transition-all",
+                  )}
                 >
-                  <IoDuplicate size={14} className={cn('group-hover:scale-110', 'transition-transform')} />
-                  <span className={cn('text-[10px]', 'font-medium', 'uppercase', 'tracking-tight', 'hidden', 'sm:inline')}>
+                  <IoDuplicate
+                    size={14}
+                    className={cn("group-hover:scale-110", "transition-transform")}
+                  />
+                  <span
+                    className={cn(
+                      "text-xs",
+                      "font-medium",
+                      "tracking-tight",
+                      "hidden sm:inline",
+                    )}
+                  >
                     Versions
                   </span>
-                  <ChevronDown size={10} className="opacity-50" />
+                  <ChevronDown
+                    size={10}
+                    className={cn("opacity-50", "group-data-[state=open]:hidden")}
+                  />
+                  <ChevronUp
+                    size={10}
+                    className={cn("opacity-50", "group-data-[state=open]:block", "hidden")}
+                  />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className={cn('w-56', 'p-1')}>
@@ -164,7 +189,7 @@ export function Header({
                           {r.metadata.name || "Untitled"}
                         </span>
                         <span className={cn('text-[9px]', 'text-zinc-400')}>
-                          {new Date(r.metadata.lastModified).toLocaleDateString()}
+                          {format(r.metadata.lastModified, 'MMM dd, yyyy')}
                         </span>
                       </div>
                     </DropdownMenuItem>
@@ -190,20 +215,20 @@ export function Header({
 
             <div className={cn('flex', 'items-center', 'text-zinc-400')}>
               {isSaving ? (
-                <div className={cn('flex', 'items-center', 'gap-1', 'animate-pulse')}>
-                  <Cloud size={13} className="text-zinc-400" strokeWidth={1.5} />
-                  <span className={cn('text-[9px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-500', 'hidden', 'xs:inline')}>
-                    Saving
+                <div className={cn('flex', 'items-center', 'gap-1')}>
+                  <Loader2 size={22} className={cn('text-zinc-400', 'animate-spin')} strokeWidth={1.5} />
+                  <span className={cn('text-[9px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-500', 'hidden', 'sm:inline', 'animate-pulse')}>
+                    Saving...
                   </span>
                 </div>
               ) : (
                 <div className={cn('flex', 'items-center', 'gap-1')}>
-                  <Cloud size={13} className="text-zinc-300" strokeWidth={1.5} />
-                  <span className={cn('text-[9px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-300', 'hidden', 'xs:inline')}>
+                  <Cloud size={24} className="text-zinc-300" strokeWidth={1.5} />
+                  <span className={cn('text-[9px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-300', 'hidden', 'sm:inline')}>
                     Saved
                   </span>
                 </div>
-              )}
+              )}  
             </div>
           </div>
         </div>
@@ -214,14 +239,14 @@ export function Header({
               <Button
                 variant="ghost"
                 size="sm"
-                className={cn('h-7', 'sm:h-8', 'gap-1.5', 'px-2', 'sm:px-3', 'rounded-full', 'border', 'border-zinc-200', 'bg-zinc-50', 'text-[10px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-600', 'md:hidden')}
+                className={cn('h-7', 'sm:h-8', 'gap-1.5', 'px-2', 'sm:px-3', 'rounded-full', 'border', 'border-zinc-200', 'bg-zinc-50', 'text-xs', 'font-medium', 'tracking-tight', 'text-zinc-600')}
               >
-                <span className={cn('truncate', 'max-w-[60px]')}>{activeLayout}</span>
+                <span className={cn('truncate', 'max-w-[80px]', 'capitalize')}>{activeLayout}</span>
                 <ChevronDown size={10} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className={cn('w-40', 'p-1')}>
-              {(["minimalist", "professional", "international"] as const).map((t) => (
+              {(["minimalist", "professional", "international", "executive"] as const).map((t) => (
                 <DropdownMenuItem
                   key={t}
                   onClick={() => onLayoutChange(t)}
@@ -249,8 +274,8 @@ export function Header({
                   <Undo2 size={14} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="flex items-center gap-2">
-                <span className="text-[10px] font-medium">Undo</span>
+              <TooltipContent side="bottom" className={cn('flex', 'items-center', 'gap-2')}>
+                <span className={cn('text-[10px]', 'font-medium')}>Undo</span>
                 <Kbd keys={["mod", "Z"]} />
               </TooltipContent>
             </Tooltip>
@@ -267,36 +292,14 @@ export function Header({
                   <Redo2 size={14} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="flex items-center gap-2">
-                <span className="text-[10px] font-medium">Redo</span>
+              <TooltipContent side="bottom" className={cn('flex', 'items-center', 'gap-2')}>
+                <span className={cn('text-[10px]', 'font-medium')}>Redo</span>
                 <Kbd keys={["mod", "shift", "Z"]} />
               </TooltipContent>
             </Tooltip>
           </div>
 
-          <Tabs
-            value={activeLayout}
-            onValueChange={(v) =>
-              onLayoutChange(
-                v as "minimalist" | "professional" | "international" | "executive",
-              )
-            }
-            className={cn('hidden', 'md:block')}
-          >
-            <TabsList className={cn('bg-zinc-50', 'border', 'border-zinc-200', 'rounded-full', 'h-8', 'px-1')}>
-              {(["minimalist", "professional", "international", "executive"] as const).map(
-                (t) => (
-                  <TabsTrigger
-                    key={t}
-                    value={t}
-                    className={cn('rounded-full', 'px-3', 'py-1', 'text-[10px]', 'font-medium', 'uppercase', 'tracking-tight', 'data-[state=active]:bg-white', 'data-[state=active]:text-zinc-900', 'data-[state=active]:shadow-sm', 'transition-all')}
-                  >
-                    {t}
-                  </TabsTrigger>
-                ),
-              )}
-            </TabsList>
-          </Tabs>
+         
 
           <Tooltip>
             <TooltipTrigger asChild>
@@ -309,8 +312,8 @@ export function Header({
                 <span className={cn('hidden', 'sm:inline')}>Export</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom" className="flex items-center gap-2">
-              <span className="text-[10px] font-medium">Export PDF</span>
+            <TooltipContent side="bottom" className={cn('flex', 'items-center', 'gap-2')}>
+              <span className={cn('text-[10px]', 'font-medium')}>Export PDF</span>
               <Kbd keys={["mod", "E"]} />
             </TooltipContent>
           </Tooltip>

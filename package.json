@@ -13,7 +13,10 @@
     "packages/*"
   ],
   "devDependencies": {
-    "turbo": "latest",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "turbo": "latest"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0"
   }
 }
