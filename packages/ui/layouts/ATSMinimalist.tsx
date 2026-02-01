@@ -110,7 +110,7 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
           return (
             <div 
               key={idx} 
-              className="w-full flex flex-col items-center"
+              className={cn('w-full', 'flex', 'flex-col', 'items-center')}
               style={{ marginBottom: "1rem" }}
             >
               <h1
@@ -137,28 +137,28 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
               >
                 {[
                   block.data.location && (
-                    <span key="loc" className="whitespace-nowrap font-medium px-1">
+                    <span key="loc" className={cn('whitespace-nowrap', 'font-medium', 'px-1')}>
                       {block.data.location}
                     </span>
                   ),
                   ...(block.data.contacts as Contact[]).map((c, i) => (
                     <React.Fragment key={`contact-${i}`}>
-                      {(i > 0 || block.data.location) && (
-                        <span className="text-zinc-400 font-normal px-1.5 select-none" aria-hidden="true">
+                      {(i > 0 || block.data.location) && c.value && (
+                        <span className={cn('text-zinc-400', 'font-normal', 'px-1.5', 'select-none')} aria-hidden="true">
                           |
                         </span>
                       )}
-                      <span className="whitespace-nowrap px-1">
-                        <a
-                          href={formatContactLink(c)}
-                          className={cn("hover:text-zinc-900 transition-colors no-underline text-zinc-600")}
-                        >
-                          {c.type === "linkedin" ? "LinkedIn" : 
-                           c.type === "github" ? "GitHub" : 
-                           c.type === "website" ? "Website" : 
-                           c.value}
-                        </a>
-                      </span>
+                  {c.value && <span className={cn('whitespace-nowrap', 'px-1')}>
+                    <a
+                      href={formatContactLink(c)}
+                      className={cn("hover:text-zinc-900 transition-colors no-underline text-zinc-600")}
+                    >
+                      {c.type === "linkedin" ? "LinkedIn" : 
+                        c.type === "github" ? "GitHub" : 
+                        c.type === "website" ? "Website" : 
+                        c.value}
+                    </a>
+                  </span>}
                     </React.Fragment>
                   )),
                 ]}
