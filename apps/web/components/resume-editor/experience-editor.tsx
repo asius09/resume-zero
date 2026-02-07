@@ -1,77 +1,16 @@
 import React, { useState } from "react";
-import { Trash2, ChevronDown, ChevronUp, GripVertical, Calendar, MapPin, Briefcase, Check } from "lucide-react";
+import { Calendar, MapPin, Briefcase, Check, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type { ExperienceItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
 import { useToast } from "@/hooks/use-toast";
-
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
-
-const YEARS = Array.from({ length: 60 }, (_, i) => (new Date().getFullYear() - i).toString());
-
-interface DateSelectorProps {
-  label: string;
-  value: { month: string; year: string };
-  onChange: (field: "month" | "year", value: string) => void;
-  disabled?: boolean;
-}
-
-function DateSelector({ label, value, onChange, disabled }: DateSelectorProps) {
-  return (
-    <div className="space-y-2">
-      {label && <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>{label}</Label>}
-      <div className={cn('grid', 'grid-cols-2', 'gap-2')}>
-        <Select
-          value={value.month || undefined}
-          onValueChange={(val) => onChange("month", val)}
-          disabled={disabled}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Month" />
-          </SelectTrigger>
-          <SelectContent>
-            {MONTHS.map((m) => (
-              <SelectItem key={m} value={m}>
-                {m}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={value.year || undefined}
-          onValueChange={(val) => onChange("year", val)}
-          disabled={disabled}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Year" />
-          </SelectTrigger>
-          <SelectContent>
-            {YEARS.map((y) => (
-              <SelectItem key={y} value={y}>
-                {y}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  );
-}
+import { CollapsibleCard } from "@/components/ui/collapsible-card";
+import { DateSelector } from "@/components/ui/date-selector";
+import { parseDate, formatDate } from "@/lib/date-utils";
 
 interface ExperienceEditorProps {
   data: ExperienceItem[];
@@ -133,6 +72,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
     onUpdate(newData);
   };
 
+
   const removeBullet = (itemIdx: number, bulletIdx: number) => {
     const newData = [...items];
     newData[itemIdx].bullets = newData[itemIdx].bullets.filter(
@@ -141,45 +81,6 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
     onUpdate(newData);
   };
 
-  const parseDate = (dateStr: string) => {
-    if (!dateStr) return { month: "", year: "" };
-    
-    // Check for "Jan 2026"
-    const parts = dateStr.trim().split(" ");
-    
-    if (parts.length === 2 && parts[0] !== "" && parts[1] !== "") {
-      const [shortMonth, year] = parts;
-      const fullMonth = MONTHS.find(m => m.startsWith(shortMonth));
-      if (fullMonth) return { month: fullMonth, year };
-    }
-  
-    // Check for single parts (month OR year)
-    if (parts.length === 1) {
-        // Is it a 4-digit year?
-        if (/^\d{4}$/.test(parts[0])) {
-             return { month: "", year: parts[0] };
-        }
-        // Assume it's a month
-        const fullMonth = MONTHS.find(m => m.startsWith(parts[0]));
-        if (fullMonth) return { month: fullMonth, year: "" };
-    }
-
-    // Fallback for "YYYY-MM"
-    if (dateStr.includes("-")) {
-        const [year, month] = dateStr.split("-");
-        const monthName = MONTHS[parseInt(month) - 1] || "";
-        return { month: monthName, year };
-    }
-
-    return { month: "", year: "" };
-  };
-
-  const formatDate = (month: string, year: string) => {
-    const m = month ? month.slice(0, 3) : "";
-    const y = year || "";
-    // Will result in "Jan 2026", "Jan ", or " 2026"
-    return `${m} ${y}`.trim();
-  };
 
   return (
     <div className="space-y-4">
@@ -203,206 +104,157 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
         const endDate = parseDate(item.isCurrent ? "" : item.endDate || "");
         
         return (
-          <Card
+          <CollapsibleCard
             key={iIdx}
-            className={cn(
-              "group/item border-zinc-200 shadow-sm transition-all duration-200 overflow-hidden",
-              isExpanded ? "ring-1 ring-zinc-900 border-zinc-900" : "hover:border-zinc-300"
-            )}
+            isExpanded={isExpanded}
+            onToggle={() => toggleExpand(iIdx)}
+            onRemove={(e) => removeItem(iIdx, e)}
+            title={item.jobTitle || "Job Title"}
+            subtitle={item.companyName}
+            metadata={
+              <>
+                <div className="flex items-center gap-1">
+                  <Calendar size={12} className="shrink-0" />
+                  {startDate.month || startDate.year ? `${formatDate(startDate.month, startDate.year)}` : "Start"} — {item.isCurrent ? "Present" : (endDate.month || endDate.year ? `${formatDate(endDate.month, endDate.year)}` : "End")}
+                </div>
+                {item.location && (
+                  <div className="flex items-center gap-1 min-w-0">
+                    <MapPin size={12} className="shrink-0" />
+                    <span className="truncate">{item.location}</span>
+                  </div>
+                )}
+              </>
+            }
           >
-            {/* Header / Summary View */}
-            <div 
-              className={cn(
-                "p-4 flex items-center gap-3 sm:gap-4 cursor-pointer select-none",
-                isExpanded ? "bg-zinc-50/50 border-b border-zinc-100" : "bg-white"
-              )}
-              onClick={() => toggleExpand(iIdx)}
-            >
-              <div className={cn('text-zinc-300', 'group-hover/item:text-zinc-500', 'transition-colors', 'hidden', 'sm:block')}>
-                <GripVertical size={16} />
+            {/* Basic Info Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Job Title</Label>
+                  <div className="relative">
+                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+                    <Input
+                      className="pl-10 h-11 border-zinc-200 focus:border-zinc-900 focus:ring-0 transition-all rounded-lg"
+                      value={item.jobTitle}
+                      onChange={(e) => updateItem(iIdx, { jobTitle: e.target.value })}
+                      placeholder="e.g. Senior Software Engineer"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Company Name</Label>
+                  <Input
+                    className="h-11 border-zinc-200 rounded-lg"
+                    value={item.companyName}
+                    onChange={(e) => updateItem(iIdx, { companyName: e.target.value })}
+                    placeholder="e.g. Google"
+                  />
+                </div>
               </div>
 
-              <div className={cn('flex-1', 'min-w-0')}>
-                <div className={cn('flex', 'flex-col', 'sm:flex-row', 'sm:items-center', 'gap-1', 'sm:gap-2')}>
-                  <span className={cn(
-                    "font-semibold truncate text-sm sm:text-base",
-                    !item.jobTitle && "text-zinc-400 italic"
-                  )}>
-                    {item.jobTitle || "Job Title"}
-                  </span>
-                  {item.companyName && (
-                    <div className={cn('flex', 'items-center', 'gap-1', 'sm:gap-2')}>
-                      <span className={cn('text-zinc-300', 'hidden', 'sm:inline')}>•</span>
-                      <span className={cn('text-zinc-600', 'truncate', 'text-xs', 'sm:text-sm')}>{item.companyName}</span>
-                    </div>
-                  )}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Location</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+                    <Input
+                      className="pl-10 h-11 border-zinc-200 rounded-lg"
+                      value={item.location}
+                      onChange={(e) => updateItem(iIdx, { location: e.target.value })}
+                      placeholder="e.g. San Francisco, CA"
+                    />
+                  </div>
                 </div>
-                {!isExpanded && (
-                  <div className={cn('flex', 'flex-wrap', 'items-center', 'gap-3', 'sm:gap-4', 'mt-1', 'text-[10px]', 'sm:text-xs', 'text-zinc-500')}>
-                    <div className={cn('flex', 'items-center', 'gap-1')}>
-                      <Calendar size={12} className="shrink-0" />
-                      {startDate.month || startDate.year ? `${formatDate(startDate.month, startDate.year)}` : "Start"} — {item.isCurrent ? "Present" : (endDate.month || endDate.year ? `${formatDate(endDate.month, endDate.year)}` : "End")}
+
+                <div className="space-y-4">
+                  {/* Start Date Selection */}
+                  <DateSelector 
+                    label="Start Date"
+                    value={startDate}
+                    onChange={(field, val) => {
+                      const newDate = { ...startDate, [field]: val };
+                      updateItem(iIdx, { startDate: formatDate(newDate.month, newDate.year) });
+                    }}
+                  />
+
+                  {/* End Date Selection */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">End Date</Label>
+                      <button 
+                        type="button"
+                        onClick={() => updateItem(iIdx, { 
+                          isCurrent: !item.isCurrent,
+                          endDate: !item.isCurrent ? "" : item.endDate 
+                        })}
+                        className={cn(
+                          "text-[10px] flex items-center gap-1.5 px-2 py-1 rounded-full border transition-all font-medium",
+                          item.isCurrent 
+                            ? "bg-zinc-900 border-zinc-900 text-white" 
+                            : "bg-white border-zinc-200 text-zinc-500 hover:border-zinc-400"
+                        )}
+                      >
+                        {item.isCurrent && <Check size={10} strokeWidth={3} />}
+                        Currently Work Here
+                      </button>
                     </div>
-                    {item.location && (
-                      <div className={cn('flex', 'items-center', 'gap-1', 'min-w-0')}>
-                        <MapPin size={12} className="shrink-0" />
-                        <span className="truncate">{item.location}</span>
+                    {!item.isCurrent && (
+                      <div className="animate-in fade-in duration-200">
+                        <DateSelector 
+                          value={endDate}
+                          onChange={(field, val) => {
+                            const newDate = { ...endDate, [field]: val };
+                            updateItem(iIdx, { endDate: formatDate(newDate.month, newDate.year) });
+                          }}
+                        />
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-
-              <div className={cn('flex', 'items-center', 'gap-1')}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => removeItem(iIdx, e)}
-                  className={cn('h-8', 'w-8', 'text-zinc-400', 'hover:text-red-500', 'hover:bg-red-50', 'sm:opacity-0', 'sm:group-hover/item:opacity-100', 'transition-opacity')}
-                >
-                  <Trash2 size={14} />
-                </Button>
-                <div className={cn('text-zinc-400', 'ml-1')}>
-                  {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </div>
               </div>
             </div>
 
-            {/* Expanded Content */}
-            {isExpanded && (
-              <CardContent className={cn('p-4', 'sm:p-6', 'space-y-6', 'sm:space-y-8', 'animate-in', 'fade-in', 'slide-in-from-top-2', 'duration-200')}>
-                {/* Basic Info Grid */}
-                <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-8', 'gap-y-6', 'text-sm', 'sm:text-base')}>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Job Title</Label>
-                      <div className="relative">
-                        <Briefcase className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
-                        <Input
-                          className={cn('pl-10', 'h-11', 'border-zinc-200', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all', 'rounded-lg')}
-                          value={item.jobTitle}
-                          onChange={(e) => updateItem(iIdx, { jobTitle: e.target.value })}
-                          placeholder="e.g. Senior Software Engineer"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Company Name</Label>
-                        <Input
-                          className={cn('h-11', 'border-zinc-200', 'rounded-lg')}
-                          value={item.companyName}
-                          onChange={(e) => updateItem(iIdx, { companyName: e.target.value })}
-                          placeholder="e.g. Google"
-                        />
-                      </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Location</Label>
-                      <div className="relative">
-                        <MapPin className={cn('absolute', 'left-3', 'top-1/2', '-translate-y-1/2', 'text-zinc-400')} size={16} />
-                        <Input
-                          className={cn('pl-10', 'h-11', 'border-zinc-200', 'rounded-lg')}
-                          value={item.location}
-                          onChange={(e) => updateItem(iIdx, { location: e.target.value })}
-                          placeholder="e.g. San Francisco, CA"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {/* Start Date Selection */}
-                      <DateSelector 
-                        label="Start Date"
-                        value={startDate}
-                        onChange={(field, val) => {
-                          const newDate = { ...startDate, [field]: val };
-                          updateItem(iIdx, { startDate: formatDate(newDate.month, newDate.year) });
-                        }}
+            {/* Accomplishments Section */}
+            <div className="space-y-4 pt-4 border-t border-zinc-100">
+              <div className="flex items-center justify-between">
+                <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Key Accomplishments</Label>
+                <span className="text-[10px] text-zinc-400 italic hidden sm:inline">Focus on metrics and impact</span>
+              </div>
+              
+              <div className="space-y-3">
+                {(item.bullets || []).map((bullet, bulIdx) => (
+                  <div key={bulIdx} className="flex gap-3 items-start group/bullet transition-all duration-200">
+                    <div className="shrink-0 mt-3 h-1.5 w-1.5 rounded-full bg-zinc-300 group-focus-within/bullet:bg-zinc-900 transition-colors" />
+                    <div className="flex-1 relative">
+                      <Textarea
+                        className="min-h-[80px] w-full resize-none py-2 px-3 border-zinc-200 focus:border-zinc-900 focus:ring-0 transition-all pr-10 rounded-lg text-sm"
+                        value={bullet}
+                        onChange={(e) => updateBullet(iIdx, bulIdx, e.target.value)}
+                        placeholder="e.g. Led a team of 5 to redesign the core API, reducing latency by 40%."
                       />
-
-                      {/* End Date Selection */}
-                      <div className="space-y-2">
-                        <div className={cn('flex', 'items-center', 'justify-between')}>
-                          <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>End Date</Label>
-                          <button 
-                            type="button"
-                            onClick={() => updateItem(iIdx, { 
-                              isCurrent: !item.isCurrent,
-                              endDate: !item.isCurrent ? "" : item.endDate 
-                            })}
-                            className={cn(
-                              "text-[10px] flex items-center gap-1.5 px-2 py-1 rounded-full border transition-all font-medium",
-                              item.isCurrent 
-                                ? "bg-zinc-900 border-zinc-900 text-white" 
-                                : "bg-white border-zinc-200 text-zinc-500 hover:border-zinc-400"
-                            )}
-                          >
-                            {item.isCurrent && <Check size={10} strokeWidth={3} />}
-                            Currently Work Here
-                          </button>
-                        </div>
-                        {!item.isCurrent && (
-                          <div className={cn('animate-in', 'fade-in', 'duration-200')}>
-                             <DateSelector 
-                              label=""
-                              value={endDate}
-                              onChange={(field, val) => {
-                                const newDate = { ...endDate, [field]: val };
-                                updateItem(iIdx, { endDate: formatDate(newDate.month, newDate.year) });
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeBullet(iIdx, bulIdx)}
+                        className="absolute top-1 right-1 h-7 w-7 text-zinc-300 hover:text-red-500 sm:opacity-0 sm:group-hover/bullet:opacity-100 transition-opacity"
+                      >
+                        <Trash2 size={12} />
+                      </Button>
                     </div>
                   </div>
-                </div>
-
-                {/* Accomplishments Section */}
-                <div className={cn('space-y-4', 'pt-4', 'border-t', 'border-zinc-100')}>
-                  <div className={cn('flex', 'items-center', 'justify-between')}>
-                    <Label className={cn('text-[10px]', 'font-semibold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Key Accomplishments</Label>
-                    <span className={cn('text-[10px]', 'text-zinc-400', 'italic', 'hidden', 'sm:inline')}>Focus on metrics and impact</span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {(item.bullets || []).map((bullet, bulIdx) => (
-                      <div key={bulIdx} className={cn('flex', 'gap-3', 'items-start', 'group/bullet', 'transition-all', 'duration-200')}>
-                        <div className={cn('shrink-0', 'mt-3', 'h-1.5', 'w-1.5', 'rounded-full', 'bg-zinc-300', 'group-focus-within/bullet:bg-zinc-900', 'transition-colors')} />
-                        <div className={cn('flex-1', 'relative')}>
-                          <Textarea
-                            className={cn('min-h-[80px]', 'w-full', 'resize-none', 'py-2', 'px-3', 'border-zinc-200', 'focus:border-zinc-900', 'focus:ring-0', 'transition-all', 'pr-10', 'rounded-lg', 'text-sm')}
-                            value={bullet}
-                            onChange={(e) => updateBullet(iIdx, bulIdx, e.target.value)}
-                            placeholder="e.g. Led a team of 5 to redesign the core API, reducing latency by 40%."
-                          />
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeBullet(iIdx, bulIdx)}
-                            className={cn('absolute', 'top-1', 'right-1', 'h-7', 'w-7', 'text-zinc-300', 'hover:text-red-500', 'sm:opacity-0', 'sm:group-hover/bullet:opacity-100', 'transition-opacity')}
-                          >
-                            <Trash2 size={12} />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <EditorAddButton
-                      label="Add Bullet Point"
-                      variant="secondary"
-                      onClick={() => addBullet(iIdx)}
-                      toastTitle="Bullet Added"
-                      toastDescription="A new accomplishment point has been created."
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            )}
-          </Card>
+                ))}
+                
+                <EditorAddButton
+                  label="Add Bullet Point"
+                  variant="secondary"
+                  onClick={() => addBullet(iIdx)}
+                  toastTitle="Bullet Added"
+                  toastDescription="A new accomplishment point has been created."
+                />
+              </div>
+            </div>
+          </CollapsibleCard>
         );
       })}
 

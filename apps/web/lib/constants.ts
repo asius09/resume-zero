@@ -57,3 +57,32 @@ export const INITIAL_DATA: ResumeData = {
     },
   ],
 };
+
+// Date constants
+export const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+] as const;
+
+export const YEARS = Array.from(
+  { length: 60 }, 
+  (_, i) => (new Date().getFullYear() - i).toString()
+);
+
+export const EDUCATION_YEARS = Array.from(
+  { length: 40 }, 
+  (_, i) => (new Date().getFullYear() + 5 - i).toString()
+);
+
+// Mandatory sections
+export const MANDATORY_SECTIONS = ["header", "summary"] as const;
+
+// Resume themes
+export const RESUME_THEMES = [
+  "minimalist",
+  "professional", 
+  "international",
+  "executive"
+] as const;
+
+export type ResumeTheme = typeof RESUME_THEMES[number];

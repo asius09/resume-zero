@@ -8,7 +8,6 @@ import {
   Cloud,
   Plus,
   ChevronUp,
-  Loader,
   Loader2,
 } from "lucide-react";
 import { IoDuplicate } from "react-icons/io5";
@@ -23,22 +22,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Kbd } from "@/components/ui/kbd";
-import {format} from "date-fns"
+import { format } from "date-fns";
+import { RESUME_THEMES, type ResumeTheme } from "@/lib/constants";
 
 interface HeaderProps {
   resumeName: string;
   onResumeNameChange: (name: string) => void;
-  activeLayout: "minimalist" | "professional" | "international" | "executive";
-  onLayoutChange: (
-    layout: "minimalist" | "professional" | "international" | "executive",
-  ) => void;
+  activeLayout: ResumeTheme;
+  onLayoutChange: (layout: ResumeTheme) => void;
   onExportPDF: () => void;
   resumes: Record<string, ResumeData>;
   activeId: string | null;
@@ -73,48 +70,22 @@ export function Header({
 }: HeaderProps) {
   return (
     <header
-        className={cn(
-          "no-print",
-          "sticky",
-          "top-0",
-          "z-50",
-          "bg-white/90",
-          "backdrop-blur-xl",
-          "border-b",
-          "border-zinc-100",
-          "px-6 sm:px-8",
-          "py-3",
-          "flex",
-          "items-center",
-          "justify-between",
-          "gap-2 sm:gap-4",
-        )}
+        className="no-print sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-100 px-6 sm:px-8 py-3 flex items-center justify-between gap-2 sm:gap-4"
       >
-        <div className={cn("flex", "items-center", "gap-2 sm:gap-4", "min-w-0")}>
-          <div className={cn("relative", "hidden sm:block")}>
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          <div className="relative hidden sm:block">
             <NextImage
               src="/logo.svg"
               alt="Logo"
               width={32}
               height={32}
-              className={cn("relative", "rounded", "border", "border-zinc-200")}
+              className="relative rounded border border-zinc-200"
             />
           </div>
           
-          <div className={cn("flex", "flex-col", "min-w-0")}>
+          <div className="flex flex-col min-w-0">
               <input
-                className={cn(
-                  "text-xs sm:text-sm",
-                  "font-medium",
-                  "text-zinc-600",
-                  "bg-transparent",
-                  "border-none",
-                  "p-1",
-                  "focus:ring-0",
-                  "focus:text-zinc-900",
-                  "transition-colors",
-                  "truncate",
-                )}
+                className="text-xs sm:text-sm font-medium text-zinc-600 bg-transparent border-none p-1 focus:ring-0 focus:text-zinc-900 transition-colors truncate"
                 maxLength={20}
                 style={{ width: `${Math.max((resumeName || "").length, 4) + 1}ch`, maxWidth: "120px" }}
                 value={resumeName || ""}
@@ -123,55 +94,38 @@ export function Header({
               />
           </div>
 
-          <div className={cn('flex', 'items-center', 'gap-1.5', 'sm:gap-3')}>
-            <div className={cn('h-4', 'w-px', 'bg-zinc-100', 'hidden', 'sm:block')} />
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            <div className="h-4 w-px bg-zinc-100 hidden sm:block" />
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={cn(
-                    "group",
-                    "h-7 sm:h-8",
-                    "gap-1.5",
-                    "px-2 sm:px-3",
-                    "rounded-full",
-                    "border border-zinc-200 cursor-pointer focus:border-0 focus:ring-0",
-                    "bg-zinc-50 hover:bg-zinc-100",
-                    "text-zinc-600",
-                    "transition-all",
-                  )}
+                  className="group h-7 sm:h-8 gap-1.5 px-2 sm:px-3 rounded-full border border-zinc-200 cursor-pointer focus:border-0 focus:ring-0 bg-zinc-50 hover:bg-zinc-100 text-zinc-600 transition-all"
                 >
                   <IoDuplicate
                     size={14}
-                    className={cn("group-hover:scale-110", "transition-transform")}
+                    className="group-hover:scale-110 transition-transform"
                   />
-                  <span
-                    className={cn(
-                      "text-xs",
-                      "font-medium",
-                      "tracking-tight",
-                      "hidden sm:inline",
-                    )}
-                  >
+                  <span className="text-xs font-medium tracking-tight hidden sm:inline">
                     Versions
                   </span>
                   <ChevronDown
                     size={10}
-                    className={cn("opacity-50", "group-data-[state=open]:hidden")}
+                    className="opacity-50 group-data-[state=open]:hidden"
                   />
                   <ChevronUp
                     size={10}
-                    className={cn("opacity-50", "group-data-[state=open]:block", "hidden")}
+                    className="opacity-50 group-data-[state=open]:block hidden"
                   />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className={cn('w-56', 'p-1')}>
-                <DropdownMenuLabel className={cn('text-[9px]', 'uppercase', 'tracking-widest', 'text-zinc-400', 'px-3', 'py-2', 'font-medium')}>
+              <DropdownMenuContent align="start" className="w-56 p-1">
+                <DropdownMenuLabel className="text-[9px] uppercase tracking-widest text-zinc-400 px-3 py-2 font-medium">
                   Resumes
                 </DropdownMenuLabel>
-                <div className={cn('max-h-[300px]', 'overflow-y-auto')}>
+                <div className="max-h-[300px] overflow-y-auto">
                   {Object.values(resumes).map((r) => (
                     <DropdownMenuItem
                       key={r.id}
@@ -181,14 +135,14 @@ export function Header({
                       )}
                       onClick={() => onSelectVersion(r.id)}
                     >
-                      <div className={cn('flex', 'flex-col', 'gap-0.5', 'min-w-0')}>
+                      <div className="flex flex-col gap-0.5 min-w-0">
                         <span className={cn(
                           "text-xs font-medium truncate",
                           activeId === r.id ? "text-zinc-900" : "text-zinc-600"
                         )}>
                           {r.metadata.name || "Untitled"}
                         </span>
-                        <span className={cn('text-[9px]', 'text-zinc-400')}>
+                        <span className="text-[9px] text-zinc-400">
                           {format(r.metadata.lastModified, 'MMM dd, yyyy')}
                         </span>
                       </div>
@@ -197,14 +151,14 @@ export function Header({
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className={cn('gap-2', 'cursor-pointer', 'py-2', 'rounded-md', 'text-zinc-600', 'text-xs')}
+                  className="gap-2 cursor-pointer py-2 rounded-md text-zinc-600 text-xs"
                   onClick={onCreateNewVersion}
                 >
                   <Plus size={12} />
                   Duplicate
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className={cn('gap-2', 'cursor-pointer', 'py-2', 'rounded-md', 'text-red-500', 'hover:bg-red-50', 'text-xs')}
+                  className="gap-2 cursor-pointer py-2 rounded-md text-red-500 hover:bg-red-50 text-xs"
                   onClick={() => activeId && onDeleteVersion(activeId)}
                 >
                   <Trash2 size={12} />
@@ -213,18 +167,18 @@ export function Header({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className={cn('flex', 'items-center', 'text-zinc-400')}>
+            <div className="flex items-center text-zinc-400">
               {isSaving ? (
-                <div className={cn('flex', 'items-center', 'gap-1')}>
-                  <Loader2 size={22} className={cn('text-zinc-400', 'animate-spin')} strokeWidth={1.5} />
-                  <span className={cn('text-[9px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-500', 'hidden', 'sm:inline', 'animate-pulse')}>
+                <div className="flex items-center gap-1">
+                  <Loader2 size={22} className="text-zinc-400 animate-spin" strokeWidth={1.5} />
+                  <span className="text-[9px] font-medium uppercase tracking-tight text-zinc-500 hidden sm:inline animate-pulse">
                     Saving...
                   </span>
                 </div>
               ) : (
-                <div className={cn('flex', 'items-center', 'gap-1')}>
+                <div className="flex items-center gap-1">
                   <Cloud size={24} className="text-zinc-300" strokeWidth={1.5} />
-                  <span className={cn('text-[9px]', 'font-medium', 'uppercase', 'tracking-tight', 'text-zinc-300', 'hidden', 'sm:inline')}>
+                  <span className="text-[9px] font-medium uppercase tracking-tight text-zinc-300 hidden sm:inline">
                     Saved
                   </span>
                 </div>
@@ -233,20 +187,20 @@ export function Header({
           </div>
         </div>
 
-        <div className={cn("flex", "items-center", "gap-2 sm:gap-6", "shrink-0")}>
+        <div className="flex items-center gap-2 sm:gap-6 shrink-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="sm"
-                className={cn('h-7', 'sm:h-8', 'gap-1.5', 'px-2', 'sm:px-3', 'rounded-full', 'border', 'border-zinc-200', 'bg-zinc-50', 'text-xs', 'font-medium', 'tracking-tight', 'text-zinc-600')}
+                className="h-7 sm:h-8 gap-1.5 px-2 sm:px-3 rounded-full border border-zinc-200 bg-zinc-50 text-xs font-medium tracking-tight text-zinc-600"
               >
-                <span className={cn('truncate', 'max-w-[80px]', 'capitalize')}>{activeLayout}</span>
+                <span className="truncate max-w-[80px] capitalize">{activeLayout}</span>
                 <ChevronDown size={10} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className={cn('w-40', 'p-1')}>
-              {(["minimalist", "professional", "international", "executive"] as const).map((t) => (
+            <DropdownMenuContent align="end" className="w-40 p-1">
+              {RESUME_THEMES.map((t) => (
                 <DropdownMenuItem
                   key={t}
                   onClick={() => onLayoutChange(t)}

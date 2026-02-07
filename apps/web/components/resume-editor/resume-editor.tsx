@@ -14,7 +14,6 @@ import { CertificationsEditor } from "./certifications-editor";
 import { PersonalEditor } from "./personal-editor";
 import { CustomEditor } from "./custom-editor";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/cn";
 import type {
   ResumeData,
   ResumeSectionType,
@@ -28,8 +27,8 @@ import type {
   PersonalDetailItem,
   CustomBlock,
 } from "@resume/types";
-
 import { useToast } from "@/hooks/use-toast";
+import { MANDATORY_SECTIONS } from "@/lib/constants";
 
 interface ResumeEditorProps {
   data: ResumeData;
@@ -47,7 +46,6 @@ export function ResumeEditor({
   handleCopySection,
 }: ResumeEditorProps) {
   const { toast } = useToast();
-  const mandatory = ["header", "summary", 'mb-12', 'pb-32']
 
   const onRemoveBlock = (index: number) => {
     const block = data.blocks[index];
@@ -84,14 +82,14 @@ export function ResumeEditor({
   };
 
   return (
-    <div className={cn('max-w-[720px]', 'mx-auto', 'pb-48 sm:pb-32', 'space-y-12')}>
-      <div className={cn('flex', 'flex-col', 'gap-6', 'sticky', 'top-0', 'bg-white/95', 'backdrop-blur-xl', 'z-20', 'border-b', 'border-zinc-100', 'px-8 py-4')}>
+    <div className="max-w-[720px] mx-auto pb-48 sm:pb-32 space-y-12">
+      <div className="flex flex-col gap-6 sticky top-0 bg-white/95 backdrop-blur-xl z-20 border-b border-zinc-100 px-8 py-4">
         <div>
-          <h2 className={cn('text-lg', 'font-semibold', 'tracking-tight', 'text-zinc-900', 'uppercase')}>
+          <h2 className="text-lg font-semibold tracking-tight text-zinc-900 uppercase">
             Editor
           </h2>
         </div>
-        <div className={cn('flex', 'flex-nowrap', 'overflow-x-auto', 'gap-2', 'pb-2', 'custom-scrollbar', 'scroll-smooth')}>
+        <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 custom-scrollbar scroll-smooth">
           {(
             [
               "experience",
@@ -109,7 +107,7 @@ export function ResumeEditor({
               variant="outline"
               size="sm"
               onClick={() => onAddBlock(type)}
-              className={cn('rounded-full', 'h-8', 'px-4', 'text-[10px]', 'whitespace-nowrap', 'bg-white', 'border-zinc-200', 'hover:bg-zinc-50', 'text-zinc-600', 'font-semibold', 'uppercase', 'tracking-wider')}
+              className="rounded-full h-8 px-4 text-[10px] whitespace-nowrap bg-white border-zinc-200 hover:bg-zinc-50 text-zinc-600 font-semibold uppercase tracking-wider"
             >
               <Plus size={12} className="mr-1.5" />{" "}
               {type === "personal"
@@ -120,9 +118,9 @@ export function ResumeEditor({
         </div>
       </div>
 
-      <div className={cn("space-y-8 px-6 lg:px-8 xl:px-10")}>
+      <div className="space-y-8 px-6 lg:px-8 xl:px-10">
         {data.blocks.map((block, bIdx) => {
-          const isMandatory = mandatory.includes(block.type);
+          const isMandatory = MANDATORY_SECTIONS.includes(block.type as typeof MANDATORY_SECTIONS[number]);
 
           return (
             <SectionWrapper

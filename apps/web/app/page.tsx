@@ -96,7 +96,7 @@ export default function ResumeCleanerPage() {
   if (!isMounted) return null;
 
   return (
-    <div className={cn("min-h-screen", "bg-white flex flex-col")}>
+    <div className="min-h-screen bg-white flex flex-col">
       <Header
         resumeName={data.metadata.name || ""}
         onResumeNameChange={setResumeName}
@@ -117,32 +117,9 @@ export default function ResumeCleanerPage() {
         canRedo={canRedo}
       />
 
-      <main
-        className={cn(
-          "flex-1 grid grid-cols-1 lg:grid-cols-2 lg:overflow-hidden",
-        )}
-      >
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 lg:overflow-hidden">
         {/* Mobile View Toggle */}
-        <div
-          className={cn(
-            "lg:hidden",
-            "fixed",
-            "bottom-10",
-            "left-1/2",
-            "-translate-x-1/2",
-            "z-50",
-            "bg-zinc-900/95",
-            "backdrop-blur-xl",
-            "text-white",
-            "rounded-full",
-            "p-1",
-            "shadow-2xl",
-            "flex",
-            "items-center",
-            "border",
-            "border-white/20",
-          )}
-        >
+        <div className="lg:hidden fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-zinc-900/95 backdrop-blur-xl text-white rounded-full p-1 shadow-2xl flex items-center border border-white/20">
           <button
             onClick={() => setMobileView("edit")}
             className={cn(
@@ -166,10 +143,8 @@ export default function ResumeCleanerPage() {
         {/* Editor Side */}
         <div
           className={cn(
-            "editor-side no-print transition-all duration-300",
-            mobileView === "edit" ? "block" : "hidden lg:block",
-            "bg-white border-r border-zinc-200",
-            "lg:overflow-y-auto lg:h-[calc(100vh-80px)] custom-scrollbar relative z-10",
+            "editor-side no-print transition-all duration-300 bg-white border-r border-zinc-200 lg:overflow-y-auto lg:h-[calc(100vh-80px)] custom-scrollbar relative z-10",
+            mobileView === "edit" ? "block" : "hidden lg:block"
           )}
         >
           <div className="max-w-4xl mx-auto">
@@ -186,9 +161,8 @@ export default function ResumeCleanerPage() {
         {/* Preview Side */}
         <div
           className={cn(
-            "preview-container transition-all duration-300",
-            "bg-[#f4f4f5] lg:overflow-y-auto lg:h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-8 pb-32",
-            mobileView === "preview" ? "block" : "hidden lg:block",
+            "preview-container transition-all duration-300 bg-[#f4f4f5] lg:overflow-y-auto lg:h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-8 pb-32",
+            mobileView === "preview" ? "block" : "hidden lg:block"
           )}
         >
           <ResumePreview
