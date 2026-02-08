@@ -29,6 +29,11 @@ import type {
 } from "@resume/types";
 import { useToast } from "@/hooks/use-toast";
 import { MANDATORY_SECTIONS } from "@/lib/constants";
+import { 
+  safeGetBlock, 
+  capitalizeSectionName,
+  isValidArray 
+} from "@/lib/validation";
 
 interface ResumeEditorProps {
   data: ResumeData;
@@ -48,38 +53,116 @@ export function ResumeEditor({
   const { toast } = useToast();
 
   const onRemoveBlock = (index: number) => {
-    const block = data.blocks[index];
-    const sectionName = block.type.charAt(0).toUpperCase() + block.type.slice(1);
-    
-    removeBlock(index);
-    toast({
-      title: `${sectionName} Removed`,
-      description: `The ${block.type} section has been removed from your resume.`,
-      variant: "destructive",
-    });
+    try {
+      // Validate index bounds
+      if (!data?.blocks || index < 0 || index >= data.blocks.length) {
+        toast({
+          title: "Error",
+          description: "Invalid section index. Please refresh the page.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const block = safeGetBlock(data.blocks, index);
+      if (!block) {
+        toast({
+          title: "Error",
+          description: "Section not found.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const sectionName = capitalizeSectionName(block.type);
+      
+      removeBlock(index);
+      toast({
+        title: `${sectionName} Removed`,
+        description: `The ${block.type} section has been removed from your resume.`,
+        variant: "destructive",
+      });
+    } catch (error) {
+      console.error("Error removing block:", error);
+      toast({
+        title: "Error",
+        description: "Failed to remove section. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const onAddBlock = (type: ResumeSectionType) => {
-    const sectionName = type.charAt(0).toUpperCase() + type.slice(1);
-    addBlock(type);
-    toast({
-      title: `${sectionName} Added`,
-      description: `A new ${type} section is now ready for editing.`,
-      variant: "success",
-    });
+    try {
+      const sectionName = capitalizeSectionName(type);
+      addBlock(type);
+      toast({
+        title: `${sectionName} Added`,
+        description: `A new ${type} section is now ready for editing.`,
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error adding block:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add section. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const onCopySection = (index: number) => {
-    const block = data.blocks[index];
-    const sectionName = block.type.charAt(0).toUpperCase() + block.type.slice(1);
-    
-    handleCopySection(index);
-    toast({
-      title: `${sectionName} Copied`,
-      description: "Section content is now in your clipboard.",
-      variant: "default",
-    });
+    try {
+      // Validate index bounds
+      if (!data?.blocks || index < 0 || index >= data.blocks.length) {
+        toast({
+          title: "Error",
+          description: "Invalid section index.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const block = safeGetBlock(data.blocks, index);
+      if (!block) {
+        toast({
+          title: "Error",
+          description: "Section not found.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const sectionName = capitalizeSectionName(block.type);
+      
+      handleCopySection(index);
+      toast({
+        title: `${sectionName} Copied`,
+        description: "Section content is now in your clipboard.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error copying section:", error);
+      toast({
+        title: "Error",
+        description: "Failed to copy section. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
+
+  // Validate data structure
+  if (!data || !isValidArray(data.blocks)) {
+    return (
+      <div className="max-w-[720px] mx-auto pb-48 sm:pb-32 p-8">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <p className="text-sm text-yellow-800 font-medium">
+            Invalid resume data. Please refresh the page.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-[720px] mx-auto pb-48 sm:pb-32 space-y-12">

@@ -1,5 +1,5 @@
 import React from "react";
-import { Trash2, ChevronDown, ChevronUp, GripVertical } from "lucide-react";
+import { GripVertical, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
@@ -14,6 +14,10 @@ interface CollapsibleCardProps {
   children: React.ReactNode;
 }
 
+/**
+ * Reusable collapsible card component with expand/collapse functionality
+ * Used for experience, education, and other list-based sections
+ */
 export function CollapsibleCard({
   isExpanded,
   onToggle,
@@ -23,6 +27,27 @@ export function CollapsibleCard({
   metadata,
   children,
 }: CollapsibleCardProps) {
+  // Validate required props
+  if (!title && !subtitle) {
+    console.warn("CollapsibleCard: Both title and subtitle are empty");
+  }
+
+  const handleToggle = () => {
+    try {
+      onToggle();
+    } catch (error) {
+      console.error("Error toggling card:", error);
+    }
+  };
+
+  const handleRemove = (e: React.MouseEvent) => {
+    try {
+      e.stopPropagation();
+      onRemove(e);
+    } catch (error) {
+      console.error("Error removing card:", error);
+    }
+  };
   return (
     <Card
       className={cn(
@@ -36,7 +61,7 @@ export function CollapsibleCard({
           "p-4 flex items-center gap-3 sm:gap-4 cursor-pointer select-none",
           isExpanded ? "bg-zinc-50/50 border-b border-zinc-100" : "bg-white"
         )}
-        onClick={onToggle}
+        onClick={handleToggle}
       >
         <div className="text-zinc-300 group-hover/item:text-zinc-500 transition-colors hidden sm:block">
           <GripVertical size={16} />
@@ -68,7 +93,7 @@ export function CollapsibleCard({
           <Button
             variant="ghost"
             size="icon"
-            onClick={onRemove}
+            onClick={handleRemove}
             className="h-8 w-8 text-zinc-400 hover:text-red-500 hover:bg-red-50 sm:opacity-0 sm:group-hover/item:opacity-100 transition-opacity"
           >
             <Trash2 size={14} />
