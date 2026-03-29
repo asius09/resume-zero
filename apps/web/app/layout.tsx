@@ -20,19 +20,31 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
-  title: "Resume: Zero",
+  metadataBase: new URL("https://resume-zero.vercel.app"),
+  title: {
+    default: "Resume Zero",
+    template: "%s | Resume Zero",
+  },
   description:
     "The minimalist, ATS-optimized resume builder for professionals. Zero friction, zero clutter.",
   openGraph: {
-    title: "Resume: Zero",
-    description:
-      "The minimalist, ATS-optimized resume builder for professionals.",
-    images: ["/og-image.png"],
+    title: "Resume Zero",
+    description: "The minimalist, ATS-optimized resume builder for professionals.",
+    url: "https://resume-zero.vercel.app",
+    siteName: "Resume Zero",
+    locale: "en_US",
+    type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Resume Zero",
+    description: "The minimalist, ATS-optimized resume builder for professionals.",
+  },
+  keywords: ["resume builder", "ATS resume", "minimalist resume", "professional resume", "free resume maker"],
+  authors: [{ name: "Resume Zero Team" }],
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.png",
+    icon: "/logo.svg",
+    apple: "/logo.svg",
   },
 };
 

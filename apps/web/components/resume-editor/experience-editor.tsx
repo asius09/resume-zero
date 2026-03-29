@@ -91,7 +91,7 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
           </div>
           <div className="space-y-1">
             <h4 className={cn('text-sm', 'font-medium', 'text-zinc-900')}>No experience yet?</h4>
-            <p className={cn('text-xs', 'text-zinc-500', 'max-w-[280px]')}>
+            <p className={cn('text-xs', 'text-zinc-500', 'max-w-[320px]')}>
               If you&apos;re a fresher, you can focus on projects, education, and skills. Or add internships and volunteer work here.
             </p>
           </div>
