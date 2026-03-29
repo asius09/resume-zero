@@ -22,14 +22,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://r0.asius.in"),
   title: {
-    default: "Resume Zero",
+    default: "Resume Zero - The Minimalist, ATS-Optimized Resume Builder",
     template: "%s | Resume Zero",
   },
   description:
-    "The minimalist, ATS-optimized resume builder for professionals. Zero friction, zero clutter.",
+    "Resume Zero is the ultimate minimalist resume builder for professionals. Build ATS-optimized, high-impact resumes with zero clutter and zero friction in minutes.",
   openGraph: {
-    title: "Resume Zero",
-    description: "The minimalist, ATS-optimized resume builder for professionals.",
+    title: "Resume Zero - The Minimalist, ATS-Optimized Resume Builder",
+    description: "Resume Zero is the ultimate minimalist resume builder for professionals. Build ATS-optimized, high-impact resumes with zero clutter and zero friction in minutes.",
     url: "https://r0.asius.in",
     siteName: "Resume Zero",
     locale: "en_US",
@@ -39,17 +39,17 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Resume Zero - Minimalist Resume Builder",
+        alt: "Build your professional resume with Resume Zero",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Resume Zero",
-    description: "The minimalist, ATS-optimized resume builder for professionals.",
+    title: "Resume Zero - The Minimalist, ATS-Optimized Resume Builder",
+    description: "Build ATS-optimized, high-impact resumes with zero clutter and zero friction in minutes.",
     images: ["/opengraph-image"],
   },
-  keywords: ["resume builder", "ATS resume", "minimalist resume", "professional resume", "free resume maker"],
+  keywords: ["resume builder", "ATS resume", "minimalist resume", "professional resume", "free resume maker", "career tools"],
   authors: [{ name: "Resume Zero Team" }],
   icons: {
     icon: "/logo.svg",
