@@ -257,10 +257,21 @@ export function ResumeEditor({
   return (
     <div className="w-full max-w-[720px] mx-auto pb-48 sm:pb-32 space-y-12">
         <div className="flex flex-col gap-6 sticky top-0 bg-white/95 backdrop-blur-xl z-20 border-b border-zinc-100 px-8 py-4">
-        <div>
+        <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight text-zinc-900 uppercase">
             Editor
           </h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+              toast({ title: "Copied!", description: "JSON data copied to clipboard" });
+            }}
+            className="text-xs font-mono text-zinc-400 hover:text-zinc-600"
+          >
+            Copy JSON
+          </Button>
         </div>
         <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 custom-scrollbar scroll-smooth">
           {(

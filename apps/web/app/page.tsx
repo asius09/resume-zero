@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ErrorBoundary } from "@/components/error-boundary";
 import type { ResumeData } from "@resume/types";
 import { extractTextFromPDF, parseResumeTextToData } from "@/lib/pdf-parser";
-import { INITIAL_DATA } from "@/lib/constants";
+import { INITIAL_DATA, MANDATORY_SECTIONS } from "@/lib/constants";
 
 export default function ResumeCleanerPage() {
   const { toast } = useToast();
@@ -139,9 +139,20 @@ export default function ResumeCleanerPage() {
         const text = await extractTextFromPDF(file);
         const parsedData = parseResumeTextToData(text);
         
+        // Merge blocks to ensure all mandatory sections exist
+        const mergedBlocks = [...(parsedData.blocks || [])];
+        INITIAL_DATA.blocks.forEach(initialBlock => {
+          if (!mergedBlocks.some(b => b.type === initialBlock.type)) {
+            if (MANDATORY_SECTIONS.includes(initialBlock.type as any)) {
+              mergedBlocks.push(initialBlock);
+            }
+          }
+        });
+        
         importedData = {
           ...INITIAL_DATA,
           ...parsedData,
+          blocks: mergedBlocks,
           id: crypto.randomUUID(),
           metadata: {
             ...INITIAL_DATA.metadata,
