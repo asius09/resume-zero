@@ -36,6 +36,7 @@ export default function ResumeCleanerPage() {
     canUndo,
     canRedo,
     importResume,
+    reorderBlocks,
   } = useResumeData();
 
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
@@ -265,6 +266,7 @@ export default function ResumeCleanerPage() {
                 updateBlock={updateBlock}
                 addBlock={addBlock}
                 removeBlock={removeBlock}
+                reorderBlocks={reorderBlocks}
                 handleCopySection={(index) => handleCopySection(data, index)}
               />
             </div>

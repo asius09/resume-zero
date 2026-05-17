@@ -34,12 +34,14 @@ import {
   capitalizeSectionName,
   isValidArray 
 } from "@/lib/validation";
+import { cn } from "@/lib/utils";
 
 interface ResumeEditorProps {
   data: ResumeData;
   updateBlock: (index: number, newData: ResumeBlock["data"]) => void;
   addBlock: (type: ResumeSectionType) => void;
   removeBlock: (index: number) => void;
+  reorderBlocks?: (startIndex: number, endIndex: number) => void;
   handleCopySection: (index: number) => void;
 }
 
@@ -48,9 +50,90 @@ export function ResumeEditor({
   updateBlock,
   addBlock,
   removeBlock,
+  reorderBlocks,
   handleCopySection,
 }: ResumeEditorProps) {
   const { toast } = useToast();
+  
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", index.toString());
+    
+    const block = data.blocks[index];
+    const sectionName = capitalizeSectionName(block?.type || "");
+    
+    toast({
+      title: "Reordering Section",
+      description: `Dragging ${sectionName}. Drop to reorder.`,
+      duration: 3000,
+    });
+  };
+
+  const handleDragEnter = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+
+    // Auto-scroll logic for the container
+    const scrollSensitivity = 80; // Pixels from edge
+    const scrollSpeed = 20;
+    
+    const container = e.currentTarget as HTMLElement;
+    const scrollParent = container.closest('.editor-side') || window;
+    
+    if (scrollParent === window) {
+      if (e.clientY < scrollSensitivity) {
+        window.scrollBy(0, -scrollSpeed);
+      } else if (window.innerHeight - e.clientY < scrollSensitivity) {
+        window.scrollBy(0, scrollSpeed);
+      }
+    } else {
+      const parentElement = scrollParent as HTMLElement;
+      const rect = parentElement.getBoundingClientRect();
+      
+      if (e.clientY - rect.top < scrollSensitivity) {
+        parentElement.scrollTop -= scrollSpeed;
+      } else if (rect.bottom - e.clientY < scrollSensitivity) {
+        parentElement.scrollTop += scrollSpeed;
+      }
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== index) {
+      if (reorderBlocks) {
+        reorderBlocks(draggedIndex, index);
+      }
+    }
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleMoveUp = (index: number) => {
+    if (index > 0 && reorderBlocks) {
+      reorderBlocks(index, index - 1);
+    }
+  };
+
+  const handleMoveDown = (index: number) => {
+    if (data.blocks && index < data.blocks.length - 1 && reorderBlocks) {
+      reorderBlocks(index, index + 1);
+    }
+  };
 
   const onRemoveBlock = (index: number) => {
     try {
@@ -164,9 +247,16 @@ export function ResumeEditor({
     );
   }
 
+  const scrollToSection = (index: number) => {
+    const el = document.getElementById(`section-${index}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="max-w-[720px] mx-auto pb-48 sm:pb-32 space-y-12">
-      <div className="flex flex-col gap-6 sticky top-0 bg-white/95 backdrop-blur-xl z-20 border-b border-zinc-100 px-8 py-4">
+    <div className="w-full max-w-[720px] mx-auto pb-48 sm:pb-32 space-y-12">
+        <div className="flex flex-col gap-6 sticky top-0 bg-white/95 backdrop-blur-xl z-20 border-b border-zinc-100 px-8 py-4">
         <div>
           <h2 className="text-lg font-semibold tracking-tight text-zinc-900 uppercase">
             Editor
@@ -199,6 +289,33 @@ export function ResumeEditor({
             </Button>
           ))}
         </div>
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth border-t border-zinc-100 pt-3">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 whitespace-nowrap">
+            Jump to:
+          </span>
+          {data.blocks.map((block, idx) => (
+            <button
+              key={`nav-${idx}`}
+              onClick={() => scrollToSection(idx)}
+              draggable
+              onDragStart={(e) => handleDragStart(e, idx)}
+              onDragEnter={(e) => handleDragEnter(e, idx)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, idx)}
+              onDragEnd={handleDragEnd}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all whitespace-nowrap cursor-grab active:cursor-grabbing",
+                "bg-zinc-50 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 border border-zinc-200",
+                draggedIndex === idx && "opacity-50 scale-95 border-dashed border-zinc-400",
+                dragOverIndex === idx && "border-l-2 border-l-blue-500 ml-1 pl-4 bg-blue-50/50"
+              )}
+              title={`Drag to reorder or click to scroll to ${capitalizeSectionName(block.type)}`}
+            >
+              <span className="text-[10px] opacity-50">{idx + 1}.</span>
+              <span className="capitalize">{block.type}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="space-y-8 px-6 lg:px-8 xl:px-10">
@@ -207,11 +324,23 @@ export function ResumeEditor({
 
           return (
             <SectionWrapper
-              key={bIdx}
+              key={`${bIdx}-${block.type}`}
+              id={`section-${bIdx}`}
               type={block.type}
               isMandatory={isMandatory}
               onCopy={() => onCopySection(bIdx)}
               onRemove={() => onRemoveBlock(bIdx)}
+              canMoveUp={bIdx > 0}
+              canMoveDown={bIdx < data.blocks.length - 1}
+              onMoveUp={() => handleMoveUp(bIdx)}
+              onMoveDown={() => handleMoveDown(bIdx)}
+              isDragged={draggedIndex === bIdx}
+              isDragOver={dragOverIndex === bIdx}
+              onDragStart={(e) => handleDragStart(e, bIdx)}
+              onDragEnter={(e) => handleDragEnter(e, bIdx)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, bIdx)}
+              onDragEnd={handleDragEnd}
             >
               {block.type === "header" && (
                 <HeaderEditor

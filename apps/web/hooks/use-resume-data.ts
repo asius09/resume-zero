@@ -412,6 +412,18 @@ export function useResumeData() {
     setHistoryIndex((prev) => ({ ...prev, [newResume.id]: 0 }));
   };
 
+  const reorderBlocks = (startIndex: number, endIndex: number) => {
+    const newBlocks = Array.from(data.blocks);
+    const [movedBlock] = newBlocks.splice(startIndex, 1);
+    newBlocks.splice(endIndex, 0, movedBlock);
+    
+    setData((prev) => ({
+      ...prev,
+      metadata: { ...prev.metadata, lastModified: new Date().toISOString() },
+      blocks: newBlocks,
+    }));
+  };
+
   return {
     data,
     resumes,
@@ -422,6 +434,7 @@ export function useResumeData() {
     updateBlock,
     addBlock,
     removeBlock,
+    reorderBlocks,
     autoClean,
     setResumeName,
     setTheme,
