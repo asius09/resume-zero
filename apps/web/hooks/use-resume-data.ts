@@ -7,7 +7,9 @@ import type {
   ResumeSectionType,
   ExperienceItem,
   ProjectItem,
+  ResumeBlockType,
 } from "@resume/types";
+import { create } from "zustand";
 import { normalizeBullet, cleanText } from "@resume/cleaner";
 import {
   INITIAL_DATA,
@@ -21,7 +23,7 @@ export function useResumeData() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   const [history, setHistory] = useState<Record<string, ResumeData[]>>({});
   const [historyIndex, setHistoryIndex] = useState<Record<string, number>>({});
 
@@ -31,7 +33,7 @@ export function useResumeData() {
   useEffect(() => {
     const savedHistory = localStorage.getItem("resume_history");
     const savedIndices = localStorage.getItem("resume_history_indices");
-    
+
     setTimeout(() => {
       if (savedHistory) {
         try {
@@ -53,7 +55,10 @@ export function useResumeData() {
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem("resume_history", JSON.stringify(history));
-      localStorage.setItem("resume_history_indices", JSON.stringify(historyIndex));
+      localStorage.setItem(
+        "resume_history_indices",
+        JSON.stringify(historyIndex),
+      );
     }
   }, [history, historyIndex, isMounted]);
 
@@ -61,9 +66,9 @@ export function useResumeData() {
     setHistory((prev) => {
       const resumeHistory = prev[resumeId] || [];
       const currentIndex = historyIndex[resumeId] ?? -1;
-      
+
       const truncatedHistory = resumeHistory.slice(0, currentIndex + 1);
-      const newHistory = [...truncatedHistory, item].slice(-6); 
+      const newHistory = [...truncatedHistory, item].slice(-6);
       return { ...prev, [resumeId]: newHistory };
     });
     setHistoryIndex((prev) => {
@@ -76,13 +81,13 @@ export function useResumeData() {
     if (!activeId) return false;
     const currentIndex = historyIndex[activeId] ?? -1;
     const resumeHistory = history[activeId] || [];
-    
+
     if (currentIndex > 0) {
       const newIndex = currentIndex - 1;
       const previousState = resumeHistory[newIndex];
-      
-      setHistoryIndex(prev => ({ ...prev, [activeId]: newIndex }));
-      setResumes(prev => ({ ...prev, [activeId]: previousState }));
+
+      setHistoryIndex((prev) => ({ ...prev, [activeId]: newIndex }));
+      setResumes((prev) => ({ ...prev, [activeId]: previousState }));
       return true;
     }
     return false;
@@ -92,28 +97,31 @@ export function useResumeData() {
     if (!activeId) return false;
     const currentIndex = historyIndex[activeId] ?? -1;
     const resumeHistory = history[activeId] || [];
-    
+
     if (currentIndex < resumeHistory.length - 1) {
       const newIndex = currentIndex + 1;
       const nextState = resumeHistory[newIndex];
-      
-      setHistoryIndex(prev => ({ ...prev, [activeId]: newIndex }));
-      setResumes(prev => ({ ...prev, [activeId]: nextState }));
+
+      setHistoryIndex((prev) => ({ ...prev, [activeId]: newIndex }));
+      setResumes((prev) => ({ ...prev, [activeId]: nextState }));
       return true;
     }
     return false;
   };
 
-  const setData = (newData: ResumeData | ((prev: ResumeData) => ResumeData), skipHistory = false) => {
+  const setData = (
+    newData: ResumeData | ((prev: ResumeData) => ResumeData),
+    skipHistory = false,
+  ) => {
     if (!activeId) return;
     setResumes((prev) => {
       const current = prev[activeId] || INITIAL_DATA;
       const next = typeof newData === "function" ? newData(current) : newData;
-      
+
       if (!skipHistory && JSON.stringify(current) !== JSON.stringify(next)) {
         pushToHistory(activeId, next);
       }
-      
+
       return {
         ...prev,
         [activeId]: next,
@@ -162,18 +170,18 @@ export function useResumeData() {
     setTimeout(() => {
       setResumes(initialResumes);
       setActiveId(initialActiveId);
-      
+
       // Seed initial history if empty
-      setHistory(prev => {
+      setHistory((prev) => {
         const obj: Record<string, ResumeData[]> = { ...prev };
         Object.entries(initialResumes).forEach(([id, resume]) => {
           if (!obj[id]) obj[id] = [resume];
         });
         return obj;
       });
-      setHistoryIndex(prev => {
+      setHistoryIndex((prev) => {
         const obj: Record<string, number> = { ...prev };
-        Object.keys(initialResumes).forEach(id => {
+        Object.keys(initialResumes).forEach((id) => {
           if (obj[id] === undefined) obj[id] = 0;
         });
         return obj;
@@ -190,7 +198,7 @@ export function useResumeData() {
       if (activeId) {
         localStorage.setItem(ACTIVE_RESUME_ID_KEY, activeId);
       }
-      
+
       const timer = setTimeout(() => {
         setIsSaving(true);
         setTimeout(() => setIsSaving(false), 500);
@@ -351,7 +359,9 @@ export function useResumeData() {
     }));
   };
 
-  const setTheme = (theme: "minimalist" | "professional" | "international" | "executive") => {
+  const setTheme = (
+    theme: "minimalist" | "professional" | "international" | "executive",
+  ) => {
     setData((prev) => ({
       ...prev,
       metadata: { ...prev.metadata, theme },
@@ -395,6 +405,13 @@ export function useResumeData() {
     setActiveId(id);
   };
 
+  const importResume = (newResume: ResumeData) => {
+    setResumes((prev) => ({ ...prev, [newResume.id]: newResume }));
+    setActiveId(newResume.id);
+    setHistory((prev) => ({ ...prev, [newResume.id]: [newResume] }));
+    setHistoryIndex((prev) => ({ ...prev, [newResume.id]: 0 }));
+  };
+
   return {
     data,
     resumes,
@@ -414,6 +431,10 @@ export function useResumeData() {
     undo,
     redo,
     canUndo: (activeId && (historyIndex[activeId] ?? 0) > 0) || false,
-    canRedo: (activeId && (historyIndex[activeId] ?? 0) < (history[activeId]?.length ?? 0) - 1) || false,
+    canRedo:
+      (activeId &&
+        (historyIndex[activeId] ?? 0) < (history[activeId]?.length ?? 0) - 1) ||
+      false,
+    importResume,
   };
 }

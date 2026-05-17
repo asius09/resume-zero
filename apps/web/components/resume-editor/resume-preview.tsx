@@ -73,16 +73,20 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
         <div className="centering-box">
           <div className="scaling-layer relative transition-all duration-200">
             {/* The Document Sheet */}
-            <div className={cn(
-              "bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)]",
-              "relative min-h-[297mm]"
-            )}>
+            <div 
+              ref={ref}
+              id="resume-preview"
+              className={cn(
+                "bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)]",
+                "relative min-h-[297mm]"
+              )}
+            >
               {/* Layout Injection */}
               <div id="resume-canvas" className="contents">
-                {activeLayout === "minimalist" && <ATSMinimalist data={data} ref={ref} />}
-                {activeLayout === "professional" && <ModernProfessional data={data} ref={ref} />}
-                {activeLayout === "international" && <InternationalFormat data={data} ref={ref} />}
-                {activeLayout === "executive" && <ExecutiveSerif data={data} ref={ref} />}
+                {activeLayout === "minimalist" && <ATSMinimalist data={data} />}
+                {activeLayout === "professional" && <ModernProfessional data={data} />}
+                {activeLayout === "international" && <InternationalFormat data={data} />}
+                {activeLayout === "executive" && <ExecutiveSerif data={data} />}
               </div>
 
               {/* Precise Page Terminators */}

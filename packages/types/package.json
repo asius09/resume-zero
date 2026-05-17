@@ -11,7 +11,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@resume/config-typescript": "*",
+    "@resume/config-typescript": "workspace:*",
     "typescript": "^5"
   }
 }

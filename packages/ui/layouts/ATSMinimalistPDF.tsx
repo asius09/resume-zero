@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   section: {
     width: "100%",
     marginBottom: 12,
+    break: false,
   },
   sectionHeader: {
     marginTop: 15,

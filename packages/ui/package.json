@@ -6,12 +6,12 @@
   "types": "./index.ts",
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",
-    "@resume/types": "*",
+    "@resume/types": "workspace:*",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@resume/config-typescript": "*",
+    "@resume/config-typescript": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "typescript": "^5"

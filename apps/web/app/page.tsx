@@ -11,6 +11,9 @@ import { ResumePreview } from "@/components/resume-editor/resume-preview";
 import { handleCopySection } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { ErrorBoundary } from "@/components/error-boundary";
+import type { ResumeData } from "@resume/types";
+import { extractTextFromPDF, parseResumeTextToData } from "@/lib/pdf-parser";
+import { INITIAL_DATA } from "@/lib/constants";
 
 export default function ResumeCleanerPage() {
   const { toast } = useToast();
@@ -32,6 +35,7 @@ export default function ResumeCleanerPage() {
     redo,
     canUndo,
     canRedo,
+    importResume,
   } = useResumeData();
 
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
@@ -88,6 +92,110 @@ export default function ResumeCleanerPage() {
     }
   };
 
+  const handleExportJSON = () => {
+    try {
+      const jsonData = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonData], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${data.metadata.name || "resume"}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Export Success",
+        description: "Resume data exported as JSON.",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export Failed",
+        description: "Failed to export resume data.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleImportJSON = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      let importedData: ResumeData;
+
+      if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+        // Handle PDF import
+        toast({
+          title: "Processing PDF",
+          description: "Extracting data from PDF...",
+          variant: "info",
+        });
+
+        const text = await extractTextFromPDF(file);
+        const parsedData = parseResumeTextToData(text);
+        
+        importedData = {
+          ...INITIAL_DATA,
+          ...parsedData,
+          id: crypto.randomUUID(),
+          metadata: {
+            ...INITIAL_DATA.metadata,
+            ...parsedData.metadata,
+            name: file.name.replace('.pdf', ''),
+            lastModified: new Date().toISOString(),
+          },
+        } as ResumeData;
+      } else {
+        // Handle JSON import
+        const reader = new FileReader();
+        const data = await new Promise<string>((resolve, reject) => {
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.onerror = reject;
+          reader.readAsText(file);
+        });
+
+        const jsonData = JSON.parse(data);
+        
+        // Validate basic structure
+        if (!jsonData.blocks || !Array.isArray(jsonData.blocks)) {
+          throw new Error("Invalid resume data structure");
+        }
+
+        importedData = {
+          ...jsonData,
+          id: crypto.randomUUID(),
+          metadata: {
+            ...jsonData.metadata,
+            name: jsonData.metadata?.name || "Imported Resume",
+            lastModified: new Date().toISOString(),
+          },
+        } as ResumeData;
+      }
+
+      importResume(importedData);
+      
+      toast({
+        title: "Import Success",
+        description: "Resume data imported successfully.",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Import error:", error);
+      toast({
+        title: "Import Failed",
+        description: error instanceof Error ? error.message : "Failed to import file. Please check the file format.",
+        variant: "destructive",
+      });
+    }
+    
+    // Reset input
+    event.target.value = "";
+  };
+
   useKeyboardShortcuts({
     onUndo: handleUndo,
     onRedo: handleRedo,
@@ -107,6 +215,8 @@ export default function ResumeCleanerPage() {
           }
           onLayoutChange={setTheme}
           onExportPDF={handleExportPDF}
+          onExportJSON={handleExportJSON}
+          onImportJSON={handleImportJSON}
           resumes={resumes}
           activeId={activeId}
           onSelectVersion={selectVersion}

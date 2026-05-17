@@ -5,10 +5,10 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "dependencies": {
-    "@resume/types": "*",
+    "@resume/types": "workspace:*",
     "typescript": "^5"
   },
   "devDependencies": {
-    "@resume/config-typescript": "*"
+    "@resume/config-typescript": "workspace:*"
   }
 }

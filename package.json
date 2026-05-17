@@ -1,22 +1,19 @@
 {
   "name": "resume-creator-monorepo",
   "private": true,
-  "packageManager": "npm@11.4.0",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "devDependencies": {
     "prettier": "^3.0.0",
     "turbo": "latest"
   },
   "dependencies": {
-    "date-fns": "^4.1.0"
+    "date-fns": "^4.1.0",
+    "zustand": "^5.0.12"
   }
 }

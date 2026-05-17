@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const ContactSchema = z.object({
-  type: z.enum(['phone', 'email', 'linkedin', 'github', 'website', 'other']),
+  type: z.enum(["phone", "email", "linkedin", "github", "website", "other"]),
   value: z.string().min(1),
   label: z.string().optional(),
 });
@@ -69,46 +69,62 @@ export const LanguageItemSchema = z.object({
 });
 
 export const ResumeSectionTypeSchema = z.enum([
-  'header',
-  'summary',
-  'experience',
-  'projects',
-  'skills',
-  'education',
-  'certifications',
-  'languages',
-  'personal',
-  'custom',
+  "header",
+  "summary",
+  "experience",
+  "projects",
+  "skills",
+  "education",
+  "certifications",
+  "languages",
+  "personal",
+  "custom",
 ]);
 
 export type ResumeSectionType = z.infer<typeof ResumeSectionTypeSchema>;
 
-export const ResumeBlockSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('header'), data: HeaderSchema }),
-  z.object({ type: z.literal('summary'), data: z.string().max(1000) }),
-  z.object({ type: z.literal('experience'), data: z.array(ExperienceItemSchema) }),
-  z.object({ type: z.literal('projects'), data: z.array(ProjectItemSchema) }),
-  z.object({ type: z.literal('skills'), data: z.array(SkillGroupSchema) }),
-  z.object({ type: z.literal('education'), data: z.array(EducationItemSchema) }),
-  z.object({ type: z.literal('certifications'), data: z.array(CertificationItemSchema) }),
-  z.object({ type: z.literal('languages'), data: z.array(LanguageItemSchema) }),
-  z.object({ type: z.literal('personal'), data: PersonalDetailsSchema }),
-  z.object({ type: z.literal('custom'), data: CustomBlockSchema }),
+export const ResumeBlockSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("header"), data: HeaderSchema }),
+  z.object({ type: z.literal("summary"), data: z.string().max(1000) }),
+  z.object({
+    type: z.literal("experience"),
+    data: z.array(ExperienceItemSchema),
+  }),
+  z.object({ type: z.literal("projects"), data: z.array(ProjectItemSchema) }),
+  z.object({ type: z.literal("skills"), data: z.array(SkillGroupSchema) }),
+  z.object({
+    type: z.literal("education"),
+    data: z.array(EducationItemSchema),
+  }),
+  z.object({
+    type: z.literal("certifications"),
+    data: z.array(CertificationItemSchema),
+  }),
+  z.object({ type: z.literal("languages"), data: z.array(LanguageItemSchema) }),
+  z.object({ type: z.literal("personal"), data: PersonalDetailsSchema }),
+  z.object({ type: z.literal("custom"), data: CustomBlockSchema }),
 ]);
 
 export const ResumeDataSchema = z.object({
-  id: z.string().uuid().default(() => crypto.randomUUID()),
+  id: z
+    .string()
+    .uuid()
+    .default(() => crypto.randomUUID()),
   version: z.number().default(1),
   metadata: z.object({
-    name: z.string().default('My Resume'),
-    theme: z.enum(['minimalist', 'professional', 'international', 'executive']).default('minimalist'),
-    region: z.string().default('US'),
+    name: z.string().default("My Resume"),
+    theme: z
+      .enum(["minimalist", "professional", "international", "executive"])
+      .default("minimalist"),
+    region: z.string().default("US"),
     lastModified: z.string().default(() => new Date().toISOString()),
     images: z.array(z.string()).optional(),
-    icons: z.object({
-      icon: z.string(),
-      apple: z.string(),
-    }).optional(),
+    icons: z
+      .object({
+        icon: z.string(),
+        apple: z.string(),
+      })
+      .optional(),
   }),
   blocks: z.array(ResumeBlockSchema),
 });
@@ -124,4 +140,15 @@ export type CertificationItem = z.infer<typeof CertificationItemSchema>;
 export type CustomBlock = z.infer<typeof CustomBlockSchema>;
 export type PersonalDetailItem = z.infer<typeof PersonalDetailItemSchema>;
 export type ResumeBlock = z.infer<typeof ResumeBlockSchema>;
+export type ResumeBlockType =
+  | Contact
+  | Header
+  | ExperienceItem
+  | ProjectItem
+  | EducationItem
+  | SkillGroup
+  | CertificationItem
+  | LanguageItem
+  | PersonalDetailItem
+  | CustomBlock;
 export type ResumeData = z.infer<typeof ResumeDataSchema>;
