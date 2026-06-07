@@ -1,7 +1,7 @@
 "use client";
 
 import React, { forwardRef } from "react";
-import {cn} from "@/lib/cn";
+import { cn } from "../lib/cn";
 import type {
   ResumeData,
   Contact,

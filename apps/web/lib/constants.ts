@@ -1,11 +1,18 @@
 import type { ResumeData } from "@resume/types";
 
+export function generateId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+}
+
 export const STORAGE_KEY = "resume_creator_v1_data";
 export const RESUMES_STORAGE_KEY = "resume_creator_v1_all_resumes";
 export const ACTIVE_RESUME_ID_KEY = "resume_creator_v1_active_id";
 
 export const INITIAL_DATA: ResumeData = {
-  id: crypto.randomUUID(),
+  id: generateId(),
   version: 1,
   metadata: {
     name: "My Resume",
@@ -75,7 +82,7 @@ export const EDUCATION_YEARS = Array.from(
 );
 
 // Mandatory sections
-export const MANDATORY_SECTIONS = ["header", "summary"] as const;
+export const MANDATORY_SECTIONS = ["header", "summary", "experience", "skills", "education"] as const;
 
 // Resume themes
 export const RESUME_THEMES = [

@@ -109,7 +109,12 @@ export const ResumeDataSchema = z.object({
   id: z
     .string()
     .uuid()
-    .default(() => crypto.randomUUID()),
+    .default(() => {
+      if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+      }
+      return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    }),
   version: z.number().default(1),
   metadata: z.object({
     name: z.string().default("My Resume"),

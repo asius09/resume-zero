@@ -3,16 +3,16 @@ import { FLUFF_WORDS, WEAK_PHRASES_MAP } from './constants';
 export function cleanText(text: string): string {
   let cleaned = text.trim();
   
+  // Replace weak phrases first (so they get upgraded before fluff removal)
+  Object.entries(WEAK_PHRASES_MAP).forEach(([weak, strong]) => {
+    const regex = new RegExp(`\\b${weak}\\b`, 'gi');
+    cleaned = cleaned.replace(regex, strong);
+  });
+  
   // Remove fluff words (case-insensitive)
   FLUFF_WORDS.forEach(word => {
     const regex = new RegExp(`\\b${word}\\b`, 'gi');
     cleaned = cleaned.replace(regex, '');
-  });
-  
-  // Replace weak phrases
-  Object.entries(WEAK_PHRASES_MAP).forEach(([weak, strong]) => {
-    const regex = new RegExp(`\\b${weak}\\b`, 'gi');
-    cleaned = cleaned.replace(regex, strong);
   });
 
   // Basic whitespace cleanup

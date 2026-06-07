@@ -1,6 +1,6 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import type { ResumeData } from '@resume/types';
-import { INITIAL_DATA } from '@/lib/constants';
+import { INITIAL_DATA, generateId } from '@/lib/constants';
 
 // Set up PDF.js worker
 if (typeof window !== 'undefined') {
@@ -47,7 +47,7 @@ export function parseResumeTextToData(text: string): Partial<ResumeData> {
   
   const resumeData: Partial<ResumeData> = {
     ...INITIAL_DATA,
-    id: crypto.randomUUID(),
+    id: generateId(),
     metadata: {
       ...INITIAL_DATA.metadata,
       name: 'Imported Resume',

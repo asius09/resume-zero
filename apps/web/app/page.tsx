@@ -11,9 +11,10 @@ import { ResumePreview } from "@/components/resume-editor/resume-preview";
 import { handleCopySection } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { ResumeDataSchema } from "@resume/types";
 import type { ResumeData } from "@resume/types";
 import { extractTextFromPDF, parseResumeTextToData } from "@/lib/pdf-parser";
-import { INITIAL_DATA, MANDATORY_SECTIONS } from "@/lib/constants";
+import { INITIAL_DATA, MANDATORY_SECTIONS, generateId } from "@/lib/constants";
 
 export default function ResumeCleanerPage() {
   const { toast } = useToast();
@@ -149,18 +150,26 @@ export default function ResumeCleanerPage() {
           }
         });
         
-        importedData = {
+        const merged = {
           ...INITIAL_DATA,
           ...parsedData,
           blocks: mergedBlocks,
-          id: crypto.randomUUID(),
+          id: generateId(),
           metadata: {
             ...INITIAL_DATA.metadata,
             ...parsedData.metadata,
             name: file.name.replace('.pdf', ''),
             lastModified: new Date().toISOString(),
           },
-        } as ResumeData;
+        };
+
+        const pdfResult = ResumeDataSchema.safeParse(merged);
+        if (!pdfResult.success) {
+          console.warn("PDF import validation issues:", pdfResult.error.issues);
+          importedData = merged as ResumeData;
+        } else {
+          importedData = pdfResult.data;
+        }
       } else {
         // Handle JSON import
         const reader = new FileReader();
@@ -171,21 +180,25 @@ export default function ResumeCleanerPage() {
         });
 
         const jsonData = JSON.parse(data);
-        
-        // Validate basic structure
-        if (!jsonData.blocks || !Array.isArray(jsonData.blocks)) {
-          throw new Error("Invalid resume data structure");
+
+        const result = ResumeDataSchema.safeParse(jsonData);
+        if (!result.success) {
+          const issues = result.error.issues
+            .slice(0, 3)
+            .map((i) => `${i.path.join(".")}: ${i.message}`)
+            .join("; ");
+          throw new Error(`Invalid resume data: ${issues}`);
         }
 
         importedData = {
-          ...jsonData,
-          id: crypto.randomUUID(),
+          ...result.data,
+          id: generateId(),
           metadata: {
-            ...jsonData.metadata,
-            name: jsonData.metadata?.name || "Imported Resume",
+            ...result.data.metadata,
+            name: result.data.metadata.name || "Imported Resume",
             lastModified: new Date().toISOString(),
           },
-        } as ResumeData;
+        };
       }
 
       importResume(importedData);

@@ -13,7 +13,6 @@
     "turbo": "latest"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
-    "zustand": "^5.0.12"
+    "date-fns": "^4.1.0"
   }
 }

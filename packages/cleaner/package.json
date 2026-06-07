@@ -4,11 +4,15 @@
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@resume/types": "workspace:*",
     "typescript": "^5"
   },
   "devDependencies": {
-    "@resume/config-typescript": "workspace:*"
+    "@resume/config-typescript": "workspace:*",
+    "vitest": "^3.1.0"
   }
 }

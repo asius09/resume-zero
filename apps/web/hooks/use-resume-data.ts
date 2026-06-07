@@ -9,13 +9,13 @@ import type {
   ProjectItem,
   ResumeBlockType,
 } from "@resume/types";
-import { create } from "zustand";
 import { normalizeBullet, cleanText } from "@resume/cleaner";
 import {
   INITIAL_DATA,
   STORAGE_KEY,
   RESUMES_STORAGE_KEY,
   ACTIVE_RESUME_ID_KEY,
+  generateId,
 } from "@/lib/constants";
 
 export function useResumeData() {
@@ -369,7 +369,7 @@ export function useResumeData() {
   };
 
   const createNewVersion = () => {
-    const newId = crypto.randomUUID();
+    const newId = generateId();
     const newResume: ResumeData = {
       ...data,
       id: newId,
