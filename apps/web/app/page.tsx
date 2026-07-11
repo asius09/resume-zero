@@ -41,6 +41,7 @@ export default function ResumeCleanerPage() {
   } = useResumeData();
 
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
+  const [isPublishing, setIsPublishing] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
@@ -71,6 +72,54 @@ export default function ResumeCleanerPage() {
         variant: "info",
       });
       handlePrint();
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!data.metadata.name) {
+      toast({
+        title: "Missing Name",
+        description: "Please name your resume before publishing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsPublishing(true);
+      toast({
+        title: "Publishing...",
+        description: "Creating a public link for your resume.",
+        variant: "info",
+      });
+
+      const response = await fetch('/api/resume/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.error);
+
+      // Copy to clipboard
+      await navigator.clipboard.writeText(result.url);
+
+      toast({
+        title: "Published Successfully! 🎉",
+        description: "The public link has been copied to your clipboard.",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Publish error:", error);
+      toast({
+        title: "Publish Failed",
+        description: error instanceof Error ? error.message : "Failed to publish resume.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -240,6 +289,7 @@ export default function ResumeCleanerPage() {
           }
           onLayoutChange={setTheme}
           onExportPDF={handleExportPDF}
+          onPublish={handlePublish}
           onExportJSON={handleExportJSON}
           onImportJSON={handleImportJSON}
           resumes={resumes}
