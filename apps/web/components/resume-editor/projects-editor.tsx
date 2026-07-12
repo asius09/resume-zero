@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import type { ProjectItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
@@ -54,26 +54,6 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
 
   const toggleExpand = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
-  };
-
-  const addBullet = (itemIdx: number) => {
-    const newData = [...items];
-    newData[itemIdx].bullets = [...(newData[itemIdx].bullets || []), ""];
-    onUpdate(newData);
-  };
-
-  const updateBullet = (itemIdx: number, bulletIdx: number, value: string) => {
-    const newData = [...items];
-    newData[itemIdx].bullets[bulletIdx] = value;
-    onUpdate(newData);
-  };
-
-  const removeBullet = (itemIdx: number, bulletIdx: number) => {
-    const newData = [...items];
-    newData[itemIdx].bullets = newData[itemIdx].bullets.filter(
-      (_, i) => i !== bulletIdx,
-    );
-    onUpdate(newData);
   };
 
   return (
@@ -188,49 +168,25 @@ export function ProjectsEditor({ data, onUpdate }: ProjectsEditorProps) {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Description</Label>
-                  <Textarea
-                    className="min-h-[80px] border-zinc-200 rounded-lg focus:border-zinc-900 focus:ring-0 transition-all"
-                    value={item.description || ""}
-                    onChange={(e) => updateItem(iIdx, { description: e.target.value })}
-                    placeholder="Briefly describe the project's purpose and tech stack."
-                  />
-                </div>
-
                 {/* Key Highlights Section */}
                 <div className="space-y-4 pt-4 border-t border-zinc-100">
-                  <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Key Highlights / Features</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Project Description & Highlights</Label>
+                  </div>
                   
                   <div className="space-y-3">
-                    {(item.bullets || []).map((bullet, bulIdx) => (
-                      <div key={bulIdx} className="flex gap-3 items-start group/bullet transition-all duration-200">
-                        <div className="shrink-0 mt-3 h-1.5 w-1.5 rounded-full bg-zinc-300 group-focus-within/bullet:bg-zinc-900 transition-colors" />
-                        <div className="flex-1 relative">
-                          <Textarea
-                            className="min-h-[60px] w-full resize-none py-2 px-3 border-zinc-200 focus:border-zinc-900 focus:ring-0 transition-all pr-10 rounded-lg text-sm"
-                            value={bullet}
-                            onChange={(e) => updateBullet(iIdx, bulIdx, e.target.value)}
-                            placeholder="Detail a specific module or technical achievement."
-                          />
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeBullet(iIdx, bulIdx)}
-                            className="absolute top-1 right-1 h-7 w-7 text-zinc-300 hover:text-red-500 sm:opacity-0 sm:group-hover/bullet:opacity-100 transition-opacity"
-                          >
-                            <Trash2 size={12} />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <EditorAddButton
-                      label="Add Highlight"
-                      variant="secondary"
-                      onClick={() => addBullet(iIdx)}
-                      toastTitle="Highlight Added"
-                      toastDescription="A new project highlight has been created."
+                    <RichTextEditor
+                      value={
+                        item.content !== undefined
+                          ? item.content
+                          : (item.description ? `<p>${item.description}</p>` : "") +
+                            ((item.bullets && item.bullets.length > 0)
+                              ? `<ul>${item.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
+                              : "")
+                      }
+                      onChange={(val) => updateItem(iIdx, { content: val })}
+                      placeholder="Briefly describe the project's purpose and detail specific technical achievements."
+                      minHeight="120px"
                     />
                   </div>
                 </div>

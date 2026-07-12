@@ -19,7 +19,8 @@ export const ExperienceItemSchema = z.object({
   startDate: z.string().min(1),
   endDate: z.string().optional(), // empty means "Present"
   isCurrent: z.boolean().default(false),
-  bullets: z.array(z.string().min(1)),
+  bullets: z.array(z.string().min(1)).optional(),
+  content: z.string().optional(),
 });
 
 export const ProjectItemSchema = z.object({
@@ -28,7 +29,8 @@ export const ProjectItemSchema = z.object({
   dates: z.string().optional(),
   techStack: z.array(z.string()).optional(),
   link: z.string().url().optional(),
-  bullets: z.array(z.string().min(1)),
+  bullets: z.array(z.string().min(1)).optional(),
+  content: z.string().optional(),
 });
 
 export const EducationItemSchema = z.object({

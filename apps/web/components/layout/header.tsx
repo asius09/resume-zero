@@ -39,7 +39,6 @@ interface HeaderProps {
   activeLayout: ResumeTheme;
   onLayoutChange: (layout: ResumeTheme) => void;
   onExportPDF: () => void;
-  onPublish?: () => void;
   onExportJSON?: () => void;
   onImportJSON?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   resumes: Record<string, ResumeData>;
@@ -62,7 +61,6 @@ export function Header({
   activeLayout,
   onLayoutChange,
   onExportPDF,
-  onPublish,
   onExportJSON,
   onImportJSON,
   resumes,
@@ -259,18 +257,6 @@ export function Header({
         </div>
 
 
-
-        {onPublish && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onPublish}
-            className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-          >
-            <Cloud size={13} strokeWidth={2} className="mr-1" />
-            <span className={cn('hidden', 'sm:inline')}>Publish</span>
-          </Button>
-        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

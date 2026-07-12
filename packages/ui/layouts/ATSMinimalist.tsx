@@ -114,7 +114,7 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
               style={{ marginBottom: "1rem" }}
             >
               <h1
-                className={cn("font-bold uppercase tracking-[0.05em] text-zinc-900")}
+                className={cn("font-bold uppercase tracking-wider text-zinc-900")}
                 style={{ 
                   fontSize: "18pt", 
                   lineHeight: "1.1",
@@ -151,7 +151,9 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
                   {c.value && <span className={cn('whitespace-nowrap', 'px-1')}>
                     <a
                       href={formatContactLink(c)}
-                      className={cn("hover:text-zinc-900 transition-colors no-underline text-zinc-600")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn("hover:text-zinc-900 transition-colors hover:underline print:underline text-zinc-600")}
                     >
                       {c.type === "linkedin" ? "LinkedIn" : 
                         c.type === "github" ? "GitHub" : 
@@ -189,11 +191,19 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
                       subtitle={item.companyName}
                       rightLabel={`${item.startDate} \u2013 ${item.endDate || "Present"}`}
                     />
-                    <div className={cn('space-y-0.5', 'text-left', 'pl-1')}>
-                      {item.bullets.map((bullet, b) => (
-                        <BulletItem key={b}>{bullet}</BulletItem>
-                      ))}
-                    </div>
+                    {item.content !== undefined ? (
+                      <div 
+                        className="rich-text-content" 
+                        dangerouslySetInnerHTML={{ __html: item.content }} 
+                        style={{ fontSize: "9.5pt", lineHeight: "1.3" }}
+                      />
+                    ) : (
+                      <div className={cn('space-y-0.5', 'text-left', 'pl-1')}>
+                        {(item.bullets || []).map((bullet, b) => (
+                          <BulletItem key={b}>{bullet}</BulletItem>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -264,22 +274,32 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
                   <div key={i}>
                     <ItemHeader 
                       title={proj.link ? (
-                        <a href={proj.link} className={cn('hover:text-zinc-900', 'border-b', 'border-transparent', 'hover:border-zinc-900', 'transition-all')}>
+                        <a href={proj.link} target="_blank" rel="noopener noreferrer" className={cn('hover:text-zinc-900', 'hover:underline', 'print:underline', 'transition-all')}>
                           {proj.name}
                         </a>
                       ) : proj.name}
                       rightLabel={proj.dates}
                     />
-                    {proj.description && (
-                      <p className={cn('mb-1.5', 'text-zinc-600', 'leading-snug')} style={{ fontSize: "9.5pt" }}>
-                        {proj.description}
-                      </p>
+                    {proj.content !== undefined ? (
+                      <div 
+                        className="rich-text-content mt-1" 
+                        dangerouslySetInnerHTML={{ __html: proj.content }} 
+                        style={{ fontSize: "9.5pt", lineHeight: "1.3" }}
+                      />
+                    ) : (
+                      <>
+                        {proj.description && (
+                          <p className={cn('mb-1.5', 'text-zinc-600', 'leading-snug')} style={{ fontSize: "9.5pt" }}>
+                            {proj.description}
+                          </p>
+                        )}
+                        <div className={cn("space-y-1", "pl-1")}>
+                          {(proj.bullets || []).map((bullet, b) => (
+                            <BulletItem key={b}>{bullet}</BulletItem>
+                          ))}
+                        </div>
+                      </>
                     )}
-                    <div className={cn("space-y-1", "pl-1")}>
-                      {proj.bullets.map((bullet, b) => (
-                        <BulletItem key={b}>{bullet}</BulletItem>
-                      ))}
-                    </div>
                   </div>
                 ))}
               </div>
@@ -355,6 +375,41 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
           fontFamily: "'Inter', 'Helvetica', 'Arial', sans-serif",
         }}
       >
+        <style>{`
+          .rich-text-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+          }
+          .rich-text-content li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.375rem;
+            margin-bottom: 0.125rem;
+          }
+          .rich-text-content li::before {
+            content: "•";
+            flex-shrink: 0;
+            font-weight: 700;
+            color: #18181b;
+            margin-top: 0.5px;
+          }
+          .rich-text-content p {
+            margin-bottom: 0.25rem;
+          }
+          .rich-text-content a {
+            color: inherit;
+            text-decoration: none;
+          }
+          .rich-text-content a:hover {
+            text-decoration: underline;
+          }
+          @media print {
+            .rich-text-content a {
+              text-decoration: underline;
+            }
+          }
+        `}</style>
         {data.blocks.map((block, index) => renderBlock(block, index))}
       </div>
     );

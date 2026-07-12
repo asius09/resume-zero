@@ -3,7 +3,7 @@ import { Calendar, MapPin, Briefcase, Check, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import type { ExperienceItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
@@ -59,28 +59,6 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
   const toggleExpand = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
-
-  const addBullet = (itemIdx: number) => {
-    const newData = [...items];
-    newData[itemIdx].bullets = [...(newData[itemIdx].bullets || []), ""];
-    onUpdate(newData);
-  };
-
-  const updateBullet = (itemIdx: number, bulletIdx: number, value: string) => {
-    const newData = [...items];
-    newData[itemIdx].bullets[bulletIdx] = value;
-    onUpdate(newData);
-  };
-
-
-  const removeBullet = (itemIdx: number, bulletIdx: number) => {
-    const newData = [...items];
-    newData[itemIdx].bullets = newData[itemIdx].bullets.filter(
-      (_, i) => i !== bulletIdx,
-    );
-    onUpdate(newData);
-  };
-
 
   return (
     <div className="space-y-4">
@@ -219,38 +197,21 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
             <div className="space-y-4 pt-4 border-t border-zinc-100">
               <div className="flex items-center justify-between">
                 <Label className="text-[10px] font-semibold uppercase text-zinc-500 tracking-wider">Key Accomplishments</Label>
-                <span className="text-[10px] text-zinc-400 italic hidden sm:inline">Focus on metrics and impact</span>
+                <span className="text-[10px] text-zinc-400 italic hidden sm:inline">One point per line. Focus on metrics and impact</span>
               </div>
               
               <div className="space-y-3">
-                {(item.bullets || []).map((bullet, bulIdx) => (
-                  <div key={bulIdx} className="flex gap-3 items-start group/bullet transition-all duration-200">
-                    <div className="shrink-0 mt-3 h-1.5 w-1.5 rounded-full bg-zinc-300 group-focus-within/bullet:bg-zinc-900 transition-colors" />
-                    <div className="flex-1 relative">
-                      <Textarea
-                        className="min-h-[80px] w-full resize-none py-2 px-3 border-zinc-200 focus:border-zinc-900 focus:ring-0 transition-all pr-10 rounded-lg text-sm"
-                        value={bullet}
-                        onChange={(e) => updateBullet(iIdx, bulIdx, e.target.value)}
-                        placeholder="e.g. Led a team of 5 to redesign the core API, reducing latency by 40%."
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeBullet(iIdx, bulIdx)}
-                        className="absolute top-1 right-1 h-7 w-7 text-zinc-300 hover:text-red-500 sm:opacity-0 sm:group-hover/bullet:opacity-100 transition-opacity"
-                      >
-                        <Trash2 size={12} />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                
-                <EditorAddButton
-                  label="Add Bullet Point"
-                  variant="secondary"
-                  onClick={() => addBullet(iIdx)}
-                  toastTitle="Bullet Added"
-                  toastDescription="A new accomplishment point has been created."
+                <RichTextEditor
+                  value={
+                    item.content !== undefined
+                      ? item.content
+                      : (item.bullets && item.bullets.length > 0)
+                        ? `<ul>${item.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
+                        : ""
+                  }
+                  onChange={(val) => updateItem(iIdx, { content: val })}
+                  placeholder="Led a team of 5 to redesign the core API, reducing latency by 40%..."
+                  minHeight="120px"
                 />
               </div>
             </div>

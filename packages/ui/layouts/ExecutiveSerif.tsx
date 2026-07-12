@@ -88,13 +88,21 @@ export const ExecutiveSerif = forwardRef<HTMLDivElement, { data: ResumeData }>(
                     <div className="text-[10.5pt] font-bold italic text-zinc-500 mb-3">
                       {item.companyName} {item.location && <span className="mx-1 opacity-50 not-italic">•</span>} {item.location}
                     </div>
-                    <ul className="space-y-2 ml-5">
-                      {item.bullets.map((bullet, b) => (
-                        <li key={b} className="list-disc text-[10.5pt] text-zinc-800 leading-relaxed pl-1">
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
+                    {item.content !== undefined ? (
+                      <div 
+                        className="rich-text-content" 
+                        dangerouslySetInnerHTML={{ __html: item.content }} 
+                        style={{ fontSize: "10pt", lineHeight: "1.5" }}
+                      />
+                    ) : (
+                      <ul className="space-y-2 ml-5">
+                        {item.bullets.map((bullet, b) => (
+                          <li key={b} className="list-disc text-[10.5pt] text-zinc-800 leading-relaxed pl-1">
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 ))}
               </div>
@@ -115,13 +123,21 @@ export const ExecutiveSerif = forwardRef<HTMLDivElement, { data: ResumeData }>(
                     {proj.description && (
                       <p className="text-[10pt] italic text-zinc-500 mb-2 leading-relaxed">{proj.description}</p>
                     )}
-                    <ul className="space-y-1.5 ml-5">
-                      {proj.bullets.map((bullet, b) => (
-                        <li key={b} className="list-disc text-[10pt] text-zinc-800 leading-relaxed pl-1">
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
+                    {proj.content !== undefined ? (
+                      <div 
+                        className="rich-text-content" 
+                        dangerouslySetInnerHTML={{ __html: proj.content }} 
+                        style={{ fontSize: "10pt", lineHeight: "1.5" }}
+                      />
+                    ) : (
+                      <ul className="space-y-1.5 ml-5">
+                        {proj.bullets.map((bullet, b) => (
+                          <li key={b} className="list-disc text-[10pt] text-zinc-800 leading-relaxed pl-1">
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 ))}
               </div>
@@ -234,6 +250,41 @@ export const ExecutiveSerif = forwardRef<HTMLDivElement, { data: ResumeData }>(
           fontFamily: "'Times New Roman', Times, serif", // Classic Executive Serif
         }}
       >
+        <style>{`
+          .rich-text-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+          }
+          .rich-text-content li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.375rem;
+            margin-bottom: 0.125rem;
+          }
+          .rich-text-content li::before {
+            content: "•";
+            flex-shrink: 0;
+            font-weight: 700;
+            color: #09090b;
+            margin-top: 0.5px;
+          }
+          .rich-text-content p {
+            margin-bottom: 0.25rem;
+          }
+          .rich-text-content a {
+            color: inherit;
+            text-decoration: none;
+          }
+          .rich-text-content a:hover {
+            text-decoration: underline;
+          }
+          @media print {
+            .rich-text-content a {
+              text-decoration: underline;
+            }
+          }
+        `}</style>
         {data.blocks.map((block, index) => renderBlock(block, index))}
       </div>
     );
