@@ -34,7 +34,7 @@ export const handleCopySection = async (data: ResumeData, index: number) => {
         (item) =>
           `${item.jobTitle} | ${item.companyName}\n${
             item.startDate
-          } - ${item.endDate || "Present"}\n${item.bullets.map((b: string) => `• ${b}`).join("\n")}`,
+           } - ${item.endDate || "Present"}\n${(item.bullets ?? []).map((b: string) => `• ${b}`).join("\n")}`,
       )
       .join("\n\n");
   } else if (block.type === "projects") {
@@ -43,7 +43,7 @@ export const handleCopySection = async (data: ResumeData, index: number) => {
         (item) =>
           `${item.name} | ${item.description}\n${
             item.dates
-          }\n${item.bullets.map((b: string) => `• ${b}`).join("\n")}`,
+          }\n${(item.bullets ?? []).map((b: string) => `• ${b}`).join("\n")}`,
       )
       .join("\n\n");
   } else if (block.type === "skills") {
@@ -90,7 +90,7 @@ export const renderPlainText = (data: ResumeData) => {
             (item) =>
               `${item.jobTitle.toUpperCase()}\n${item.companyName} | ${item.startDate} - ${
                 item.endDate
-              }\n${item.bullets.map((b) => `- ${b}`).join("\n")}`,
+              }\n${(item.bullets ?? []).map((b) => `- ${b}`).join("\n")}`,
           )
           .join("\n\n")}\n\n`;
       }
@@ -98,7 +98,7 @@ export const renderPlainText = (data: ResumeData) => {
         return `PROJECTS\n${(block.data as ProjectItem[])
           .map(
             (item) =>
-              `${item.name.toUpperCase()}\n${item.description}\n${item.bullets
+              `${item.name.toUpperCase()}\n${item.description}\n${(item.bullets ?? [])
                 .map((b) => `- ${b}`)
                 .join("\n")}`,
           )

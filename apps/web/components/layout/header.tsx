@@ -1,6 +1,7 @@
 "use client";
 
 import NextImage from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Download,
   Trash2,
@@ -11,6 +12,7 @@ import {
   Loader2,
   Upload,
   FileJson,
+  LogOut,
 } from "lucide-react";
 import { IoDuplicate } from "react-icons/io5";
 import { cn } from "@/lib/cn";
@@ -32,6 +34,7 @@ import {
 import { Kbd } from "@/components/ui/kbd";
 import { format } from "date-fns";
 import { RESUME_THEMES, type ResumeTheme } from "@/lib/constants";
+import { useAuth } from "@/lib/supabase/provider";
 
 interface HeaderProps {
   resumeName: string;
@@ -74,6 +77,14 @@ export function Header({
   canUndo,
   canRedo,
 }: HeaderProps) {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await fetch('/auth/logout', { method: 'POST' })
+    router.push('/auth/login')
+  }
+
   return (
     <header
       className="no-print sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-100 px-6 sm:px-8 py-3 flex items-center justify-between gap-2 sm:gap-4"
@@ -305,6 +316,41 @@ export function Header({
               </TooltipContent>
             </Tooltip>
           </>
+        )}
+
+        {user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="rounded-full p-0 w-8 h-8 ml-1">
+                {user.user_metadata?.avatar_url ? (
+                  <NextImage
+                    src={user.user_metadata.avatar_url}
+                    alt=""
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-xs font-medium text-zinc-600">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 p-1">
+              <DropdownMenuLabel className="text-xs font-normal text-zinc-500 truncate px-3 py-2">
+                {user.email}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-xs gap-2 cursor-pointer py-2"
+                onClick={handleSignOut}
+              >
+                <LogOut size={12} />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </header>

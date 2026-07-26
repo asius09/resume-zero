@@ -326,14 +326,14 @@ export function useResumeData() {
       if (block.type === "experience") {
         const items = block.data.map((item: ExperienceItem) => ({
           ...item,
-          bullets: item.bullets.map((b: string) => normalizeBullet(b)),
+          bullets: (item.bullets ?? []).map((b: string) => normalizeBullet(b)),
         }));
         return { ...block, data: items } as ResumeBlock;
       }
       if (block.type === "projects") {
         const items = block.data.map((item: ProjectItem) => ({
           ...item,
-          bullets: item.bullets.map((b: string) => normalizeBullet(b)),
+          bullets: (item.bullets ?? []).map((b: string) => normalizeBullet(b)),
         }));
         return { ...block, data: items } as ResumeBlock;
       }

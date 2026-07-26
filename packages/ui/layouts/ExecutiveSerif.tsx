@@ -96,7 +96,7 @@ export const ExecutiveSerif = forwardRef<HTMLDivElement, { data: ResumeData }>(
                       />
                     ) : (
                       <ul className="space-y-2 ml-5">
-                        {item.bullets.map((bullet, b) => (
+                        {(item.bullets ?? []).map((bullet, b) => (
                           <li key={b} className="list-disc text-[10.5pt] text-zinc-800 leading-relaxed pl-1">
                             {bullet}
                           </li>
@@ -131,7 +131,7 @@ export const ExecutiveSerif = forwardRef<HTMLDivElement, { data: ResumeData }>(
                       />
                     ) : (
                       <ul className="space-y-1.5 ml-5">
-                        {proj.bullets.map((bullet, b) => (
+                        {(proj.bullets ?? []).map((bullet, b) => (
                           <li key={b} className="list-disc text-[10pt] text-zinc-800 leading-relaxed pl-1">
                             {bullet}
                           </li>
